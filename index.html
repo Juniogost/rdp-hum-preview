@@ -135,7 +135,7 @@ Promise.all([fetch('mapa/lotes.json').then(r=>r.json()), fetch('mapa/plano.json'
     const vend = l.disp==='vendido' || l.status==='vendido';
     const resv = l.disp==='reservado' || l.status==='reservado';
     const livrTab = l.status==='tabela_out2026' && !vend && !resv;
-    const livr = l.disp==='livre' || livrTab;
+    const livr = l.disp==='livre' || (livrTab && !l.disp);
     if (vend) return {cor:'#dc2626', clica:false, tipo:'v'};
     if (resv) return {cor:'#ea580c', clica:false, tipo:'r'};
     if (livr) return {cor:'#16a34a', clica:livrTab, tipo:'l'};
