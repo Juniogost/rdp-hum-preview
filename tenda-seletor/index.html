@@ -11,7 +11,7 @@
 <script src="app.js"></script><script>
 let U={empreendimentos:[]},E=null,sel=null;const TBD='<span class="pend">a confirmar</span>';
 const TOUR={ita:'https://tour.ultratour.com.br/TENDA/ita-nobre/index.html',luar:'https://tour.ultratour.com.br/TENDA/novos-ares-luar/index.html'};
-fetch('units.json').then(r=>r.json()).then(j=>{U=j;emp.innerHTML=j.empreendimentos.map(e=>`<option value="${e.id}">${e.nome}</option>`).join('');emp.onchange=pick;pick()});
+fetch('units.json?v=2').then(r=>r.json()).then(j=>{U=j;emp.innerHTML=j.empreendimentos.map(e=>`<option value="${e.id}">${e.nome}</option>`).join('');emp.onchange=pick;pick()});
 function pick(){try{v3d.contentWindow.postMessage({type:'tenda-select',bloco:null},'*')}catch(e){};E=U.empreendimentos.find(e=>e.id==emp.value);sel=null;
 const t360=TOUR[E.id];document.getElementById('tour').innerHTML=t360?`<a class="tour360" href="${t360}" target="_blank" rel="noopener">Conhecer o decorado em 360°</a><small class="tournota">Tour oficial da Tenda. Imagens ilustrativas.</small>`:'';painel.hidden=true;prop.hidden=true;qb.value='';qn.value='';msg.textContent='';draw()}
 function draw(){if(E.blocos){bl.innerHTML=E.blocos.map(b=>`<button data-b="${b}" class="${sel==b?'on':''}">${b}</button>`).join('');bl.querySelectorAll('button').forEach(x=>x.onclick=()=>{sel=x.dataset.b;qb.value=sel;draw();v3d.contentWindow.postMessage({type:'tenda-select',bloco:sel},'*');msg.textContent='Digite o número do apartamento do '+sel+'.'})}else{bl.innerHTML='<small>Blocos deste empreendimento ainda não mapeados: digite bloco e número.</small>'}}
