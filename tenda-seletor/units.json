@@ -1,7 +1,49 @@
-{"_aviso":"Valores de referência dos stories do Matheus Ferreira (23-26/10), por empreendimento, unidade SEM VAGA. Não são por unidade. Conferir tabela vigente.",
- "empreendimentos":[
- {"id":"ita","nome":"Itá Nobre","blocos":["B1","B2","B3","B4","B5","B6"],
-  "ref":{"condicao":"Unidade sem vaga","renda":"R$ 2.550,00","fator":"Cotista","score":"D","sinal":"1x de R$ 990,00","mensais":"20x de R$ 765,00","intermediarias":"2x de R$ 1.990,00","parcelas":"84x de R$ 255,00"}},
- {"id":"luar","nome":"Novos Ares Luar","blocos":null,
-  "ref":{"condicao":"Unidade sem vaga","renda":"R$ 2.550,00","fator":"Sim","score":"D","sinal":"1x de R$ 990,00","mensais":"26x de R$ 765,00","intermediarias":"3x de R$ 1.840,00","parcelas":"84x de R$ 255,00"}},
- {"id":"bv","nome":"La Buena Vista","blocos":null,"ref":null}]}
+{
+  "_aviso": "Valores de referência dos stories do Matheus Ferreira (23-26/10), por empreendimento, unidade SEM VAGA. Não são por unidade. Conferir tabela vigente.",
+  "empreendimentos": [
+    {
+      "id": "ita",
+      "nome": "Itá Nobre",
+      "blocos": [
+        "B1",
+        "B2",
+        "B3",
+        "B4",
+        "B5",
+        "B6"
+      ],
+      "ref": {
+        "condicao": "Unidade sem vaga",
+        "renda": "R$ 2.550,00",
+        "fator": "Cotista",
+        "score": "D",
+        "sinal": "1x de R$ 990,00",
+        "mensais": "20x de R$ 765,00",
+        "intermediarias": "2x de R$ 1.990,00",
+        "parcelas": "84x de R$ 255,00",
+        "metragem": "32 a 35 m² (faixa informada pela Tenda)"
+      }
+    },
+    {
+      "id": "luar",
+      "nome": "Novos Ares Luar",
+      "blocos": null,
+      "ref": {
+        "condicao": "Unidade sem vaga",
+        "renda": "R$ 2.550,00",
+        "fator": "Sim",
+        "score": "D",
+        "sinal": "1x de R$ 990,00",
+        "mensais": "26x de R$ 765,00",
+        "intermediarias": "3x de R$ 1.840,00",
+        "parcelas": "84x de R$ 255,00"
+      }
+    },
+    {
+      "id": "bv",
+      "nome": "La Buena Vista",
+      "blocos": null,
+      "ref": null
+    }
+  ]
+}
