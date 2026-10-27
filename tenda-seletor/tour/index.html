@@ -23,15 +23,18 @@ html,body{margin:0;height:100%;background:#000;color:#fff;font:16px system-ui;ov
 #zoom img{display:block;width:200%;max-width:none}
 #zoomfechar{position:fixed;top:12px;right:12px;z-index:51;background:rgba(0,0,0,.6);color:#fff;border:1px solid #fff;border-radius:8px;padding:8px 12px;display:none}
 .pnlm-controls-container{display:none!important}
+#empnome{font-weight:700;font-size:15px;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.6)}
+#sensia{position:fixed;bottom:16px;left:0;right:0;text-align:center;font-size:10px;color:rgba(255,255,255,.75);z-index:29;pointer-events:none;padding:0 20px}
 .dica{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,.65);padding:10px 16px;border-radius:10px;font-size:13px;z-index:40;pointer-events:none;transition:opacity .6}
 </style></head><body>
 <div id="stage"><div id="pano"></div><img class="ph" id="foto" alt=""></div>
 <div class="barra" id="barra"></div>
-<div id="topo"><a id="voltar" href="../">‹ Voltar</a><span id="cont"></span></div>
+<div id="topo"><a id="voltar" href="../">‹ Voltar</a><span id="empnome"></span><span id="cont"></span></div>
 <div id="tod"></div>
 <button class="seta" id="setaE" aria-label="Anterior">‹</button>
 <button class="seta" id="setaD" aria-label="Próxima">›</button>
 <div id="base"><div id="sec"></div><div id="leg"></div><div id="nota"></div></div>
+<div id="sensia" hidden>No material oficial da Tenda, o Itá Nobre aparece como "Sensia Alameda".</div>
 <div id="cred">Imagens ilustrativas, material oficial Tenda</div>
 <div id="zoom"><img id="zimg" alt=""></div><button id="zoomfechar">Fechar ✕</button>
 <div class="dica" id="dica" style="opacity:0">Arraste para girar • deslize para trocar</div>
@@ -40,6 +43,10 @@ html,body{margin:0;height:100%;background:#000;color:#fff;font:16px system-ui;ov
 <script>
 const q=new URLSearchParams(location.search);const EMP=q.get('emp')==='luar'?'luar':'ita';
 const D=TOURDATA.emps[EMP];
+const NOMES={ita:'Itá Nobre',luar:'Novos Ares Luar'};
+document.getElementById('empnome').textContent=NOMES[EMP];
+document.title='Tour do decorado - '+NOMES[EMP]+' | Investe em Lotes';
+if(EMP==='ita')document.getElementById('sensia').hidden=false;
 document.getElementById('voltar').href='../?emp='+EMP;
 const steps=[];
 D.panos.forEach((p,i)=>steps.push({tipo:'pano',src:p.src,tod:p.tod,primeiro:i===0||p.tod!==D.panos[i-1].tod}));
