@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Reserva do Parque — Planta ilustrada (prévia em teste)</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+@media (max-width:640px){
+  #painel{max-height:38%}
+  #painel #ptit{padding:6px 10px;font-size:13px}
+  #nota{font-size:11px;padding:6px 10px;max-height:2.6em;overflow:hidden}
+  #nota:not(.col){max-height:60%}
+  #hud select{padding:6px!important;font-size:13px!important}
+}
+</style>
+<style>
+  html,body{margin:0;height:100%;font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif}
+  #map{position:absolute;inset:0;background:#f4f1ea}
+  #hud{position:absolute;top:0;left:0;right:0;z-index:1000;background:#14532d;color:#fff;padding:8px 12px;font-size:14px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  #hud .tag{background:#f59e0b;color:#111;font-weight:700;font-size:11px;padding:2px 8px;border-radius:10px;text-transform:uppercase}
+  #hud select,#hud input{font-size:15px;padding:5px;border-radius:6px;border:0}
+  #painel{position:absolute;top:52px;right:8px;z-index:1000;background:rgba(255,255,255,.97);border-radius:10px;box-shadow:0 2px 10px rgba(0,0,0,.25);width:290px;max-height:calc(100% - 130px);display:flex;flex-direction:column;overflow:hidden}
+  #painel h2{font-size:14px;margin:0;padding:10px 12px 6px;color:#14532d;cursor:pointer;user-select:none}
+  #painel h2::after{content:' ▾';float:right;color:#14532d}
+  #painel.col h2::after{content:' ▴'}
+  #painel.col .sub,#painel.col #lotes{display:none}
+  #nota{cursor:pointer;user-select:none}
+  #nota.col{max-height:24px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+  #nota.col::after{content:' ▴';float:right;color:#fbbf24}
+  #nota:not(.col)::after{content:' ▾';float:right;color:#fbbf24}
+  #painel .sub{font-size:11px;color:#555;padding:0 12px 8px}
+  #lotes{overflow-y:auto;font-size:13px;padding:0 6px 8px}
+  #lotes table{width:100%;border-collapse:collapse}
+  #lotes td,#lotes th{border-bottom:1px solid #eee;padding:4px 6px;text-align:left;font-size:12.5px}
+  .chip{display:inline-block;font-size:10.5px;font-weight:700;padding:2px 7px;border-radius:9px;white-space:nowrap}
+  .chip.livre{background:#dcfce7;color:#166534}
+  .chip.embreve{background:#f3f4f6;color:#6b7280}
+  td .val{display:block;font-size:11px;color:#374151;white-space:nowrap}
+  #leg{position:absolute;top:auto;left:56px;z-index:1000;display:flex;gap:6px;flex-wrap:wrap;bottom:auto}
+  #leg .chip{box-shadow:0 1px 4px rgba(0,0,0,.2);font-size:11px;padding:3px 9px}
+  #lotes tr.sel td{background:#dcfce7;font-weight:700}
+  #nota{position:absolute;bottom:8px;left:8px;right:8px;z-index:1000;background:rgba(17,24,39,.88);color:#e5e7eb;font-size:11px;line-height:1.45;padding:8px 10px;border-radius:8px}
+  #nota b{color:#fbbf24}
+  .norte{position:absolute;z-index:900;pointer-events:none}
+  @media (max-width:640px){
+    #painel{width:calc(100% - 16px);max-height:44%;top:auto;bottom:64px;right:8px}
+    #nota{font-size:10px}
+  }
+</style>
+</head>
+<body>
+<div id="hud">
+  <span class="tag">Prévia em teste</span>
+  <strong>Reserva do Parque — planta ilustrada</strong>
+  <select id="fase"></select>
+  <select id="quadra"></select>
+</div>
+<div id="map"></div>
+<div id="leg"></div>
+<div id="painel">
+  <h2 id="ptit">Escolha a fase e a quadra</h2>
+  <div class="sub" id="psub">Áreas e dimensões conforme listagens oficiais do parcelamento (documentos assinados, verificação 1doc).</div>
+  <div id="lotes"></div>
+</div>
+<div id="nota">
+  <b>Aviso:</b> versão ilustrada da prancha oficial de implantação (nada acrescentado). Situação e valores: tabelas oficiais outubro/2026 (vigência 01/10/2026) — <b>confirme disponibilidade e condições pelo WhatsApp</b>. Lote "Em breve": quadra ainda não liberada para venda pela prefeitura — sem preço enquanto isso.
+  Não mostra disponibilidade nem preços — para isso, fale com a equipe pelo WhatsApp
+  <a style="color:#86efac" href="https://wa.me/5562981428585">62 98142-8585</a>.
+  Norte conforme a prancha; análise de insolação por lote é estimativa visual, pendente de georreferenciamento.
+  Uso do solo e do subsolo: pendentes de fonte oficial.
+</div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const W = 11134, H = 7875, ZMAX = 5, F = Math.pow(2, ZMAX);
+const maxLat = H / F, maxLng = W / F;
+const map = L.map('map', {crs: L.CRS.Simple, minZoom: 0, maxZoom: 6, zoomSnap: 0.25, zoomDelta: 0.5,
+  maxBounds: [[-maxLat,0],[0,maxLng]], maxBoundsViscosity: 0.8, attributionControl: false, wheelPxPerZoomLevel: 90});
+L.tileLayer('mapa/tiles/{z}/{x}_{y}.png', {tileSize: 256, noWrap: true, bounds: [[-maxLat,0],[0,maxLng]]}).addTo(map);
+map.fitBounds([[-maxLat*0.97,maxLng*0.01],[-maxLat*0.03,maxLng*0.99]], {padding:[6,6]});
+setTimeout(()=>map.fitBounds([[-maxLat*0.97,maxLng*0.01],[-maxLat*0.03,maxLng*0.99]], {padding:[6,6]}), 800);
+function ajustaZoom(){const t=(document.getElementById('hud').offsetHeight+6)+'px';document.querySelectorAll('.leaflet-top .leaflet-control').forEach(z=>z.style.marginTop=t);}
+window.addEventListener('load',ajustaZoom);window.addEventListener('resize',ajustaZoom);setTimeout(ajustaZoom,300);setTimeout(ajustaZoom,1500);
+new ResizeObserver(ajustaZoom).observe(document.getElementById('hud'));
+// indicador de norte (norte da prancha = topo da imagem)
+Promise.all([fetch('mapa/lotes.json').then(r=>r.json()), fetch('mapa/plano.json').then(r=>r.json())]).then(([data, plano])=>{
+  const faseSel = document.getElementById('fase'), quadraSel = document.getElementById('quadra');
+  const painel = document.getElementById('painel'), nota = document.getElementById('nota');
+  const leg = document.getElementById('leg');
+  function ajustaLeg(){leg.style.top=(document.getElementById('hud').offsetHeight+8)+'px';}
+  window.addEventListener('load',ajustaLeg);window.addEventListener('resize',ajustaLeg);setTimeout(ajustaLeg,300);setTimeout(ajustaLeg,1500);
+  if (matchMedia('(max-width:640px)').matches){ painel.classList.add('col'); nota.classList.add('col'); }
+  document.getElementById('ptit').onclick = ()=>painel.classList.toggle('col');
+  nota.onclick = ()=>nota.classList.toggle('col');
+  const ptit = document.getElementById('ptit'), lotes = document.getElementById('lotes');
+  for (const k of Object.keys(data)) faseSel.add(new Option(data[k].fase, k));
+  function fillQuadras(){
+    quadraSel.innerHTML = '';
+    const qs = Object.keys(data[faseSel.value].quadras);
+    for (const q of qs) quadraSel.add(new Option('Quadra ' + q, q));
+    fillLotes();
+  }
+  function fillLotes(){
+    const d = data[faseSel.value], q = quadraSel.value, lotesQ = d.quadras[q] || {};
+    const ids = Object.keys(lotesQ);
+    ptit.textContent = d.fase.split('— ')[1] + ' — Quadra ' + q + ' (' + ids.length + ' lotes listados)';
+    const brl = v => v ? 'R$ ' + Number(v).toLocaleString('pt-BR',{maximumFractionDigits:0}) : '';
+    let livres = 0;
+    let html = '<table><tr><th>Lote</th><th>Área (m²)</th><th>Logradouro</th><th>Situação</th></tr>';
+    for (const id of ids){
+      const l = lotesQ[id];
+      let st;
+      if (l.status === 'tabela_out2026'){
+        livres++;
+        const vals = [l.valor_avista && brl(l.valor_avista)+' à vista', l.valor_proposta && brl(l.valor_proposta)+' proposta'].filter(Boolean).join('<br>');
+        st = `<span class="chip livre">Livre</span><span class="val">${vals}</span>`;
+      } else {
+        st = '<span class="chip embreve">Em breve</span>';
+      }
+      const clic = l.status === 'tabela_out2026' ? ` data-lote="${id}" style="cursor:pointer"` : '';
+      html += `<tr${clic}><td>${id}</td><td>${l.area_m2.toLocaleString('pt-BR',{minimumFractionDigits:2})}</td><td>${l.logradouro}</td><td>${st}</td></tr>`;
+    }
+    lotes.innerHTML = html + '</table>';
+    lotes.querySelectorAll('tr[data-lote]').forEach(tr => tr.onclick = ()=>mostraFluxo(faseSel.value, q, tr.dataset.lote));
+    const total = ids.length;
+    leg.innerHTML = `<span class="chip livre">Livre ${livres}</span><span class="chip reservado">Reservado 0</span><span class="chip vendido">Vendido 0</span><span class="chip embreve">Em breve ${total-livres}</span>`;
+  }
+  const pkey = f => f.toLowerCase().includes('aroeira') ? 'aroeiras' : f.toLowerCase().includes('jacarand') ? 'jacarandas' : f.toLowerCase().includes('angico') ? 'angicos' : null;
+  let detDoc = null;
+  function mostraFluxo(fase, quadra, lote){
+    const det = document.getElementById('det'), detb = document.getElementById('detb');
+    const pk = pkey(data[fase].fase);
+    const row = pk && plano[pk] && plano[pk].rows ? plano[pk].rows[quadra + '-' + lote] : null;
+    const meta = pk && plano[pk] ? plano[pk].meta : null;
+    let nome = data[fase].fase.split('— ')[1] || data[fase].fase;
+    if (!row){
+      detb.innerHTML = `<b>${nome} — Quadra ${quadra}, Lote ${lote}</b><p>Fluxo de pagamento detalhado não consta para este lote na tabela de outubro/2026 extraída. Confira pelo WhatsApp.</p>`;
+      det.style.display='block'; detDoc=null; return;
+    }
+    const p13 = meta.prazos13, pav = meta.prazosAv;
+    const linha13 = row.par.map((v,i)=>`<tr><td>${p13[i]}x</td><td>R$ ${v}</td></tr>`).join('');
+    const linhaAv = row.av.map((v,i)=>`<tr><td>${pav[i]}x</td><td>R$ ${v}</td></tr>`).join('');
+    detb.innerHTML = `
+      <b>${nome} — Quadra ${quadra}, Lote ${lote}</b> · Área ${row.area} m²<br>
+      <span style="font-size:12px;color:#555">Valores exatos da tabela oficial outubro/2026 (vigência 01/10/2026), sem cálculo nosso. Estoque não confirmado.</span>
+      <p style="margin:8px 0 2px"><b>Valor à vista: R$ ${row.cash}</b></p>
+      <div style="border:1px solid #cde;border-radius:8px;padding:8px;margin:6px 0">
+        <b>Plano 1 — Entrada 1 + 3 (1ª parcela em 120 dias)</b><br>
+        Valor na proposta: <b>R$ ${row.prop}</b><br>
+        Ato: R$ ${row.ato} + 3x de R$ ${row.com3}${row.ent13 ? ' · Entrada: R$ '+row.ent13 : ' · Entrada: não informada nesta linha da tabela'}<br>
+        Parcelas mensais por prazo:
+        <table style="margin-top:4px"><tr><th>Prazo</th><th>Parcela</th></tr>${linha13}</table>
+      </div>
+      <div style="border:1px solid #cde;border-radius:8px;padding:8px;margin:6px 0">
+        <b>Plano 2 — Entrada à vista (1ª parcela em 30 dias)</b><br>
+        Valor na proposta: <b>R$ ${row.avprop}</b><br>
+        Entrada à vista: não confirmada — a coluna impressa ("comissão total") registra R$ ${row.ent}; confirmar com a loteadora se corresponde à entrada do comprador.<br>
+        Parcelas mensais por prazo:
+        <table style="margin-top:4px"><tr><th>Prazo</th><th>Parcela</th></tr>${linhaAv}</table>
+      </div>
+      <span style="font-size:12px;color:#555">Títulos dos planos e cabeçalhos conforme o documento original da loteadora; confirmar condições antes de propor.</span><br>
+      <button id="detpdf" style="margin-top:8px;width:100%;padding:12px;font:700 15px system-ui;background:#0a6b3d;color:#fff;border:0;border-radius:8px">Baixar PDF deste lote (fluxo de pagamento)</button>
+      <button id="detqro" style="margin-top:6px;width:100%;padding:12px;font:700 15px system-ui;background:#1d4ed8;color:#fff;border:0;border-radius:8px">Quero este lote — iniciar proposta</button>`;
+    det.style.display='block';
+    detDoc = {nome, quadra, lote, row, p13, pav};
+    document.getElementById('detpdf').onclick = baixaPDF;
+    document.getElementById('detqro').onclick = abreFormProposta;
+  }
+  function baixaPDF(){
+    if (!detDoc) return;
+    const {nome, quadra, lote, row, p13, pav} = detDoc;
+    const { jsPDF } = window.jspdf;
+    const d = new jsPDF();
+    let y = 18;
+    d.setFontSize(15); d.text('Reserva do Parque — fluxo de pagamento do lote (PRÉVIA)', 14, y); y += 9;
+    d.setFontSize(12); d.text(`${nome} — Quadra ${quadra}, Lote ${lote} — Área ${row.area} m²`, 14, y); y += 8;
+    d.setFontSize(9); d.text('Valores exatos da tabela oficial outubro/2026 (vigência 01/10/2026). Estoque e condições não confirmados.', 14, y); y += 10;
+    d.setFontSize(12); d.text(`Valor à vista: R$ ${row.cash}`, 14, y); y += 9;
+    d.setFontSize(11); d.text('Plano 1 — Entrada 1 + 3 (1ª parcela em 120 dias)', 14, y); y += 6;
+    d.setFontSize(10); d.text(`Valor na proposta: R$ ${row.prop} — Ato: R$ ${row.ato} + 3x de R$ ${row.com3}`, 14, y); y += 6;
+    if (row.ent13) { d.text(`Entrada: R$ ${row.ent13}`, 14, y); y += 6; } else { d.text('Entrada: não informada nesta linha da tabela', 14, y); y += 6; }
+    row.par.forEach((v,i)=>{ d.text(`Prazo ${p13[i]}x — parcela R$ ${v}`, 18, y); y += 5.5; });
+    y += 4;
+    d.setFontSize(11); d.text('Plano 2 — Entrada à vista (1ª parcela em 30 dias)', 14, y); y += 6;
+    d.setFontSize(10); d.text(`Valor na proposta: R$ ${row.avprop}`, 14, y); y += 6;
+    d.text(`Entrada à vista: não confirmada — coluna impressa ("comissão total") registra R$ ${row.ent};`, 14, y); y += 5.5;
+    d.text('confirmar com a loteadora se corresponde à entrada do comprador.', 14, y); y += 6;
+    row.av.forEach((v,i)=>{ d.text(`Prazo ${pav[i]}x — parcela R$ ${v}`, 18, y); y += 5.5; });
+    y += 5;
+    d.setFontSize(9); d.text('Títulos dos planos e cabeçalhos conforme o documento original da loteadora.', 14, y);
+    d.save(`lote-q${quadra}-l${lote}-fluxo-pagamento.pdf`);
+  }
+  function abreFormProposta(){
+    if (!detDoc) return;
+    const detb = document.getElementById('detb');
+    const {nome, quadra, lote, row} = detDoc;
+    detb.innerHTML = `
+      <b>Proposta — ${nome} · Q${quadra} L${lote}</b>
+      <p style="font-size:12px;color:#555">Preencha seus dados. Eles ficam no seu aparelho e na conversa direta com a equipe do Junio — não passam por terceiros nem por chats automáticos.</p>
+      <div style="display:grid;gap:6px">
+        <input id="f_nome" placeholder="Nome completo" style="padding:10px;border:1px solid #bbb;border-radius:6px">
+        <input id="f_cpf" placeholder="CPF" inputmode="numeric" style="padding:10px;border:1px solid #bbb;border-radius:6px">
+        <input id="f_email" placeholder="E-mail" inputmode="email" style="padding:10px;border:1px solid #bbb;border-radius:6px">
+        <input id="f_zap" placeholder="WhatsApp (DDD + número)" inputmode="tel" style="padding:10px;border:1px solid #bbb;border-radius:6px">
+      </div>
+      <label style="display:flex;gap:8px;margin:10px 0;font-size:13px;align-items:flex-start">
+        <input id="f_lgpd" type="checkbox" style="margin-top:3px">
+        <span>Autorizo o uso dos meus dados apenas para montar e revisar esta proposta (LGPD). Sei que é um RASCUNHO sujeito à revisão do Junio e que valores vêm da tabela oficial outubro/2026.</span>
+      </label>
+      <button id="f_gerar" style="width:100%;padding:12px;font:700 15px system-ui;background:#0a6b3d;color:#fff;border:0;border-radius:8px">Gerar proposta rascunho (PDF)</button>
+      <div id="f_out" style="margin-top:8px"></div>`;
+    document.getElementById('f_gerar').onclick = geraPropostaRascunho;
+  }
+  function geraPropostaRascunho(){
+    const {nome, quadra, lote, row, p13, pav} = detDoc;
+    const v = id => document.getElementById(id).value.trim();
+    const out = document.getElementById('f_out');
+    if (!document.getElementById('f_lgpd').checked){ out.innerHTML = '<b style="color:#b00">Marque a autorização LGPD para continuar.</b>'; return; }
+    if (!v('f_nome') || !v('f_cpf') || !v('f_zap')){ out.innerHTML = '<b style="color:#b00">Preencha nome, CPF e WhatsApp.</b>'; return; }
+    const { jsPDF } = window.jspdf;
+    const d = new jsPDF();
+    let y = 18;
+    d.setFontSize(15); d.text('PROPOSTA RASCUNHO — sujeita à revisão', 14, y); y += 8;
+    d.setFontSize(10); d.text('Reserva do Parque — documento gerado pelo interessado, sem validade comercial antes da revisão.', 14, y); y += 9;
+    d.setFontSize(12); d.text(`${nome} — Quadra ${quadra}, Lote ${lote} — Área ${row.area} m²`, 14, y); y += 8;
+    d.setFontSize(10);
+    d.text(`Interessado: ${v('f_nome')} — CPF: ${v('f_cpf')}`, 14, y); y += 6;
+    d.text(`WhatsApp: ${v('f_zap')}${v('f_email') ? ' — E-mail: '+v('f_email') : ''}`, 14, y); y += 9;
+    d.setFontSize(11); d.text('Valores exatos da tabela oficial outubro/2026 (vigência 01/10/2026):', 14, y); y += 6;
+    d.setFontSize(10);
+    d.text(`Valor à vista: R$ ${row.cash}`, 14, y); y += 6;
+    d.text(`Plano 1 (Entrada 1+3, 1ª parcela em 120 dias): proposta R$ ${row.prop} — ato R$ ${row.ato} + 3x de R$ ${row.com3}`, 14, y); y += 6;
+    row.par.forEach((vv,i)=>{ d.text(`   ${p13[i]}x de R$ ${vv}`, 14, y); y += 5; });
+    d.text(`Plano 2 (Entrada à vista, 1ª parcela em 30 dias): proposta R$ ${row.avprop}`, 14, y); y += 6;
+    row.av.forEach((vv,i)=>{ d.text(`   ${pav[i]}x de R$ ${vv}`, 14, y); y += 5; });
+    y += 4;
+    d.setFontSize(9);
+    d.text('Entrada do plano 1: não informada nesta linha da tabela. Coluna do plano 2 ("comissão total"): confirmar com a loteadora.', 14, y); y += 5;
+    d.text('Estoque e condições não confirmados. Assinatura: a combinar (assinatura eletrônica gov.br prevista).', 14, y);
+    d.save(`proposta-rascunho-q${quadra}-l${lote}.pdf`);
+    out.innerHTML = `<b>PDF gerado.</b> Agora envie esse PDF direto para a equipe do Junio:
+      <a href="https://wa.me/5562981428585" target="_blank" rel="noopener" style="display:block;margin-top:6px;padding:12px;background:#25d366;color:#fff;text-align:center;border-radius:8px;font-weight:700;text-decoration:none">Abrir WhatsApp da equipe</a>
+      <span style="font-size:12px;color:#555">Seus dados vão só nessa conversa. O Junio revisa o rascunho antes de qualquer passo oficial.</span>`;
+  }
+  document.getElementById('detc').onclick = ()=>{document.getElementById('det').style.display='none'};
+  faseSel.onchange = fillQuadras;
+  quadraSel.onchange = fillLotes;
+  fillQuadras();
+  ajustaZoom();
+});
+// norte da prancha: seta fixa no canto superior direito do mapa
+const Norte = L.Control.extend({onAdd: function(){
+  const d = L.DomUtil.create('div');
+  d.innerHTML = '<div style="background:rgba(255,255,255,.9);border-radius:50%;width:46px;height:46px;text-align:center;font:700 13px/1.1 system-ui;padding-top:4px;box-shadow:0 1px 5px rgba(0,0,0,.3)">▲<br>N</div>';
+  return d;}});
+new Norte({position:'topright'}).addTo(map);
+</script>
+<div id="det" style="display:none;position:fixed;left:0;right:0;bottom:0;max-height:62%;overflow:auto;background:#fff;border-top:3px solid #0a6b3d;padding:12px 14px;z-index:1000;font:14px system-ui;box-shadow:0 -4px 18px rgba(0,0,0,.25)">
+<button id="detc" style="float:right;border:0;background:#eee;border-radius:6px;padding:4px 10px;font-weight:700">fechar ✕</button>
+<div id="detb"></div></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</body>
+</html>
