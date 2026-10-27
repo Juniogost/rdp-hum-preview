@@ -36,6 +36,8 @@
   .chip{display:inline-block;font-size:10.5px;font-weight:700;padding:2px 7px;border-radius:9px;white-space:nowrap}
   .chip.livre{background:#dcfce7;color:#166534}
   .chip.embreve{background:#f3f4f6;color:#6b7280}
+  .chip.reservado{background:#ffedd5;color:#9a3412}
+  .chip.vendido{background:#fee2e2;color:#b91c1c}
   td .val{display:block;font-size:11px;color:#374151;white-space:nowrap}
   #leg{position:absolute;top:auto;left:56px;z-index:1000;display:flex;gap:6px;flex-wrap:wrap;bottom:auto}
   #leg .chip{box-shadow:0 1px 4px rgba(0,0,0,.2);font-size:11px;padding:3px 9px}
@@ -64,9 +66,8 @@
   <div id="lotes"></div>
 </div>
 <div id="nota">
-  <b>Aviso:</b> versão ilustrada da prancha oficial de implantação (nada acrescentado). Situação e valores: tabelas oficiais outubro/2026 (vigência 01/10/2026) — <b>confirme disponibilidade e condições pelo WhatsApp</b>. Lote "Em breve": quadra ainda não liberada para venda pela prefeitura — sem preço enquanto isso.
-  Não mostra disponibilidade nem preços — para isso, fale com a equipe pelo WhatsApp
-  <a style="color:#86efac" href="https://wa.me/5562981428585">62 98142-8585</a>.
+  <b>Aviso:</b> versão ilustrada da prancha oficial de implantação (nada acrescentado). Situação dos lotes (bolinhas): conforme o mapa da incorporadora em 27/10/2026 — reservas valem por até 24h. Valores: tabelas oficiais outubro/2026 (vigência 01/10/2026). <b>Confirme disponibilidade e condições pelo WhatsApp</b>
+  <a style="color:#86efac" href="https://wa.me/5562981428585">62 98142-8585</a>. Quadras ainda não liberadas aparecem sem bolinha; lote "Em breve" fica sem preço enquanto isso.
   Norte conforme a prancha; análise de insolação por lote é estimativa visual, pendente de georreferenciamento.
   Uso do solo e do subsolo: pendentes de fonte oficial.
 </div>
@@ -125,34 +126,57 @@ Promise.all([fetch('mapa/lotes.json').then(r=>r.json()), fetch('mapa/plano.json'
     const comTab = qs.filter(q => Object.keys(rows0).some(k => k.startsWith(q + '-')));
     if (comTab.length) quadraSel.value = comTab.map(q=>[q, Object.keys(rows0).filter(k=>k.startsWith(q+'-')).length]).sort((a,b)=>b[1]-a[1] || a[0]-b[0])[0][0];
     fillLotes();
+    buildPins();
   }
-  const pinsLayer = L.layerGroup().addTo(map);
+  const pinsLayer = L.layerGroup().addTo(map); // numeros (zoom alto)
+  const dotsLayer = L.layerGroup().addTo(map); // bolinhas (zoom baixo)
   let quadraHL = null;
-  function drawPins(q){
-    pinsLayer.clearLayers(); if (quadraHL){ map.removeLayer(quadraHL); quadraHL=null; }
+  function pinInfo(l){
+    const vend = l.disp==='vendido' || l.status==='vendido';
+    const resv = l.disp==='reservado' || l.status==='reservado';
+    const livrTab = l.status==='tabela_out2026' && !vend && !resv;
+    const livr = l.disp==='livre' || livrTab;
+    if (vend) return {cor:'#dc2626', clica:false, tipo:'v'};
+    if (resv) return {cor:'#ea580c', clica:false, tipo:'r'};
+    if (livr) return {cor:'#16a34a', clica:livrTab, tipo:'l'};
+    return null;
+  }
+  function buildPins(){
+    pinsLayer.clearLayers(); dotsLayer.clearLayers();
+    const d = data[faseSel.value], pk = pkey(d.fase);
+    const pq = pk && pins[pk] ? pins[pk] : {};
+    let nL=0,nR=0,nV=0;
+    for (const q of Object.keys(d.quadras)){
+      const qp = pq[q]; if (!qp) continue;
+      const lotesQ = d.quadras[q] || {};
+      for (const id of Object.keys(qp)){
+        const pi = pinInfo(lotesQ[id] || {}); if (!pi) continue;
+        if (pi.tipo==='l') nL++; else if (pi.tipo==='r') nR++; else nV++;
+        const pos = qp[id];
+        const dot = L.circleMarker(pos, {radius:5, color:'#fff', weight:1.2, fillColor:pi.cor, fillOpacity:0.95});
+        if (pi.clica) dot.on('click', ()=>mostraFluxo(faseSel.value, q, id));
+        dot.addTo(dotsLayer);
+        const ic = L.divIcon({className:'', html:`<div style="background:${pi.cor};color:#fff;border:1.5px solid #fff;border-radius:9px;min-width:17px;height:17px;font:700 10.5px system-ui;text-align:center;line-height:17px;padding:0 2px;box-shadow:0 1px 2px rgba(0,0,0,.35)">${id}</div>`, iconSize:null});
+        const m = L.marker(pos, {icon:ic});
+        if (pi.clica) m.on('click', ()=>mostraFluxo(faseSel.value, q, id));
+        m.addTo(pinsLayer);
+      }
+    }
+    leg.innerHTML = `<span class="chip livre">Disponível ${nL}</span><span class="chip reservado">Reservado ${nR}</span><span class="chip vendido">Vendido ${nV}</span>`;
+    aplicaZoomPins();
+  }
+  function aplicaZoomPins(){
+    const nums = map.getZoom() >= 3.5;
+    if (nums){ if (map.hasLayer(dotsLayer)) map.removeLayer(dotsLayer); if (!map.hasLayer(pinsLayer)) pinsLayer.addTo(map); }
+    else { if (map.hasLayer(pinsLayer)) map.removeLayer(pinsLayer); if (!map.hasLayer(dotsLayer)) dotsLayer.addTo(map); }
+  }
+  map.on('zoomend', aplicaZoomPins);
+  function focusQuadra(q){
+    if (quadraHL){ map.removeLayer(quadraHL); quadraHL=null; }
     const d = data[faseSel.value], pk = pkey(d.fase);
     const qp = pk && pins[pk] ? pins[pk][q] : null;
     if (!qp) return null;
-    const lotesQ = d.quadras[q] || {};
-    const pts = [];
-    for (const id of Object.keys(qp)){
-      const l = lotesQ[id] || {};
-      let cor = '#9ca3af', raio = 5, clica = false;
-      const vend = l.disp==='vendido' || l.status==='vendido';
-      const resv = l.disp==='reservado' || l.status==='reservado';
-      const cons = l.status==='divergente_app_vendido_consta_tabela';
-      if (vend){ cor='#dc2626'; raio=8; } else if (resv){ cor='#ea580c'; raio=8; } else if (cons){ cor='#ca8a04'; raio=8; } else if (l.status==='tabela_out2026'){ cor='#16a34a'; raio=8; clica=true; }
-      let m;
-      if (raio>=8){
-        const ic = L.divIcon({className:'', html:`<div style="background:${cor};color:#fff;border:1.5px solid #fff;border-radius:9px;min-width:17px;height:17px;font:700 10.5px system-ui;text-align:center;line-height:17px;padding:0 2px;box-shadow:0 1px 2px rgba(0,0,0,.35)">${id}</div>`, iconSize:null});
-        m = L.marker(qp[id], {icon:ic});
-      } else {
-        m = L.circleMarker(qp[id], {radius:raio, color:'#fff', weight:1.5, fillColor:cor, fillOpacity:0.95});
-      }
-      if (clica) m.on('click', ()=>mostraFluxo(faseSel.value, q, id));
-      m.addTo(pinsLayer);
-      pts.push(qp[id]);
-    }
+    const pts = Object.keys(qp).map(id=>qp[id]);
     if (!pts.length) return null;
     const bb = L.latLngBounds(pts);
     quadraHL = L.rectangle(bb.pad(0.15), {color:'#1d4ed8', weight:2, dashArray:'6 4', fillColor:'#1d4ed8', fillOpacity:0.05}).addTo(map);
@@ -171,7 +195,9 @@ Promise.all([fetch('mapa/lotes.json').then(r=>r.json()), fetch('mapa/plano.json'
     for (const id of ids){
       const l = lotesQ[id];
       let st;
-      if (l.status === 'tabela_out2026'){
+      if (l.disp === 'livre' && l.status !== 'tabela_out2026'){
+        st = '<span class="chip livre">Livre</span><span class="val">valor sob consulta</span>';
+      } else if (l.status === 'tabela_out2026'){
         livres++;
         const vals = [l.valor_avista && brl(l.valor_avista)+' à vista', l.valor_proposta && brl(l.valor_proposta)+' proposta'].filter(Boolean).join('<br>');
         st = `<span class="chip livre">Livre</span><span class="val">${vals}</span>`;
@@ -186,11 +212,8 @@ Promise.all([fetch('mapa/lotes.json').then(r=>r.json()), fetch('mapa/plano.json'
     }
     lotes.innerHTML = html + '</table>';
     lotes.querySelectorAll('tr[data-lote]').forEach(tr => tr.onclick = ()=>mostraFluxo(faseSel.value, q, tr.dataset.lote));
-    const bb = drawPins(q);
+    const bb = focusQuadra(q);
     if (bb){ focouQ = true; map.fitBounds(bb.pad(0.4)); } else { focouQ = false; }
-    const total = ids.length;
-    const nV = ids.filter(id=>lotesQ[id].disp==='vendido').length, nR = ids.filter(id=>lotesQ[id].disp==='reservado').length;
-    leg.innerHTML = `<span class="chip livre">Livre ${livres-nV-nR>0?livres:0}</span><span class="chip reservado">Reservado ${nR}</span><span class="chip vendido">Vendido ${nV}</span><span class="chip embreve">Em breve ${total-livres}</span>`;
   }
   const pkey = f => f.toLowerCase().includes('aroeira') ? 'aroeiras' : f.toLowerCase().includes('jacarand') ? 'jacarandas' : f.toLowerCase().includes('angico') ? 'angicos' : null;
   let detDoc = null;
