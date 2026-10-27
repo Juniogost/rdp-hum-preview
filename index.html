@@ -79,17 +79,18 @@ const map = L.map('map', {crs: L.CRS.Simple, minZoom: 0, maxZoom: 5, zoomSnap: 0
 L.tileLayer('mapa/tiles/{z}/{x}_{y}.png?v=2', {tileSize: 256, noWrap: true, bounds: [[-maxLat,0],[0,maxLng]]}).addTo(map);
 const DRAW = [[-211.6,40.6],[-31.7,260.1]];
 map.setMaxBounds([[-240,15],[-5,285]]);
-function fitTudo(){ map.invalidateSize(); map.fitBounds(DRAW, {padding:[6,6]}); }
+let focouQ = false;
+function fitTudo(force){ if (focouQ && !force) return; map.invalidateSize(); map.fitBounds(DRAW, {padding:[6,6]}); }
 fitTudo();
 setTimeout(fitTudo, 400); setTimeout(fitTudo, 1200); setTimeout(fitTudo, 3000);
 const homeCtl = L.control({position:'topleft'});
-homeCtl.onAdd = ()=>{ const b = L.DomUtil.create('button',''); b.innerHTML = '&#9974;'; b.title = 'Ver o mapa inteiro'; b.style.cssText = 'width:34px;height:64px;font-size:17px;background:#fff;border:2px solid rgba(0,0,0,.2);border-radius:4px;cursor:pointer;display:block;margin-top:4px'; b.onclick = (e)=>{e.preventDefault(); fitTudo();}; return b; };
+homeCtl.onAdd = ()=>{ const b = L.DomUtil.create('button',''); b.innerHTML = '&#9974;'; b.title = 'Ver o mapa inteiro'; b.style.cssText = 'width:34px;height:64px;font-size:17px;background:#fff;border:2px solid rgba(0,0,0,.2);border-radius:4px;cursor:pointer;display:block;margin-top:4px'; b.onclick = (e)=>{e.preventDefault(); focouQ=false; fitTudo(true);}; return b; };
 homeCtl.addTo(map);
 function ajustaZoom(){const t=(document.getElementById('hud').offsetHeight+6)+'px';document.querySelectorAll('.leaflet-top .leaflet-control').forEach(z=>z.style.marginTop=t);}
 window.addEventListener('load',ajustaZoom);window.addEventListener('resize',ajustaZoom);setTimeout(ajustaZoom,300);setTimeout(ajustaZoom,1500);
 new ResizeObserver(ajustaZoom).observe(document.getElementById('hud'));
 // indicador de norte (norte da prancha = topo da imagem)
-Promise.all([fetch('mapa/lotes.json').then(r=>r.json()), fetch('mapa/plano.json').then(r=>r.json())]).then(([data, plano])=>{
+Promise.all([fetch('mapa/lotes.json').then(r=>r.json()), fetch('mapa/plano.json').then(r=>r.json()), fetch('mapa/pins.json').then(r=>r.json()).catch(()=>({}))]).then(([data, plano, pins])=>{
   const faseSel = document.getElementById('fase'), quadraSel = document.getElementById('quadra');
   const painel = document.getElementById('painel'), nota = document.getElementById('nota');
   const leg = document.getElementById('leg');
@@ -109,6 +110,32 @@ Promise.all([fetch('mapa/lotes.json').then(r=>r.json()), fetch('mapa/plano.json'
     const comTab = qs.filter(q => Object.keys(rows0).some(k => k.startsWith(q + '-')));
     if (comTab.length) quadraSel.value = comTab.map(q=>[q, Object.keys(rows0).filter(k=>k.startsWith(q+'-')).length]).sort((a,b)=>b[1]-a[1] || a[0]-b[0])[0][0];
     fillLotes();
+  }
+  const pinsLayer = L.layerGroup().addTo(map);
+  let quadraHL = null;
+  function drawPins(q){
+    pinsLayer.clearLayers(); if (quadraHL){ map.removeLayer(quadraHL); quadraHL=null; }
+    const d = data[faseSel.value], pk = pkey(d.fase);
+    const qp = pk && pins[pk] ? pins[pk][q] : null;
+    if (!qp) return null;
+    const lotesQ = d.quadras[q] || {};
+    const pts = [];
+    for (const id of Object.keys(qp)){
+      const l = lotesQ[id] || {};
+      let cor = '#9ca3af', raio = 5, clica = false;
+      const vend = l.disp==='vendido' || l.status==='vendido';
+      const resv = l.disp==='reservado' || l.status==='reservado';
+      const cons = l.status==='divergente_app_vendido_consta_tabela';
+      if (vend){ cor='#dc2626'; raio=8; } else if (resv){ cor='#ea580c'; raio=8; } else if (cons){ cor='#ca8a04'; raio=8; } else if (l.status==='tabela_out2026'){ cor='#16a34a'; raio=8; clica=true; }
+      const m = L.circleMarker(qp[id], {radius:raio, color:'#fff', weight:1.5, fillColor:cor, fillOpacity:0.95});
+      if (clica) m.on('click', ()=>mostraFluxo(faseSel.value, q, id));
+      m.addTo(pinsLayer);
+      pts.push(qp[id]);
+    }
+    if (!pts.length) return null;
+    const bb = L.latLngBounds(pts);
+    quadraHL = L.rectangle(bb.pad(0.15), {color:'#1d4ed8', weight:2, dashArray:'6 4', fillColor:'#1d4ed8', fillOpacity:0.05}).addTo(map);
+    return bb;
   }
   function fillLotes(){
     const d = data[faseSel.value], q = quadraSel.value, lotesQ = d.quadras[q] || {};
@@ -138,6 +165,8 @@ Promise.all([fetch('mapa/lotes.json').then(r=>r.json()), fetch('mapa/plano.json'
     }
     lotes.innerHTML = html + '</table>';
     lotes.querySelectorAll('tr[data-lote]').forEach(tr => tr.onclick = ()=>mostraFluxo(faseSel.value, q, tr.dataset.lote));
+    const bb = drawPins(q);
+    if (bb){ focouQ = true; map.fitBounds(bb.pad(0.4)); } else { focouQ = false; }
     const total = ids.length;
     const nV = ids.filter(id=>lotesQ[id].disp==='vendido').length, nR = ids.filter(id=>lotesQ[id].disp==='reservado').length;
     leg.innerHTML = `<span class="chip livre">Livre ${livres-nV-nR>0?livres:0}</span><span class="chip reservado">Reservado ${nR}</span><span class="chip vendido">Vendido ${nV}</span><span class="chip embreve">Em breve ${total-livres}</span>`;
