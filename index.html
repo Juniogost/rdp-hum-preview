@@ -105,7 +105,7 @@ function ajustaZoom(){const t=(document.getElementById('hud').offsetHeight+6)+'p
 window.addEventListener('load',ajustaZoom);window.addEventListener('resize',ajustaZoom);setTimeout(ajustaZoom,300);setTimeout(ajustaZoom,1500);
 new ResizeObserver(ajustaZoom).observe(document.getElementById('hud'));
 // indicador de norte (norte da prancha = topo da imagem)
-Promise.all([fetch('mapa/lotes.json?v=4').then(r=>r.json()), fetch('mapa/plano.json?v=4').then(r=>r.json()), fetch('mapa/pins.json?v=4').then(r=>r.json()).catch(()=>({}))]).then(([data, plano, pins])=>{
+Promise.all([fetch('mapa/lotes.json?v=5').then(r=>r.json()), fetch('mapa/plano.json?v=5').then(r=>r.json()), fetch('mapa/pins.json?v=5').then(r=>r.json()).catch(()=>({}))]).then(([data, plano, pins])=>{
   const faseSel = document.getElementById('fase'), quadraSel = document.getElementById('quadra');
   const painel = document.getElementById('painel'), nota = document.getElementById('nota');
   const leg = document.getElementById('leg');
