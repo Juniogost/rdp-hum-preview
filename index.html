@@ -257,8 +257,9 @@ Promise.all([fetch('mapa/lotes.json').then(r=>r.json()), fetch('mapa/plano.json'
     d.text('Entrada do plano 1: não informada nesta linha da tabela. Coluna do plano 2 ("comissão total"): confirmar com a loteadora.', 14, y); y += 5;
     d.text('Estoque e condições não confirmados. Assinatura: a combinar (assinatura eletrônica gov.br prevista).', 14, y);
     d.save(`proposta-rascunho-q${quadra}-l${lote}.pdf`);
-    out.innerHTML = `<b>PDF gerado.</b> Agora envie esse PDF direto para a equipe do Junio:
-      <a href="https://wa.me/5562981428585" target="_blank" rel="noopener" style="display:block;margin-top:6px;padding:12px;background:#25d366;color:#fff;text-align:center;border-radius:8px;font-weight:700;text-decoration:none">Abrir WhatsApp da equipe</a>
+    const resumo = `Olá! Segue minha PROPOSTA RASCUNHO: ${nome}, quadra ${quadra}, lote ${lote}, área ${row.area} m². Tabela out/2026: à vista R$ ${row.cash}; plano 1 proposta R$ ${row.prop} (ato R$ ${row.ato} + 3x R$ ${row.com3}); plano 2 proposta R$ ${row.avprop}. Interessado: ${v('f_nome')}, CPF ${v('f_cpf')}, WhatsApp ${v('f_zap')}${v('f_email') ? ', e-mail '+v('f_email') : ''}. Anexo o PDF do rascunho. Sei que é rascunho sujeito à revisão do Junio.`;
+    out.innerHTML = `<b>PDF gerado.</b> Agora envie o rascunho direto para a equipe do Junio (o resumo já vai preenchido; anexe o PDF baixado):
+      <a href="https://wa.me/5562981428585?text=${encodeURIComponent(resumo)}" target="_blank" rel="noopener" style="display:block;margin-top:6px;padding:12px;background:#25d366;color:#fff;text-align:center;border-radius:8px;font-weight:700;text-decoration:none">Abrir WhatsApp da equipe</a>
       <span style="font-size:12px;color:#555">Seus dados vão só nessa conversa. O Junio revisa o rascunho antes de qualquer passo oficial.</span>`;
   }
   document.getElementById('detc').onclick = ()=>{document.getElementById('det').style.display='none'};
