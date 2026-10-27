@@ -76,7 +76,7 @@ const W = 11134, H = 7875, ZMAX = 5, F = Math.pow(2, ZMAX);
 const maxLat = H / F, maxLng = W / F;
 const map = L.map('map', {crs: L.CRS.Simple, minZoom: 0, maxZoom: 5, zoomSnap: 0.25, zoomDelta: 0.5,
   maxBounds: [[-maxLat,0],[0,maxLng]], maxBoundsViscosity: 0.8, attributionControl: false, wheelPxPerZoomLevel: 90});
-L.tileLayer('mapa/tiles/{z}/{x}_{y}.png?v=2', {tileSize: 256, noWrap: true, bounds: [[-maxLat,0],[0,maxLng]]}).addTo(map);
+L.tileLayer('mapa/tiles/{z}/{x}_{y}.png?v=3', {tileSize: 256, noWrap: true, bounds: [[-maxLat,0],[0,maxLng]]}).addTo(map);
 const DRAW = [[-211.6,40.6],[-31.7,260.1]];
 map.setMaxBounds([[-240,15],[-5,285]]);
 let focouQ = false;
