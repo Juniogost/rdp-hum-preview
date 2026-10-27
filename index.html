@@ -77,8 +77,8 @@ const maxLat = H / F, maxLng = W / F;
 const map = L.map('map', {crs: L.CRS.Simple, minZoom: 0, maxZoom: 6, zoomSnap: 0.25, zoomDelta: 0.5,
   maxBounds: [[-maxLat,0],[0,maxLng]], maxBoundsViscosity: 0.8, attributionControl: false, wheelPxPerZoomLevel: 90});
 L.tileLayer('mapa/tiles/{z}/{x}_{y}.png', {tileSize: 256, noWrap: true, bounds: [[-maxLat,0],[0,maxLng]]}).addTo(map);
-map.fitBounds([[-maxLat*0.97,maxLng*0.01],[-maxLat*0.03,maxLng*0.99]], {padding:[6,6]});
-setTimeout(()=>map.fitBounds([[-maxLat*0.97,maxLng*0.01],[-maxLat*0.03,maxLng*0.99]], {padding:[6,6]}), 800);
+map.fitBounds([[-211.6,40.6],[-31.7,260.1]], {padding:[6,6]});
+setTimeout(()=>map.fitBounds([[-211.6,40.6],[-31.7,260.1]], {padding:[6,6]}), 800);
 function ajustaZoom(){const t=(document.getElementById('hud').offsetHeight+6)+'px';document.querySelectorAll('.leaflet-top .leaflet-control').forEach(z=>z.style.marginTop=t);}
 window.addEventListener('load',ajustaZoom);window.addEventListener('resize',ajustaZoom);setTimeout(ajustaZoom,300);setTimeout(ajustaZoom,1500);
 new ResizeObserver(ajustaZoom).observe(document.getElementById('hud'));
