@@ -343,11 +343,21 @@ Promise.all([fetch('mapa/lotes.json?v=6').then(r=>r.json()), fetch('mapa/plano.j
       <b>Proposta — ${nome} · Q${quadra} L${lote}</b>
       <p style="font-size:12px;color:#555">Opcional: fotografe seus documentos para preencher automático. A leitura acontece <b>só no seu aparelho</b> — a foto não é enviada a ninguém, nem guardada. Todos os campos continuam editáveis.</p>
       <div style="border:1px solid #cde;border-radius:8px;padding:8px;margin:6px 0">
-        <b style="font-size:13px">1. RG ou CNH (foto)</b><br>
-        <input id="f_doc" type="file" accept="image/*" style="margin:6px 0;font-size:13px">
+        <b style="font-size:13px">1. RG ou CNH</b><br>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:6px 0">
+          <button type="button" id="b_doc_cam" style="padding:10px;border:1px solid #14532d;border-radius:6px;background:#14532d;color:#fff;font-size:13px;font-weight:600;cursor:pointer">&#128247; Tirar foto</button>
+          <button type="button" id="b_doc_gal" style="padding:10px;border:1px solid #999;border-radius:6px;background:#fff;font-size:13px;cursor:pointer">&#128444; Escolher da galeria</button>
+        </div>
+        <input id="f_doc_cam" type="file" accept="image/*" capture="environment" style="display:none">
+        <input id="f_doc" type="file" accept="image/*" style="display:none">
         <div id="ocr1" style="font-size:12.5px;color:#333"></div>
-        <b style="font-size:13px">2. Comprovante de endereço (foto)</b><br>
-        <input id="f_comp" type="file" accept="image/*" style="margin:6px 0;font-size:13px">
+        <b style="font-size:13px">2. Comprovante de endereço</b><br>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:6px 0">
+          <button type="button" id="b_comp_cam" style="padding:10px;border:1px solid #14532d;border-radius:6px;background:#14532d;color:#fff;font-size:13px;font-weight:600;cursor:pointer">&#128247; Tirar foto</button>
+          <button type="button" id="b_comp_gal" style="padding:10px;border:1px solid #999;border-radius:6px;background:#fff;font-size:13px;cursor:pointer">&#128444; Escolher da galeria</button>
+        </div>
+        <input id="f_comp_cam" type="file" accept="image/*" capture="environment" style="display:none">
+        <input id="f_comp" type="file" accept="image/*" style="display:none">
         <div id="ocr2st" style="font-size:12.5px;color:#333"></div>
         <div id="ocr2c"></div>
       </div>
@@ -388,6 +398,12 @@ Promise.all([fetch('mapa/lotes.json?v=6').then(r=>r.json()), fetch('mapa/plano.j
     document.getElementById('f_plano').onchange = fillPrazos;
     prazoSel.onchange = ()=>{ detDoc.prazoIdx = +prazoSel.value; };
     document.getElementById('f_doc').onchange = ev=>leDocIdentidade(ev.target, document.getElementById('ocr1'));
+    document.getElementById('f_doc_cam').onchange = ev=>leDocIdentidade(ev.target, document.getElementById('ocr1'));
+    document.getElementById('b_doc_cam').onclick = ()=>document.getElementById('f_doc_cam').click();
+    document.getElementById('b_doc_gal').onclick = ()=>document.getElementById('f_doc').click();
+    document.getElementById('f_comp_cam').onchange = ev=>leComprovante(ev.target, document.getElementById('ocr2st'), document.getElementById('ocr2c'));
+    document.getElementById('b_comp_cam').onclick = ()=>document.getElementById('f_comp_cam').click();
+    document.getElementById('b_comp_gal').onclick = ()=>document.getElementById('f_comp').click();
     document.getElementById('f_comp').onchange = ev=>leComprovante(ev.target, document.getElementById('ocr2st'), document.getElementById('ocr2c'));
     document.getElementById('f_gerar').onclick = geraPropostaRascunho;
     ajustaMapaSheet();
