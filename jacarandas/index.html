@@ -226,7 +226,7 @@ Promise.all([fetch('mapa/lotes.json').then(r=>r.json()), fetch('mapa/plano.json'
       <button id="detqro" style="margin-top:6px;width:100%;padding:12px;font:700 15px system-ui;background:#1d4ed8;color:#fff;border:0;border-radius:8px">Quero este lote — iniciar proposta</button>
       <a id="detres" href="#" style="display:block;margin-top:6px;text-align:center;background:#c2410c;color:#fff;padding:12px;border-radius:8px;text-decoration:none;font:700 15px system-ui">Reservar por até 24h (WhatsApp)</a>`;
     det.style.display='block'; det.scrollTop=0;
-    detDoc = {nome, quadra, lote, row, p13, pav};
+    detDoc = {nome, quadra, lote, row, p13, pav, logradouro: inf.logradouro || '', areaFmt: (inf.area_m2 != null ? Number(inf.area_m2).toLocaleString('pt-BR',{minimumFractionDigits:2}) : String(row.area))};
     document.getElementById('detpdf').onclick = baixaPDF;
     document.getElementById('detqro').onclick = abreFormProposta;
     document.getElementById('detres').href = 'https://wa.me/5562981428585?text=' + encodeURIComponent(`Olá! Quero RESERVAR o lote ${lote}, quadra ${quadra} (${nome}), área ${row.area} m² — tabela out/2026 à vista R$ ${row.cash}. Entendo que a reserva vale por até 24h e só vale após confirmação da equipe. Meu nome e telefone:`);
@@ -360,7 +360,7 @@ Promise.all([fetch('mapa/lotes.json').then(r=>r.json()), fetch('mapa/plano.json'
     document.getElementById('f_gerar').onclick = geraPropostaRascunho;
   }
   function geraPropostaRascunho(){
-    const {nome, quadra, lote, row, p13, pav, plano, prazoIdx} = detDoc;
+    const {nome, quadra, lote, row, p13, pav, plano, prazoIdx, logradouro, areaFmt} = detDoc;
     const v = id => document.getElementById(id).value.trim();
     const out = document.getElementById('f_out');
     if (!document.getElementById('f_lgpd').checked){ out.innerHTML = '<b style="color:#b00">Marque a autorização LGPD para continuar.</b>'; return; }
@@ -393,8 +393,9 @@ Promise.all([fetch('mapa/lotes.json').then(r=>r.json()), fetch('mapa/plano.json'
     const dataDoc = String(hoje.getDate()).padStart(2,'0')+'/'+String(hoje.getMonth()+1).padStart(2,'0')+'/'+hoje.getFullYear();
     const d = {
       p1, vendedor: 'A confirmar',
-      empreendimento: 'Loteamento JACARANDÁ - Reserva do Parque, Senador Canedo/GO',
-      quadra: 'Q'+quadra, lote: 'L'+lote, area: row.area,
+      empreendimento: 'Loteamento JACARANDÁ - Senador Canedo/GO',
+      rua: logradouro || undefined,
+      quadra: 'Q'+quadra, lote: 'L'+lote, area: areaFmt,
       valorTotal, condicoes,
       obs: 'RASCUNHO sem validade comercial, gerado pelo interessado no mapa digital e SUJEITO À REVISÃO do Junio. Valores da tabela oficial outubro/2026 (vigência 01/10/2026). '+obsPlano+' Demais prazos e condições conforme a tabela. Estoque e disponibilidade a confirmar.',
       cidade: 'Senador Canedo/GO', dataDoc,
@@ -517,7 +518,7 @@ new Norte({position:'topright'}).addTo(map);
       const c = lines.map((l) => l.replace(/[^A-ZÀ-Ú\s]/g, " ").replace(/\s+/g, " ").trim()).filter((l) => /^[A-ZÀ-Ú]/.test(l) && l.split(" ").length >= 2 && l.split(" ").every((w) => w.length >= 2) && l.length >= 10 && l.length <= 48 && !BAD.test(l) && l === l.toUpperCase());
       if (c.length) sug.nome = c.sort((a, b) => b.length - a.length)[0];
     }
-    const ro = /(\d{5,9}[-.]?[\dXx]?)\s*[\/\-]?\s*(SSP|SESP|SJS|PC|DGPC|IFP|DETRAN|SDS|SEJUSP|PM|CBM)\W{0,3}([A-Z]{2})\b/i.exec(T);
+    const ro = /([\dXx][\d.\-]{3,13}[\dXx])\s*[\/\-]?\s*(SSP|SESP|SJS|PC|DGPC|IFP|DETRAN|SDS|SEJUSP|PM|CBM)\W{0,3}([A-Z]{2})\b/i.exec(T);
     if (ro) {
       out.rg = ro[1].replace(/[^\dXx]/g, "");
       out.org = ro[2].toUpperCase() + " " + ro[3].toUpperCase();
@@ -526,9 +527,15 @@ new Norte({position:'topright'}).addTo(map);
       if (rg) sug.rg = rg[1].replace(/\s+/g, "").trim();
     }
     if (out.cpf && !out.rg && /REGISTRO\s*GERAL/i.test(T) && /CPF/i.test(T) && !/HABILITA|CNH|PERMISS/i.test(T)) {
-      out.rg = out.cpf;
-      out.cin = 1;
-      delete sug.rg;
+      const sd = (sug.rg || "").replace(/\D/g, ""), cd = out.cpf.replace(/\D/g, "");
+      if (sd && sd !== cd) {
+        out.rg = sug.rg;
+        delete sug.rg;
+      } else {
+        out.rg = out.cpf;
+        out.cin = 1;
+        delete sug.rg;
+      }
     }
     const cep = /\b(\d{5})-?(\d{3})\b/.exec(T);
     if (cep && !(out.cpf || "").includes(cep[0])) out.cep = cep[1] + "-" + cep[2];
