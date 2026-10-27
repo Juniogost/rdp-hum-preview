@@ -55,7 +55,7 @@ function go(i){idx=Math.max(0,Math.min(steps.length-1,i));const s=steps[idx];
  $('tod').style.display=s.tipo==='pano'?'flex':'none';
  if(s.tipo==='pano'){$('foto').style.display='none';$('pano').style.display='block';
   if(viewer){viewer.destroy();viewer=null}
-  viewer=pannellum.viewer('pano',{type:'equirectangular',panorama:s.src,autoLoad:true,compass:false,showZoomCtrl:true,showFullscreenCtrl:false,hfov:100});
+  viewer=pannellum.viewer('pano',{type:'equirectangular',panorama:s.src,autoLoad:true,compass:false,showZoomCtrl:false,showFullscreenCtrl:false,hfov:100});
   $('sec').textContent='Vista aérea 360°';$('leg').textContent='Vista aérea';
   $('nota').textContent='Fotos de drone da área externa do empreendimento.';
   if(idx===0){$('dica').style.opacity=1;setTimeout(()=>$('dica').style.opacity=0,2600)}
