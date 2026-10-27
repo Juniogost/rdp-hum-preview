@@ -76,5 +76,5 @@ addEventListener('touchend',e=>{if(tx===null)return;const dx=e.changedTouches[0]
 $('foto').onclick=()=>{const s=steps[idx];if(s.tipo==='foto'&&s.planta){$('zimg').src=s.src;$('zoom').style.display='block';$('zoomfechar').style.display='block'}};
 $('zoomfechar').onclick=()=>{$('zoom').style.display='none';$('zoomfechar').style.display='none'};
 $('zoom').onclick=e=>{if(e.target.id==='zoom'){$('zoom').style.display='none';$('zoomfechar').style.display='none'}};
-go(0);
+const h=parseInt((location.hash||'').replace('#',''),10);go(isNaN(h)?0:h);
 </script></body></html>
