@@ -128,6 +128,7 @@ Promise.all([fetch('mapa/lotes.json?v=3').then(r=>r.json()), fetch('mapa/plano.j
     fillLotes();
     buildPins();
   }
+  let focoUsuario = false;
   const pinsLayer = L.layerGroup().addTo(map); // numeros (zoom alto)
   const dotsLayer = L.layerGroup().addTo(map); // bolinhas (zoom baixo)
   let quadraHL = null;
@@ -212,8 +213,10 @@ Promise.all([fetch('mapa/lotes.json?v=3').then(r=>r.json()), fetch('mapa/plano.j
     }
     lotes.innerHTML = html + '</table>';
     lotes.querySelectorAll('tr[data-lote]').forEach(tr => tr.onclick = ()=>mostraFluxo(faseSel.value, q, tr.dataset.lote));
-    const bb = focusQuadra(q);
-    if (bb){ focouQ = true; map.fitBounds(bb.pad(0.4)); } else { focouQ = false; }
+    if (focoUsuario){
+      const bb = focusQuadra(q);
+      if (bb){ focouQ = true; map.fitBounds(bb.pad(0.4)); } else { focouQ = false; }
+    } else { focouQ = false; fitTudo(true); }
   }
   const pkey = f => f.toLowerCase().includes('aroeira') ? 'aroeiras' : f.toLowerCase().includes('jacarand') ? 'jacarandas' : f.toLowerCase().includes('angico') ? 'angicos' : null;
   let detDoc = null;
@@ -337,7 +340,7 @@ Promise.all([fetch('mapa/lotes.json?v=3').then(r=>r.json()), fetch('mapa/plano.j
   }
   document.getElementById('detc').onclick = ()=>{document.getElementById('det').style.display='none'};
   faseSel.onchange = fillQuadras;
-  quadraSel.onchange = fillLotes;
+  quadraSel.onchange = ()=>{ focoUsuario = true; fillLotes(); };
   fillQuadras();
   ajustaZoom();
 });
