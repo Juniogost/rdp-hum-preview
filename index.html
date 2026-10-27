@@ -77,8 +77,14 @@ const maxLat = H / F, maxLng = W / F;
 const map = L.map('map', {crs: L.CRS.Simple, minZoom: 0, maxZoom: 5, zoomSnap: 0.25, zoomDelta: 0.5,
   maxBounds: [[-maxLat,0],[0,maxLng]], maxBoundsViscosity: 0.8, attributionControl: false, wheelPxPerZoomLevel: 90});
 L.tileLayer('mapa/tiles/{z}/{x}_{y}.png?v=2', {tileSize: 256, noWrap: true, bounds: [[-maxLat,0],[0,maxLng]]}).addTo(map);
-map.fitBounds([[-211.6,40.6],[-31.7,260.1]], {padding:[6,6]});
-setTimeout(()=>map.fitBounds([[-211.6,40.6],[-31.7,260.1]], {padding:[6,6]}), 800);
+const DRAW = [[-211.6,40.6],[-31.7,260.1]];
+map.setMaxBounds([[-240,15],[-5,285]]);
+function fitTudo(){ map.invalidateSize(); map.fitBounds(DRAW, {padding:[6,6]}); }
+fitTudo();
+setTimeout(fitTudo, 400); setTimeout(fitTudo, 1200); setTimeout(fitTudo, 3000);
+const homeCtl = L.control({position:'topleft'});
+homeCtl.onAdd = ()=>{ const b = L.DomUtil.create('button',''); b.innerHTML = '&#9974;'; b.title = 'Ver o mapa inteiro'; b.style.cssText = 'width:34px;height:64px;font-size:17px;background:#fff;border:2px solid rgba(0,0,0,.2);border-radius:4px;cursor:pointer;display:block;margin-top:4px'; b.onclick = (e)=>{e.preventDefault(); fitTudo();}; return b; };
+homeCtl.addTo(map);
 function ajustaZoom(){const t=(document.getElementById('hud').offsetHeight+6)+'px';document.querySelectorAll('.leaflet-top .leaflet-control').forEach(z=>z.style.marginTop=t);}
 window.addEventListener('load',ajustaZoom);window.addEventListener('resize',ajustaZoom);setTimeout(ajustaZoom,300);setTimeout(ajustaZoom,1500);
 new ResizeObserver(ajustaZoom).observe(document.getElementById('hud'));
@@ -98,6 +104,10 @@ Promise.all([fetch('mapa/lotes.json').then(r=>r.json()), fetch('mapa/plano.json'
     quadraSel.innerHTML = '';
     const qs = Object.keys(data[faseSel.value].quadras);
     for (const q of qs) quadraSel.add(new Option('Quadra ' + q, q));
+    const pk0 = pkey(data[faseSel.value].fase);
+    const rows0 = pk0 && plano[pk0] ? plano[pk0].rows : {};
+    const comTab = qs.filter(q => Object.keys(rows0).some(k => k.startsWith(q + '-'))).sort((a,b)=>a-b);
+    if (comTab.length) quadraSel.value = comTab[0];
     fillLotes();
   }
   function fillLotes(){
@@ -106,7 +116,10 @@ Promise.all([fetch('mapa/lotes.json').then(r=>r.json()), fetch('mapa/plano.json'
     ptit.textContent = d.fase.split('— ')[1] + ' — Quadra ' + q + ' (' + ids.length + ' lotes listados)';
     const brl = v => v ? 'R$ ' + Number(v).toLocaleString('pt-BR',{maximumFractionDigits:0}) : '';
     let livres = 0;
-    let html = '<table><tr><th>Lote</th><th>Área (m²)</th><th>Logradouro</th><th>Situação</th></tr>';
+    const pkq = pkey(d.fase), temTab = pkq && plano[pkq] && Object.keys(plano[pkq].rows||{}).some(k=>k.startsWith(q+'-'));
+    let html = '';
+    if (!temTab) html += `<div style="padding:8px 10px;background:#fff7ed;border:1px solid #fdba74;border-radius:8px;margin-bottom:6px;font-size:13px">Quadra ainda sem tabela oficial liberada — valores e disponibilidade só pela equipe.<br><a href="https://wa.me/5562981428585?text=${encodeURIComponent('Olá! Quero consultar a quadra '+q+' ('+d.fase+').')}" style="display:block;margin-top:6px;text-align:center;background:#0a6b3d;color:#fff;padding:10px;border-radius:8px;text-decoration:none;font-weight:700">Consultar pelo WhatsApp</a></div>`;
+    html += '<table><tr><th>Lote</th><th>Área (m²)</th><th>Logradouro</th><th>Situação</th></tr>';
     for (const id of ids){
       const l = lotesQ[id];
       let st;
@@ -117,13 +130,17 @@ Promise.all([fetch('mapa/lotes.json').then(r=>r.json()), fetch('mapa/plano.json'
       } else {
         st = '<span class="chip embreve">Em breve</span>';
       }
-      const clic = l.status === 'tabela_out2026' ? ` data-lote="${id}" style="cursor:pointer"` : '';
+      const vend = l.disp === 'vendido', resv = l.disp === 'reservado';
+      const clic = (!vend && !resv && l.status === 'tabela_out2026') ? ` data-lote="${id}" style="cursor:pointer"` : '';
+      if (vend) st = '<span class="chip vendido">Vendido</span>';
+      else if (resv) st = '<span class="chip reservado">Reservado</span>';
       html += `<tr${clic}><td>${id}</td><td>${l.area_m2.toLocaleString('pt-BR',{minimumFractionDigits:2})}</td><td>${l.logradouro}</td><td>${st}</td></tr>`;
     }
     lotes.innerHTML = html + '</table>';
     lotes.querySelectorAll('tr[data-lote]').forEach(tr => tr.onclick = ()=>mostraFluxo(faseSel.value, q, tr.dataset.lote));
     const total = ids.length;
-    leg.innerHTML = `<span class="chip livre">Livre ${livres}</span><span class="chip reservado">Reservado 0</span><span class="chip vendido">Vendido 0</span><span class="chip embreve">Em breve ${total-livres}</span>`;
+    const nV = ids.filter(id=>lotesQ[id].disp==='vendido').length, nR = ids.filter(id=>lotesQ[id].disp==='reservado').length;
+    leg.innerHTML = `<span class="chip livre">Livre ${livres-nV-nR>0?livres:0}</span><span class="chip reservado">Reservado ${nR}</span><span class="chip vendido">Vendido ${nV}</span><span class="chip embreve">Em breve ${total-livres}</span>`;
   }
   const pkey = f => f.toLowerCase().includes('aroeira') ? 'aroeiras' : f.toLowerCase().includes('jacarand') ? 'jacarandas' : f.toLowerCase().includes('angico') ? 'angicos' : null;
   let detDoc = null;
@@ -134,7 +151,7 @@ Promise.all([fetch('mapa/lotes.json').then(r=>r.json()), fetch('mapa/plano.json'
     const meta = pk && plano[pk] ? plano[pk].meta : null;
     let nome = data[fase].fase.split('— ')[1] || data[fase].fase;
     if (!row){
-      detb.innerHTML = `<b>${nome} — Quadra ${quadra}, Lote ${lote}</b><p>Fluxo de pagamento detalhado não consta para este lote na tabela de outubro/2026 extraída. Confira pelo WhatsApp.</p>`;
+      detb.innerHTML = `<b>${nome} — Quadra ${quadra}, Lote ${lote}</b><p>Fluxo de pagamento detalhado não consta para este lote na tabela de outubro/2026 extraída. Confira pelo WhatsApp.</p><a href="https://wa.me/5562981428585?text=${encodeURIComponent('Olá! Quero consultar o lote '+lote+', quadra '+quadra+' ('+nome+').')}" style="display:block;margin-top:8px;text-align:center;background:#0a6b3d;color:#fff;padding:12px;border-radius:8px;text-decoration:none;font-weight:700">Consultar pelo WhatsApp</a>`;
       det.style.display='block'; detDoc=null; return;
     }
     const p13 = meta.prazos13, pav = meta.prazosAv;
@@ -160,11 +177,13 @@ Promise.all([fetch('mapa/lotes.json').then(r=>r.json()), fetch('mapa/plano.json'
       </div>
       <span style="font-size:12px;color:#555">Títulos dos planos e cabeçalhos conforme o documento original da loteadora; confirmar condições antes de propor.</span><br>
       <button id="detpdf" style="margin-top:8px;width:100%;padding:12px;font:700 15px system-ui;background:#0a6b3d;color:#fff;border:0;border-radius:8px">Baixar PDF deste lote (fluxo de pagamento)</button>
-      <button id="detqro" style="margin-top:6px;width:100%;padding:12px;font:700 15px system-ui;background:#1d4ed8;color:#fff;border:0;border-radius:8px">Quero este lote — iniciar proposta</button>`;
+      <button id="detqro" style="margin-top:6px;width:100%;padding:12px;font:700 15px system-ui;background:#1d4ed8;color:#fff;border:0;border-radius:8px">Quero este lote — iniciar proposta</button>
+      <a id="detres" href="#" style="display:block;margin-top:6px;text-align:center;background:#c2410c;color:#fff;padding:12px;border-radius:8px;text-decoration:none;font:700 15px system-ui">Reservar por até 24h (WhatsApp)</a>`;
     det.style.display='block';
     detDoc = {nome, quadra, lote, row, p13, pav};
     document.getElementById('detpdf').onclick = baixaPDF;
     document.getElementById('detqro').onclick = abreFormProposta;
+    document.getElementById('detres').href = 'https://wa.me/5562981428585?text=' + encodeURIComponent(`Olá! Quero RESERVAR o lote ${lote}, quadra ${quadra} (${nome}), área ${row.area} m² — tabela out/2026 à vista R$ ${row.cash}. Entendo que a reserva vale por até 24h e só vale após confirmação da equipe. Meu nome e telefone:`);
   }
   function baixaPDF(){
     if (!detDoc) return;
