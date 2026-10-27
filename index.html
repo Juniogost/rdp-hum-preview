@@ -127,7 +127,13 @@ Promise.all([fetch('mapa/lotes.json').then(r=>r.json()), fetch('mapa/plano.json'
       const resv = l.disp==='reservado' || l.status==='reservado';
       const cons = l.status==='divergente_app_vendido_consta_tabela';
       if (vend){ cor='#dc2626'; raio=8; } else if (resv){ cor='#ea580c'; raio=8; } else if (cons){ cor='#ca8a04'; raio=8; } else if (l.status==='tabela_out2026'){ cor='#16a34a'; raio=8; clica=true; }
-      const m = L.circleMarker(qp[id], {radius:raio, color:'#fff', weight:1.5, fillColor:cor, fillOpacity:0.95});
+      let m;
+      if (raio>=8){
+        const ic = L.divIcon({className:'', html:`<div style="background:${cor};color:#fff;border:1.5px solid #fff;border-radius:9px;min-width:17px;height:17px;font:700 10.5px system-ui;text-align:center;line-height:17px;padding:0 2px;box-shadow:0 1px 2px rgba(0,0,0,.35)">${id}</div>`, iconSize:null});
+        m = L.marker(qp[id], {icon:ic});
+      } else {
+        m = L.circleMarker(qp[id], {radius:raio, color:'#fff', weight:1.5, fillColor:cor, fillOpacity:0.95});
+      }
       if (clica) m.on('click', ()=>mostraFluxo(faseSel.value, q, id));
       m.addTo(pinsLayer);
       pts.push(qp[id]);
