@@ -35,7 +35,7 @@
   #lotes td,#lotes th{border-bottom:1px solid #eee;padding:4px 6px;text-align:left;font-size:12.5px}
   .chip{display:inline-block;font-size:10.5px;font-weight:700;padding:2px 7px;border-radius:9px;white-space:nowrap}
   .chip.livre{background:#dcfce7;color:#166534}
-  .chip.embreve{background:#f3f4f6;color:#6b7280}
+  .chip.embreve{background:#f3f4f6;color:#6b7280}.chip.consultar{background:#fef3c7;color:#92400e;border:1px solid #f59e0b}
   .chip.reservado{background:#ffedd5;color:#9a3412}
   .chip.vendido{background:#fee2e2;color:#b91c1c}
   td .val{display:block;font-size:11px;color:#374151;white-space:nowrap}
@@ -205,10 +205,12 @@ Promise.all([fetch('mapa/lotes.json?v=6').then(r=>r.json()), fetch('mapa/plano.j
       } else {
         st = '<span class="chip embreve">Em breve</span>';
       }
-      const vend = l.disp === 'vendido', resv = l.disp === 'reservado';
+      const vend = l.disp === 'vendido' || l.status === 'vendido', resv = l.disp === 'reservado' || l.status === 'reservado';
+      const diverg = l.status === 'divergente_app_vendido_consta_tabela';
       const clic = (!vend && !resv && l.status === 'tabela_out2026') ? ` data-lote="${id}" style="cursor:pointer"` : '';
       if (vend) st = '<span class="chip vendido">Vendido</span>';
       else if (resv) st = '<span class="chip reservado">Reservado</span>';
+      else if (diverg) st = '<span class="chip consultar">Consultar</span>';
       html += `<tr${clic}><td>${id}</td><td>${l.area_m2==null?'\u2014':l.area_m2.toLocaleString('pt-BR',{minimumFractionDigits:2})}</td><td>${l.logradouro}</td><td>${st}</td></tr>`;
     }
     lotes.innerHTML = html + '</table>';
