@@ -73,22 +73,22 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 const TILESETS = {
-  jacarandas: {url:'mapa/tiles/{z}/{x}_{y}.png?v=3', W:11134, H:7875, draw:[[-196.9,32.8],[-12.5,265.6]]},
-  aroeiras: {url:'mapa/tiles-aroeiras/{z}/{x}_{y}.png?v=1', W:11235, H:7947, draw:[[-180.9,76.0],[-69.8,272.5]]}
+  jacarandas: {url:'mapa/tiles/{z}/{x}_{y}.png?v=3', W:11134, H:7875, F:32, zn:5, draw:[[-196.9,32.8],[-12.5,265.6]]},
+  aroeiras: {url:'mapa/tiles-aroeiras/{z}/{x}_{y}.png?v=2', W:18725, H:13245, F:64, zn:6, draw:[[-149.1,65.0],[-59.8,225.4]]}
 };
 let DRAW = TILESETS.jacarandas.draw;
 let tileLayer = null;
 function trocaTiles(fk){
   const ts = TILESETS[fk] || TILESETS.jacarandas;
-  const mLat = ts.H/32, mLng = ts.W/32;
+  const mLat = ts.H/ts.F, mLng = ts.W/ts.F;
   if (tileLayer) map.removeLayer(tileLayer);
-  tileLayer = L.tileLayer(ts.url, {tileSize:256, noWrap:true, bounds:[[-mLat,0],[0,mLng]]}).addTo(map);
+  tileLayer = L.tileLayer(ts.url, {tileSize:256, noWrap:true, maxNativeZoom:ts.zn, bounds:[[-mLat,0],[0,mLng]]}).addTo(map);
   map.setMaxBounds([[-mLat-30,-30],[30,mLng+30]]);
   DRAW = ts.draw;
 }
 const W = 11134, H = 7875, ZMAX = 5, F = Math.pow(2, ZMAX);
 const maxLat = H / F, maxLng = W / F;
-const map = L.map('map', {crs: L.CRS.Simple, minZoom: 0, maxZoom: 5, zoomSnap: 0.25, zoomDelta: 0.5,
+const map = L.map('map', {crs: L.CRS.Simple, minZoom: 0, maxZoom: 6, zoomSnap: 0.25, zoomDelta: 0.5,
   maxBounds: [[-maxLat,0],[0,maxLng]], maxBoundsViscosity: 0.8, attributionControl: false, wheelPxPerZoomLevel: 90});
 
 map.setMaxBounds([[-240,15],[-5,285]]);
