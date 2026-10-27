@@ -106,8 +106,8 @@ Promise.all([fetch('mapa/lotes.json').then(r=>r.json()), fetch('mapa/plano.json'
     for (const q of qs) quadraSel.add(new Option('Quadra ' + q, q));
     const pk0 = pkey(data[faseSel.value].fase);
     const rows0 = pk0 && plano[pk0] ? plano[pk0].rows : {};
-    const comTab = qs.filter(q => Object.keys(rows0).some(k => k.startsWith(q + '-'))).sort((a,b)=>a-b);
-    if (comTab.length) quadraSel.value = comTab[0];
+    const comTab = qs.filter(q => Object.keys(rows0).some(k => k.startsWith(q + '-')));
+    if (comTab.length) quadraSel.value = comTab.map(q=>[q, Object.keys(rows0).filter(k=>k.startsWith(q+'-')).length]).sort((a,b)=>b[1]-a[1] || a[0]-b[0])[0][0];
     fillLotes();
   }
   function fillLotes(){
