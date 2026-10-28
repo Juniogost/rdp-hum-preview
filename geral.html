@@ -39,7 +39,7 @@ const map=L.map('map',{minZoom:12,maxZoom:19,zoomControl:true,attributionControl
 L.tileLayer('mapa3d/tiles3d/{z}/{x}/{y}.png?v=4',{tileSize:256,minZoom:10,maxNativeZoom:19,maxZoom:19}).addTo(map);
 function ll(b){return L.latLngBounds([[b[0][1],b[0][0]],[b[1][1],b[1][0]]]);}
 function zoomFase(f){map.flyToBounds(ll(FASE[f]),{padding:[24,60],duration:.8});}
-map.fitBounds(ll(BBOX),{padding:[10,10]});
+map.fitBounds(ll([[-49.145911,-16.681770],[-49.1298749,-16.6575009]]),{padding:[14,14]});
 </script>
 </body>
 </html>
