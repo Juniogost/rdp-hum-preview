@@ -85,7 +85,7 @@ function trocaTiles(fk){
   const mLat = ts.H/ts.F, mLng = ts.W/ts.F;
   if (tileLayer) map.removeLayer(tileLayer);
   tileLayer = L.tileLayer(ts.url, {tileSize:256, noWrap:true, maxNativeZoom:ts.zn, bounds:[[-mLat,0],[0,mLng]]}).addTo(map);
-  map.setMaxBounds([[-mLat-30,-30],[30,mLng+30]]);
+  { const d=ts.draw; map.setMaxBounds([[d[0][0]-10,d[0][1]-12],[d[1][0]+10,d[1][1]+17]]); }
   DRAW = ts.draw;
 }
 const W = 11134, H = 7875, ZMAX = 5, F = Math.pow(2, ZMAX);
