@@ -43,7 +43,7 @@ function ll(b){return L.latLngBounds([[b[0][1],b[0][0]],[b[1][1],b[1][0]]]);}
 function zoomFase(f){map.flyToBounds(ll(FASE[f]),{padding:[24,60],duration:.8});}
 map.fitBounds(ll([[-49.145911,-16.681770],[-49.1298749,-16.6575009]]),{padding:[2,2]});
 L.control.zoom({position:'bottomright'}).addTo(map);
-setTimeout(()=>map.setZoom(map.getZoom()+0.6),300);
+setTimeout(()=>map.setZoom(map.getZoom()+0.25),300);
 </script>
 </body>
 </html>
