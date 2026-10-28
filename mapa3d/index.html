@@ -72,7 +72,7 @@ const LAT0=-16.666688, LNG0=-49.138081;
 const CENTRO = [LNG0, LAT0];
 const map = new maplibregl.Map({
   container:'map',
-  style:{version:8, sky:{'sky-color':'#bcd6ee','horizon-color':'#e9e5db','fog-color':'#e9e5db','sky-horizon-blend':0.4,'horizon-fog-blend':0,'fog-ground-blend':0,'atmosphere-blend':0}, sources:{prancha:{type:'raster', tiles:['tiles3d/{z}/{x}/{y}.png?v=3'], tileSize:256, minzoom:10, maxzoom:19}},
+  style:{version:8, sky:{'sky-color':'#bcd6ee','horizon-color':'#e9e5db','fog-color':'#e9e5db','sky-horizon-blend':0.4,'horizon-fog-blend':0,'fog-ground-blend':0,'atmosphere-blend':0}, sources:{prancha:{type:'raster', tiles:['tiles3d/{z}/{x}/{y}.png?v=4'], tileSize:256, minzoom:10, maxzoom:19}},
     layers:[{id:'fundo',type:'background',paint:{'background-color':'#e9e5db'}},
       {id:'prancha',type:'raster',source:'prancha',paint:{'raster-fade-duration':0,'raster-resampling':'linear'}}]},
   center: CENTRO, zoom: 15.6, pitch: 42, bearing: -15, maxPitch: 55, attributionControl:false,
