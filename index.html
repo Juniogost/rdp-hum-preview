@@ -273,7 +273,7 @@ Promise.all([fetch('mapa/lotes.json?v=7').then(r=>r.json()), fetch('mapa/plano.j
       <a id="detres" href="#" style="display:block;margin-top:6px;text-align:center;background:#c2410c;color:#fff;padding:12px;border-radius:8px;text-decoration:none;font:700 15px system-ui">Reservar por até 24h (WhatsApp)</a>`;
     document.getElementById('detgsum').textContent = `${nome} — Q${quadra} · Lote ${lote} · R$ ${row.cash}`;
     det.style.display='block';
-    if (matchMedia('(max-width:640px)').matches) det.classList.add('min'); else det.classList.remove('min');
+    if (matchMedia('(max-width:640px)').matches){ det.classList.add('min'); document.getElementById('painel').classList.add('col'); } else det.classList.remove('min');
     const entryL = (data[fase].quadras[quadra] || {})[lote] || {};
     detDoc = {nome, quadra, lote, row, p13, pav, logradouro: entryL.logradouro, areaFmt: String(row.area).replace('.',',')};
     ajustaMapaSheet();
