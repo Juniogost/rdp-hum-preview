@@ -74,7 +74,7 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 const TILESETS = {
-  jacarandas: {url:'mapa/tiles/{z}/{x}_{y}.png?v=5', W:11134, H:7875, F:32, zn:6, draw:[[-196,28],[-32,232]]},
+  jacarandas: {url:'mapa/tiles/{z}/{x}_{y}.png?v=6', W:11134, H:7875, F:32, zn:6, draw:[[-215.6,32.8],[-32.8,228.1]]},
   aroeiras: {url:'mapa/tiles-aroeiras/{z}/{x}_{y}.png?v=2', W:18725, H:13245, F:64, zn:6, draw:[[-149.1,65.0],[-59.8,225.4]]},
   angicos: {url:'mapa/tiles-angicos/{z}/{x}_{y}.png?v=1', W:13245, H:9362, F:64, zn:6, draw:[[-114.1,37.1],[-41.0,163.9]]}
 };
@@ -93,9 +93,9 @@ const maxLat = H / F, maxLng = W / F;
 const map = L.map('map', {crs: L.CRS.Simple, minZoom: 0, maxZoom: 6, zoomSnap: 0.25, zoomDelta: 0.5,
   maxBounds: [[-maxLat,0],[0,maxLng]], maxBoundsViscosity: 0.8, attributionControl: false, wheelPxPerZoomLevel: 90});
 
-map.setMaxBounds([[-240,15],[-5,285]]);
+map.setMaxBounds([[-225,20],[-22,245]]);
 let focouQ = false;
-function fitTudo(force){ if (focouQ && !force) return; map.invalidateSize(); map.fitBounds(DRAW, {padding:[6,6]}); }
+function fitTudo(force){ if (focouQ && !force) return; map.invalidateSize(); map.fitBounds(DRAW, {padding:[6,6]}); map.setMinZoom(map.getZoom()); }
 fitTudo();
 setTimeout(fitTudo, 400); setTimeout(fitTudo, 1200); setTimeout(fitTudo, 3000);
 const homeCtl = L.control({position:'topleft'});
