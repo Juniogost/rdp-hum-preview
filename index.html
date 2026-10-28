@@ -96,7 +96,7 @@ const map = L.map('map', {crs: L.CRS.Simple, minZoom: 0, maxZoom: 6, zoomSnap: 0
 
 map.setMaxBounds([[-225,20],[-22,245]]);
 let focouQ = false;
-function fitTudo(force){ if (focouQ && !force) return; map.invalidateSize(); map.fitBounds(DRAW, {padding:[6,6]}); map.setMinZoom(map.getZoom()); }
+function fitTudo(force){ if (focouQ && !force) return; map.invalidateSize(); map.fitBounds(DRAW, {padding:[6,6]}); map.setMinZoom(Math.max(0, map.getZoom()-1.5)); }
 fitTudo();
 setTimeout(fitTudo, 400); setTimeout(fitTudo, 1200); setTimeout(fitTudo, 3000);
 const homeCtl = L.control({position:'topleft'});
