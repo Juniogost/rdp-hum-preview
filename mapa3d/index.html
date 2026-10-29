@@ -71,22 +71,23 @@ tr.flash{animation:pisca 1.2s ease 3}
 </style>
 <div id="nota">
   <b>Aviso:</b> visão 3D EXPERIMENTAL da prancha oficial (planta plana inclinada; sem volumes/altimetria).
-  Posição geográfica e norte APROXIMADOS (prancha não georreferenciada) — a simulação do sol ganha precisão quando o georreferenciamento for confirmado.
+  PRANCHA OFICIAL GEORREFERENCIADA pelas coordenadas UTM da moldura (SIRGAS 2000); norte verdadeiro aplicado (convergência -0,5°). Fundo de satélite: Esri World Imagery.
   Disponibilidade e valores: WhatsApp <a style="color:#86efac" href="https://wa.me/5562981428585">62 98142-8585</a>.
 </div>
 <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
 <script>
-const LAT0=-16.666688, LNG0=-49.138081;
+const LAT0=-16.670380, LNG0=-49.143633;
 const CENTRO = [LNG0, LAT0];
 const map = new maplibregl.Map({
   container:'map',
-  style:{version:8, sky:{'sky-color':'#bcd6ee','horizon-color':'#e9e5db','fog-color':'#e9e5db','sky-horizon-blend':0.4,'horizon-fog-blend':0,'fog-ground-blend':0,'atmosphere-blend':0}, sources:{prancha:{type:'raster', tiles:['tiles3d/{z}/{x}/{y}.png?v=4'], tileSize:256, minzoom:10, maxzoom:19}},
+  style:{version:8, sky:{'sky-color':'#bcd6ee','horizon-color':'#e9e5db','fog-color':'#e9e5db','sky-horizon-blend':0.4,'horizon-fog-blend':0,'fog-ground-blend':0,'atmosphere-blend':0}, sources:{esri:{type:'raster', tiles:['https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'], tileSize:256, maxzoom:19, attribution:'Esri, Maxar, Earthstar Geographics'}, prancha:{type:'raster', tiles:['tiles3dgeo/{z}/{x}/{y}.png?v=1'], tileSize:256, minzoom:13, maxzoom:19}},
     layers:[{id:'fundo',type:'background',paint:{'background-color':'#e9e5db'}},
+      {id:'esri',type:'raster',source:'esri',paint:{'raster-fade-duration':0}},
       {id:'prancha',type:'raster',source:'prancha',paint:{'raster-fade-duration':0,'raster-resampling':'linear'}}]},
-  center: CENTRO, zoom: 15.6, pitch: 42, bearing: -15, maxPitch: 55, attributionControl:false,
-  maxBounds: [[-49.152752,-16.682176],[-49.123410,-16.651201]]
+  center: CENTRO, zoom: 15.6, pitch: 42, bearing: -15, maxPitch: 55, attributionControl:{compact:true},
+  maxBounds: [[-49.156,-16.684],[-49.128,-16.656]]
 });
-const BBOX=[[-49.148627,-16.684307],[-49.121441,-16.657201]];
+const BBOX=[[-49.1486,-16.6752],[-49.1387,-16.6655]];
 if (matchMedia('(max-width:640px)').matches){
   const cam=map.cameraForBounds(BBOX,{padding:{top:96,bottom:120,left:10,right:10},bearing:-15,pitch:42});
   if(cam) map.jumpTo(cam);
@@ -394,7 +395,7 @@ Promise.all([fetch('lotes.json').then(r=>r.json()), fetch('plano.json').then(r=>
       <span style="font-size:12px;color:#555">Seus dados vão só nessa conversa. O Junio revisa o rascunho antes de qualquer passo oficial.</span>`;
   }
   document.getElementById('detc').onclick = ()=>{document.getElementById('det').style.display='none'};
-  const FASE_BBOX={jacarandas:[[-49.145911,-16.681770],[-49.130901,-16.668209]],angicos:[[-49.1424105,-16.6698121],[-49.1331422,-16.6588858]],aroeiras:[[-49.1367777,-16.6706651],[-49.1298749,-16.6575009]]};
+  const FASE_BBOX={jacarandas:[[-49.147378,-16.674434],[-49.139888,-16.666325]],angicos:[[-49.1424105,-16.6698121],[-49.1331422,-16.6588858]],aroeiras:[[-49.1367777,-16.6706651],[-49.1298749,-16.6575009]]};
   faseSel.onchange = ()=>{ fillQuadras(); const bb=FASE_BBOX[pkey(data[faseSel.value].fase)]; if(bb){ const mob=matchMedia('(max-width:640px)').matches; const cam=map.cameraForBounds(bb,{padding:mob?{top:96,bottom:120,left:10,right:10}:60,bearing:-15,pitch:42}); if(cam) map.easeTo({center:cam.center,zoom:cam.zoom,bearing:-15,pitch:42,duration:900}); } };
   quadraSel.onchange = fillLotes;
   fillQuadras();
