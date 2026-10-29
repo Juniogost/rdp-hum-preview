@@ -80,11 +80,11 @@ const LAT0=-16.670380, LNG0=-49.143633;
 const CENTRO = [LNG0, LAT0];
 const map = new maplibregl.Map({
   container:'map',
-  style:{version:8, sky:{'sky-color':'#bcd6ee','horizon-color':'#e9e5db','fog-color':'#e9e5db','sky-horizon-blend':0.4,'horizon-fog-blend':0,'fog-ground-blend':0,'atmosphere-blend':0}, sources:{esri:{type:'raster', tiles:['https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'], tileSize:256, maxzoom:19, attribution:'Esri, Maxar, Earthstar Geographics'}, prancha:{type:'raster', tiles:['tiles3dgeo/{z}/{x}/{y}.png?v=1'], tileSize:256, minzoom:13, maxzoom:19}},
+  style:{version:8, sky:{'sky-color':'#bcd6ee','horizon-color':'#e9e5db','fog-color':'#e9e5db','sky-horizon-blend':0.4,'horizon-fog-blend':0,'fog-ground-blend':0,'atmosphere-blend':0}, sources:{esri:{type:'raster', tiles:['https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'], tileSize:256, maxzoom:19, attribution:'Esri, Maxar, Earthstar Geographics'}, prancha:{type:'raster', tiles:['tiles3dgeo/{z}/{x}/{y}.png?v=2'], tileSize:256, minzoom:13, maxzoom:20}},
     layers:[{id:'fundo',type:'background',paint:{'background-color':'#e9e5db'}},
       {id:'esri',type:'raster',source:'esri',paint:{'raster-fade-duration':0}},
       {id:'prancha',type:'raster',source:'prancha',paint:{'raster-fade-duration':0,'raster-resampling':'linear'}}]},
-  center: CENTRO, zoom: 15.6, pitch: 42, bearing: -15, maxPitch: 55, attributionControl:{compact:true},
+  center: CENTRO, zoom: 15.6, pitch: 42, bearing: -15, maxPitch: 55, maxZoom: 20.5, attributionControl:{compact:true},
   maxBounds: [[-49.156,-16.684],[-49.128,-16.656]]
 });
 const BBOX=[[-49.1486,-16.6752],[-49.1387,-16.6655]];
