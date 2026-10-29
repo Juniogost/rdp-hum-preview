@@ -117,7 +117,7 @@ function ajustaZoom(){const t=(document.getElementById('hud').offsetHeight+6)+'p
 window.addEventListener('load',ajustaZoom);window.addEventListener('resize',ajustaZoom);setTimeout(ajustaZoom,300);setTimeout(ajustaZoom,1500);
 new ResizeObserver(ajustaZoom).observe(document.getElementById('hud'));
 // indicador de norte (norte da prancha = topo da imagem)
-Promise.all([fetch('mapa/lotes.json?v=7').then(r=>r.json()), fetch('mapa/plano.json?v=6').then(r=>r.json()), fetch('mapa/pins.json?v=8').then(r=>r.json()).catch(()=>({}))]).then(async ([data, plano, pins])=>{
+Promise.all([fetch('mapa/lotes.json?v=7').then(r=>r.json()), fetch('mapa/plano.json?v=6').then(r=>r.json()), fetch('mapa/pins.json?v=9').then(r=>r.json()).catch(()=>({}))]).then(async ([data, plano, pins])=>{
   const rdpSt = await RDPStatus.aplicar('status.json', data);
   { const dd = document.getElementById('dispdata'); if (dd) dd.textContent = RDPStatus.linha(rdpSt); }
   const faseSel = document.getElementById('fase'), quadraSel = document.getElementById('quadra');
@@ -284,7 +284,7 @@ Promise.all([fetch('mapa/lotes.json?v=7').then(r=>r.json()), fetch('mapa/plano.j
       <div style="border:1px solid #cde;border-radius:8px;padding:8px;margin:6px 0">
         <b>Plano 1 — Entrada 1 + 3 (1ª parcela em 120 dias)</b><br>
         Valor na proposta: <b>R$ ${row.prop}</b><br>
-        Sinal (Ato): R$ ${row.ato} + 3x de R$ ${row.com3}${row.ent13 ? ' · Entrada: R$ '+row.ent13 : ''}<br>
+        Sinal (Ato): R$ ${row.ato} + 3x de R$ ${row.com3} <b>+ taxa adm R$ ${fmtN(speN)}</b> (= R$ ${fmtN(sinalTot+speN)} no ato)${row.ent13 ? ' · Entrada: R$ '+row.ent13 : ''}<br>
         <div style="margin:6px 0;padding:8px 10px;background:#fef9c3;border:2px solid #eab308;border-radius:8px;font-size:14px">${linhaTaxa1}</div>
         Parcelas mensais por prazo:
         <table style="margin-top:4px"><tr><th>Prazo</th><th>Parcela</th></tr>${linha13}</table>
@@ -292,7 +292,7 @@ Promise.all([fetch('mapa/lotes.json?v=7').then(r=>r.json()), fetch('mapa/plano.j
       <div style="border:1px solid #cde;border-radius:8px;padding:8px;margin:6px 0">
         <b>Plano 2 — Entrada à vista (1ª parcela em 30 dias)</b><br>
         Valor na proposta: <b>R$ ${row.avprop}</b><br>
-        Entrada à vista: não confirmada — a coluna impressa ("comissão total") registra R$ ${row.ent}; confirmar com a loteadora se corresponde à entrada do comprador.<br>
+        Entrada à vista: não confirmada — a coluna impressa ("comissão total") registra R$ ${row.ent}; confirmar com a loteadora se corresponde à entrada do comprador. <b>+ taxa adm R$ ${fmtN(speN)}</b> por lote, cobrada com a entrada.<br>
         Parcelas mensais por prazo:
         <table style="margin-top:4px"><tr><th>Prazo</th><th>Parcela</th></tr>${linhaAv}</table>
         <div style="margin-top:6px;padding:6px 8px;background:#fef9c3;border:1px solid #eab308;border-radius:6px;font-size:13px">${linhaTaxa2}</div>
@@ -324,7 +324,7 @@ Promise.all([fetch('mapa/lotes.json?v=7').then(r=>r.json()), fetch('mapa/plano.j
     d.setFontSize(9); d.text('Valores exatos da tabela oficial outubro/2026 (vigência 01/10/2026). Estoque e condições não confirmados.', 14, y); y += 10;
     d.setFontSize(12); d.text(`Valor à vista: R$ ${row.cash}`, 14, y); y += 9;
     d.setFontSize(11); d.text('Plano 1 — Entrada 1 + 3 (1ª parcela em 120 dias)', 14, y); y += 6;
-    d.setFontSize(10); d.text(`Valor na proposta: R$ ${row.prop} — Ato: R$ ${row.ato} + 3x de R$ ${row.com3}`, 14, y); y += 6;
+    d.setFontSize(10); d.text(`Valor na proposta: R$ ${row.prop} — Ato: R$ ${row.ato} + 3x de R$ ${row.com3} + taxa adm R$ ${spePdfT}`, 14, y); y += 6;
     if (row.ent13) { d.text(`Entrada: R$ ${row.ent13}`, 14, y); y += 6; } else { d.text('Entrada: não informada nesta linha da tabela', 14, y); y += 6; }
     d.text(`Sinal (Ato) + taxa administrativa de R$ ${spePdfT} por lote (tabela oficial) — não somada às parcelas.`, 14, y); y += 6;
     row.par.forEach((v,i)=>{ d.text(`Prazo ${p13[i]}x — parcela R$ ${v}`, 18, y); y += 5.5; });
@@ -332,7 +332,8 @@ Promise.all([fetch('mapa/lotes.json?v=7').then(r=>r.json()), fetch('mapa/plano.j
     d.setFontSize(11); d.text('Plano 2 — Entrada à vista (1ª parcela em 30 dias)', 14, y); y += 6;
     d.setFontSize(10); d.text(`Valor na proposta: R$ ${row.avprop}`, 14, y); y += 6;
     d.text(`Entrada à vista: não confirmada — coluna impressa ("comissão total") registra R$ ${row.ent};`, 14, y); y += 5.5;
-    d.text('confirmar com a loteadora se corresponde à entrada do comprador.', 14, y); y += 6;
+    d.text('confirmar com a loteadora se corresponde à entrada do comprador.', 14, y); y += 5.5;
+    d.text(`+ taxa administrativa de R$ ${spePdfT} por lote (tabela oficial), cobrada com a entrada — não somada às parcelas.`, 14, y); y += 6;
     row.av.forEach((v,i)=>{ d.text(`Prazo ${pav[i]}x — parcela R$ ${v}`, 18, y); y += 5.5; });
     y += 5;
     d.setFontSize(9); d.text('Títulos dos planos e cabeçalhos conforme o documento original da loteadora.', 14, y);
@@ -472,22 +473,25 @@ Promise.all([fetch('mapa/lotes.json?v=7').then(r=>r.json()), fetch('mapa/plano.j
       tel1: v('f_tel'), email: v('f_email')
     };
     const i = prazoIdx || 0;
+    const taxaProp = (function(s){ if (s==null||s==='') return '150,00'; const v = parseFloat(String(s).replace(/\./g,'').replace(',','.')); return (isNaN(v)?150:v).toLocaleString('pt-BR',{minimumFractionDigits:2, maximumFractionDigits:2}); })(row.spe);
     let condicoes, valorTotal, obsPlano;
     if (plano === '2') {
       valorTotal = row.avprop;
       condicoes = [
         {quantidade:'1', tipo:'Entrada à vista', valor:'A confirmar', inicio:'A confirmar'},
+        {quantidade:'1', tipo:'Taxa administrativa', valor:'R$ '+taxaProp, inicio:'Com a entrada'},
         {quantidade:pav[i]+'', tipo:'Parcelas mensais', valor:'R$ '+row.av[i], inicio:'1ª em 30 dias', periodicidade:'Mensal'}
       ];
-      obsPlano = 'Plano 2 — Entrada à vista (1ª parcela em 30 dias). Entrada: a confirmar com a loteadora (a coluna impressa "comissão total" registra R$ '+row.ent+').';
+      obsPlano = 'Plano 2 — Entrada à vista (1ª parcela em 30 dias). Entrada: a confirmar com a loteadora (a coluna impressa "comissão total" registra R$ '+row.ent+'). Taxa administrativa de R$ '+taxaProp+' por lote, cobrada com a entrada.';
     } else {
       valorTotal = row.prop;
       condicoes = [
         {quantidade:'1', tipo:'Ato (sinal)', valor:'R$ '+row.ato, inicio:'Na assinatura'},
         {quantidade:'3', tipo:'Parcelas', valor:'R$ '+row.com3, periodicidade:'Mensal'},
+        {quantidade:'1', tipo:'Taxa administrativa', valor:'R$ '+taxaProp, inicio:'No ato'},
         {quantidade:p13[i]+'', tipo:'Parcelas mensais', valor:'R$ '+row.par[i], inicio:'1ª em 120 dias', periodicidade:'Mensal'}
       ];
-      obsPlano = 'Plano 1 — Entrada 1 + 3 (1ª parcela em 120 dias). Entrada: '+(row.ent13 ? 'R$ '+row.ent13 : 'não informada nesta linha da tabela — a confirmar')+'.';
+      obsPlano = 'Plano 1 — Entrada 1 + 3 (1ª parcela em 120 dias). Entrada: '+(row.ent13 ? 'R$ '+row.ent13 : 'não informada nesta linha da tabela — a confirmar')+'. Taxa administrativa de R$ '+taxaProp+' por lote, cobrada no ato.';
     }
     const hoje = new Date();
     const dataDoc = String(hoje.getDate()).padStart(2,'0')+'/'+String(hoje.getMonth()+1).padStart(2,'0')+'/'+hoje.getFullYear();
@@ -547,8 +551,9 @@ Promise.all([fetch('mapa/lotes.json?v=7').then(r=>r.json()), fetch('mapa/plano.j
     } catch(e){}
   }
   document.getElementById('detc').onclick = ()=>{document.getElementById('det').style.display='none'};
-  faseSel.onchange = fillQuadras;
-  quadraSel.onchange = ()=>{ focoUsuario = true; fillLotes(); };
+  const fechaDet = ()=>{ document.getElementById('det').style.display='none'; };
+  faseSel.onchange = ()=>{ fechaDet(); fillQuadras(); };
+  quadraSel.onchange = ()=>{ fechaDet(); focoUsuario = true; fillLotes(); };
   fillQuadras();
   ajustaZoom();
 });
