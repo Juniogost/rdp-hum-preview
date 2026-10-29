@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Reserva do Parque — Mapa 3D com sol (prévia em teste)</title>
 <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css">
 <style>
@@ -24,6 +24,7 @@
   #nota b{color:#fbbf24}
   #sol.col #solbody{display:none}
   @media (max-width:640px){ #nota{font-size:10px} #sol{width:210px;font-size:11px} }
+#hud{padding-top:calc(6px + env(safe-area-inset-top))}body{padding-bottom:env(safe-area-inset-bottom)}
 </style>
 </head>
 <body>
@@ -232,26 +233,29 @@ Promise.all([fetch('lotes.json').then(r=>r.json()), fetch('plano.json').then(r=>
     const tr = document.querySelector('tr[data-lote="' + lote + '"]');
     if (tr){ tr.classList.add('flash'); tr.scrollIntoView({block:'nearest'}); setTimeout(()=>tr.classList.remove('flash'), 4000); }
   }
-  function proximoLivre(){
-    if(!detDoc) return;
-    const fases = Object.keys(data);
-    const num = s => parseInt(s,10) || 0;
-    let fi = fases.indexOf(faseSel.value), q = String(detDoc.quadra), l = String(detDoc.lote);
-    for (let passo = 0; passo < 20000; passo++){
-      const qs = Object.keys(data[fases[fi]].quadras).sort((a,b)=>num(a)-num(b));
-      const ids = Object.keys(data[fases[fi]].quadras[q] || {}).sort((a,b)=>num(a)-num(b));
-      const il = ids.indexOf(l);
-      if (il >= 0 && il < ids.length - 1){ l = ids[il + 1]; }
-      else {
-        const iq = qs.indexOf(q);
-        if (iq >= 0 && iq < qs.length - 1){ q = qs[iq + 1]; l = (Object.keys(data[fases[fi]].quadras[q] || {}).sort((a,b)=>num(a)-num(b)))[0]; }
-        else { fi = (fi + 1) % fases.length; const qs2 = Object.keys(data[fases[fi]].quadras).sort((a,b)=>num(a)-num(b)); q = qs2[0]; l = (Object.keys(data[fases[fi]].quadras[q] || {}).sort((a,b)=>num(a)-num(b)))[0]; }
+  function livresOrdem(){
+    const num = s => parseInt(s,10) || 0, out = [];
+    for (const f of Object.keys(data)){
+      const qs = Object.keys(data[f].quadras).sort((a,b)=>num(a)-num(b));
+      for (const q of qs){
+        const ids = Object.keys(data[f].quadras[q] || {}).sort((a,b)=>num(a)-num(b));
+        for (const l of ids){ const it = data[f].quadras[q][l]; if (it && it.status === 'tabela_out2026') out.push([f, q, l]); }
       }
-      if (!l) continue;
-      const it = (data[fases[fi]].quadras[q] || {})[l];
-      if (it && it.status === 'tabela_out2026'){ vaiParaLote(fases[fi], q, l); return; }
     }
+    return out;
   }
+  function navegaLivre(dir){
+    if(!detDoc) return;
+    const seq = livresOrdem();
+    if (!seq.length) return;
+    const cf = faseSel.value, cq = String(detDoc.quadra), cl = String(detDoc.lote);
+    let ix = seq.findIndex(t => t[0] === cf && t[1] === cq && t[2] === cl);
+    if (ix < 0) ix = dir > 0 ? -1 : 0;
+    const alvo = seq[(ix + dir + seq.length) % seq.length];
+    vaiParaLote(alvo[0], alvo[1], alvo[2]);
+  }
+  function proximoLivre(){ navegaLivre(1); }
+  function anteriorLivre(){ navegaLivre(-1); }
   function mostraFluxo(fase, quadra, lote){
     const det = document.getElementById('det'), detb = document.getElementById('detb');
     const pk = pkey(data[fase].fase);
@@ -288,6 +292,7 @@ Promise.all([fetch('lotes.json').then(r=>r.json()), fetch('plano.json').then(r=>
       <button id="detqro" style="margin-top:6px;width:100%;padding:12px;font:700 15px system-ui;background:#1d4ed8;color:#fff;border:0;border-radius:8px">Quero este lote — iniciar proposta</button>
       <div class="acoes">
         <button id="detlink" style="background:#475569;color:#fff;border:0">🔗 Copiar link deste lote</button>
+        <button id="detant" style="background:#fff;color:#0a6b3d;border:1px solid #0a6b3d">← Anterior livre</button>
         <button id="detprox" style="background:#fff;color:#0a6b3d;border:1px solid #0a6b3d">Próximo lote livre →</button>
       </div>`;
     det.style.display='block';
@@ -296,6 +301,7 @@ Promise.all([fetch('lotes.json').then(r=>r.json()), fetch('plano.json').then(r=>
     document.getElementById('detqro').onclick = abreFormProposta;
     document.getElementById('detlink').onclick = copiaLink;
     document.getElementById('detprox').onclick = proximoLivre;
+    document.getElementById('detant').onclick = anteriorLivre;
   }
   function baixaPDF(){
     if (!detDoc) return;
