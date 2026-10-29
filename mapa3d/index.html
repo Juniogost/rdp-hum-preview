@@ -58,7 +58,7 @@
 </div>
 <style>
 .chip{display:inline-block;padding:2px 8px;border-radius:10px;font-size:12px;font-weight:700}
-.livre{background:#d8f3dc;color:#1b5e20}.embreve{background:#ececec;color:#777}
+.livre{background:#d8f3dc;color:#1b5e20}.embreve{background:#ececec;color:#777}.vendido{background:#fee2e2;color:#b91c1c}.reservado{background:#ffedd5;color:#9a3412}.consultar{background:#fef3c7;color:#92400e;border:1px solid #f59e0b}
 #lotes table{width:100%;border-collapse:collapse;font-size:13px}
 #lotes td,#lotes th{padding:5px;border-bottom:1px solid #eee;text-align:left}
 tr[data-lote]{background:#f4fbf5}
@@ -70,6 +70,7 @@ tr.flash{animation:pisca 1.2s ease 3}
 .val{font-size:12px;display:block;color:#1b5e20}
 </style>
 <div id="nota">
+  <div id="dispdata"></div>
   <b>Aviso:</b> visão 3D EXPERIMENTAL da prancha oficial (planta plana inclinada; sem volumes/altimetria).
   PRANCHA OFICIAL GEORREFERENCIADA pelas coordenadas UTM da moldura (SIRGAS 2000); norte verdadeiro aplicado (convergência -0,5°). Fundo de satélite: Esri World Imagery.
   Disponibilidade e valores: WhatsApp <a style="color:#86efac" href="https://wa.me/5562981428585">62 98142-8585</a>.
@@ -177,8 +178,11 @@ document.getElementById('btnPor').addEventListener('click', ()=>{
 <button id="detc" style="float:right;border:0;background:#eee;border-radius:6px;padding:4px 10px;font-weight:700">fechar ✕</button>
 <div id="detb"></div></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="../status.js"></script>
 <script>
-Promise.all([fetch('lotes.json').then(r=>r.json()), fetch('plano.json').then(r=>r.json())]).then(([data, plano])=>{
+Promise.all([fetch('lotes.json').then(r=>r.json()), fetch('plano.json').then(r=>r.json())]).then(async ([data, plano])=>{
+  const rdpSt = await RDPStatus.aplicar('../status.json', data);
+  { const dd = document.getElementById('dispdata'); if (dd) dd.textContent = RDPStatus.linha(rdpSt); }
   const faseSel = document.getElementById('fase'), quadraSel = document.getElementById('quadra');
   const leg = document.getElementById('leg');
   const pbody = document.getElementById('pbody');
@@ -197,7 +201,7 @@ Promise.all([fetch('lotes.json').then(r=>r.json()), fetch('plano.json').then(r=>
     const ids = Object.keys(lotesQ);
     ptit.textContent = d.fase.split('— ')[1] + ' — Quadra ' + q + ' (' + ids.length + ' lotes listados)';
     const brl = v => v ? 'R$ ' + Number(v).toLocaleString('pt-BR',{maximumFractionDigits:0}) : '';
-    let livres = 0;
+    let livres = 0, vendidos = 0, reservados = 0, consultar = 0;
     let html = '<table><tr><th>Lote</th><th>Área (m²)</th><th>Logradouro</th><th>Situação</th></tr>';
     for (const id of ids){
       const l = lotesQ[id];
@@ -206,6 +210,12 @@ Promise.all([fetch('lotes.json').then(r=>r.json()), fetch('plano.json').then(r=>
         livres++;
         const vals = [l.valor_avista && brl(l.valor_avista)+' à vista', l.valor_proposta && brl(l.valor_proposta)+' proposta'].filter(Boolean).join('<br>');
         st = `<span class="chip livre">Livre</span><span class="val">${vals}</span>`;
+      } else if (l.status === 'vendido'){
+        vendidos++; st = '<span class="chip vendido">Vendido</span>';
+      } else if (l.status === 'reservado'){
+        reservados++; st = '<span class="chip reservado">Reservado</span>';
+      } else if (l.status === 'consultar' || l.status === 'divergente_app_vendido_consta_tabela'){
+        consultar++; st = '<span class="chip consultar">Consultar a equipe</span>';
       } else {
         st = '<span class="chip embreve">Em breve</span>';
       }
@@ -215,7 +225,13 @@ Promise.all([fetch('lotes.json').then(r=>r.json()), fetch('plano.json').then(r=>
     lotes.innerHTML = html + '</table>';
     lotes.querySelectorAll('tr[data-lote]').forEach(tr => tr.onclick = ()=>mostraFluxo(faseSel.value, q, tr.dataset.lote));
     const total = ids.length;
-    leg.innerHTML = `<span class="chip livre">Livre ${livres}</span><span class="chip embreve">Em breve ${total-livres}</span>`;
+    { const partes = [`<span class="chip livre">Livre ${livres}</span>`];
+      if (reservados) partes.push(`<span class="chip reservado">Reservado ${reservados}</span>`);
+      if (vendidos) partes.push(`<span class="chip vendido">Vendido ${vendidos}</span>`);
+      if (consultar) partes.push(`<span class="chip consultar">Consultar ${consultar}</span>`);
+      const emb = total - livres - vendidos - reservados - consultar;
+      if (emb) partes.push(`<span class="chip embreve">Em breve ${emb}</span>`);
+      leg.innerHTML = partes.join(' '); }
   }
   const pkey = f => f.toLowerCase().includes('aroeira') ? 'aroeiras' : f.toLowerCase().includes('jacarand') ? 'jacarandas' : f.toLowerCase().includes('angico') ? 'angicos' : null;
   let detDoc = null;

@@ -67,6 +67,7 @@
   <div id="lotes"></div>
 </div>
 <div id="nota">
+  <div id="dispdata"></div>
   <b>Aviso:</b> versão ilustrada da prancha oficial de implantação (nada acrescentado). Situação e valores: tabelas oficiais outubro/2026 (vigência 01/10/2026) — <b>confirme disponibilidade e condições pelo WhatsApp</b>. Lote "Em breve": quadra ainda não liberada para venda pela prefeitura — sem preço enquanto isso.
   Não mostra disponibilidade nem preços — para isso, fale com a equipe pelo WhatsApp
   <a style="color:#86efac" href="https://wa.me/5562981428585">62 98142-8585</a>.
@@ -74,6 +75,7 @@
   Uso do solo e do subsolo: pendentes de fonte oficial.
 </div>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="../status.js"></script>
 <script>
 const W = 11134, H = 7875, ZMAX = 5, F = Math.pow(2, ZMAX);
 const maxLat = H / F, maxLng = W / F;
@@ -93,7 +95,9 @@ function ajustaZoom(){const t=(document.getElementById('hud').offsetHeight+6)+'p
 window.addEventListener('load',ajustaZoom);window.addEventListener('resize',ajustaZoom);setTimeout(ajustaZoom,300);setTimeout(ajustaZoom,1500);
 new ResizeObserver(ajustaZoom).observe(document.getElementById('hud'));
 // indicador de norte (norte da prancha = topo da imagem)
-Promise.all([fetch('mapa/lotes.json').then(r=>r.json()), fetch('mapa/plano.json').then(r=>r.json()), fetch('mapa/pins.json').then(r=>r.json()).catch(()=>({}))]).then(([data, plano, pins])=>{
+Promise.all([fetch('mapa/lotes.json').then(r=>r.json()), fetch('mapa/plano.json').then(r=>r.json()), fetch('mapa/pins.json').then(r=>r.json()).catch(()=>({}))]).then(async ([data, plano, pins])=>{
+  const rdpSt = await RDPStatus.aplicar('../status.json', data);
+  { const dd = document.getElementById('dispdata'); if (dd) dd.textContent = RDPStatus.linha(rdpSt); }
   const faseSel = document.getElementById('fase'), quadraSel = document.getElementById('quadra');
   const painel = document.getElementById('painel'), nota = document.getElementById('nota');
   const leg = document.getElementById('leg');

@@ -76,12 +76,14 @@
   <div id="lotes"></div>
 </div>
 <div id="nota">
+  <div id="dispdata"></div>
   <b>Aviso:</b> versão ilustrada da prancha oficial de implantação (nada acrescentado). Situação dos lotes (bolinhas): conforme o mapa da incorporadora em 27/10/2026 — reservas valem por até 24h. Valores: tabelas oficiais outubro/2026 (vigência 01/10/2026). <b>Confirme disponibilidade e condições pelo WhatsApp</b>
   <a style="color:#86efac" href="https://wa.me/5562981428585">62 98142-8585</a>. Quadras ainda não liberadas aparecem sem bolinha; lote "Em breve" fica sem preço enquanto isso.
   Norte conforme a prancha; análise de insolação por lote é estimativa visual, pendente de georreferenciamento.
   Uso do solo e do subsolo: pendentes de fonte oficial.
 </div>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="status.js"></script>
 <script>
 const TILESETS = {
   jacarandas: {url:'mapa/tiles/{z}/{x}_{y}.png?v=6', W:11134, H:7875, F:32, zn:6, draw:[[-215.6,32.8],[-32.8,228.1]]},
@@ -115,7 +117,9 @@ function ajustaZoom(){const t=(document.getElementById('hud').offsetHeight+6)+'p
 window.addEventListener('load',ajustaZoom);window.addEventListener('resize',ajustaZoom);setTimeout(ajustaZoom,300);setTimeout(ajustaZoom,1500);
 new ResizeObserver(ajustaZoom).observe(document.getElementById('hud'));
 // indicador de norte (norte da prancha = topo da imagem)
-Promise.all([fetch('mapa/lotes.json?v=7').then(r=>r.json()), fetch('mapa/plano.json?v=6').then(r=>r.json()), fetch('mapa/pins.json?v=8').then(r=>r.json()).catch(()=>({}))]).then(([data, plano, pins])=>{
+Promise.all([fetch('mapa/lotes.json?v=7').then(r=>r.json()), fetch('mapa/plano.json?v=6').then(r=>r.json()), fetch('mapa/pins.json?v=8').then(r=>r.json()).catch(()=>({}))]).then(async ([data, plano, pins])=>{
+  const rdpSt = await RDPStatus.aplicar('status.json', data);
+  { const dd = document.getElementById('dispdata'); if (dd) dd.textContent = RDPStatus.linha(rdpSt); }
   const faseSel = document.getElementById('fase'), quadraSel = document.getElementById('quadra');
   const painel = document.getElementById('painel'), nota = document.getElementById('nota');
   const leg = document.getElementById('leg');
