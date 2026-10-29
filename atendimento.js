@@ -11,7 +11,11 @@
   #atdPanel .msg{background:#f1f5f9;border-radius:8px;padding:8px 10px;margin-bottom:8px;font-size:13px}
   #atdPanel .opt{display:block;width:100%;text-align:left;background:#fff;border:1px solid #0a6b3d;color:#0a6b3d;border-radius:8px;padding:9px 10px;margin:5px 0;font:600 13px system-ui;cursor:pointer}
   #atdPanel .opt:hover{background:#f0fdf4}
-  #atdPanel .zap{display:block;text-align:center;background:#25d366;color:#fff;text-decoration:none;border-radius:8px;padding:11px;font:700 14px system-ui;margin:8px 0}`;
+  #atdPanel .zap{display:block;text-align:center;background:#25d366;color:#fff;text-decoration:none;border-radius:8px;padding:11px;font:700 14px system-ui;margin:8px 0}
+  @media (max-width:640px){
+    #atdBtn{bottom:calc(52px + env(safe-area-inset-bottom,0px))}
+    #atdPanel{bottom:calc(104px + env(safe-area-inset-bottom,0px))}
+  }`;
   const st = document.createElement('style'); st.textContent = css; document.head.appendChild(st);
   const FASES = ['Jardim dos Jacarandás','Jardim dos Angicos','Jardim das Aroeiras','Ainda não sei / qualquer uma'];
   function wa(txt){ return 'https://wa.me/' + ZAP + '?text=' + encodeURIComponent(txt); }
