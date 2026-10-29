@@ -32,6 +32,8 @@
   <strong>Reserva do Parque — Senador Canedo/GO</strong>
   <span class="on">3D + Sol</span>
   <a href="https://juniogost.github.io/rdp-hum-preview/">Versão 2D →</a>
+  <button class="vista" id="vistaAerea">Aérea</button>
+  <button class="vista" id="vistaPersp">Perspectiva</button>
 </div>
 <div id="map"></div>
 <div id="sol">
@@ -59,6 +61,11 @@
 #lotes table{width:100%;border-collapse:collapse;font-size:13px}
 #lotes td,#lotes th{padding:5px;border-bottom:1px solid #eee;text-align:left}
 tr[data-lote]{background:#f4fbf5}
+#hud .vista{background:#fff;color:#14532d;border:0;border-radius:6px;padding:4px 10px;font:700 12px system-ui;cursor:pointer}
+tr.flash{animation:pisca 1.2s ease 3}
+@keyframes pisca{0%,100%{background:#f4fbf5}50%{background:#fde68a}}
+.acoes{display:flex;gap:6px;margin-top:6px}
+.acoes button{flex:1;padding:10px;border-radius:8px;cursor:pointer;font:700 13px system-ui}
 .val{font-size:12px;display:block;color:#1b5e20}
 </style>
 <div id="nota">
@@ -92,6 +99,8 @@ map.on('load', ()=>{
   atualizaSol();
 });
 map.addControl(new maplibregl.NavigationControl({visualizePitch:true}), 'bottom-right');
+document.getElementById('vistaAerea').onclick = ()=>{ const cam = map.cameraForBounds(BBOX,{padding:{top:96,bottom:120,left:10,right:10},bearing:0,pitch:0}); if(cam) map.easeTo({center:cam.center,zoom:cam.zoom,bearing:0,pitch:0,duration:900}); };
+document.getElementById('vistaPersp').onclick = ()=>{ const cam = map.cameraForBounds(BBOX,{padding:{top:96,bottom:120,left:10,right:10},bearing:-15,pitch:55}); if(cam) map.easeTo({center:cam.center,zoom:cam.zoom,bearing:-15,pitch:55,duration:900}); };
 const nota3=document.getElementById('nota');
 if (matchMedia('(max-width:640px)').matches) nota3.classList.add('col');
 nota3.onclick=()=>{nota3.classList.toggle('col');setTimeout(ajustaPainel,30);};
@@ -208,6 +217,41 @@ Promise.all([fetch('lotes.json').then(r=>r.json()), fetch('plano.json').then(r=>
   }
   const pkey = f => f.toLowerCase().includes('aroeira') ? 'aroeiras' : f.toLowerCase().includes('jacarand') ? 'jacarandas' : f.toLowerCase().includes('angico') ? 'angicos' : null;
   let detDoc = null;
+  function linkLote(fase, quadra, lote){ const u = new URL(location.href); u.search = '?fase='+fase+'&quadra='+quadra+'&lote='+lote; return u.toString(); }
+  function copiaLink(){
+    if(!detDoc) return;
+    const u = linkLote(faseSel.value, detDoc.quadra, detDoc.lote);
+    const b = document.getElementById('detlink');
+    const ok = sim => { b.textContent = sim ? '✔ Link copiado' : '🔗 ' + u; setTimeout(()=>{ b.textContent = '🔗 Copiar link deste lote'; }, 3000); };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(u).then(()=>ok(true), ()=>ok(false)); else ok(false);
+  }
+  function vaiParaLote(fase, quadra, lote){
+    if (faseSel.value !== fase){ faseSel.value = fase; faseSel.onchange(); }
+    fillQuadras(); quadraSel.value = quadra; fillLotes();
+    mostraFluxo(fase, quadra, lote);
+    const tr = document.querySelector('tr[data-lote="' + lote + '"]');
+    if (tr){ tr.classList.add('flash'); tr.scrollIntoView({block:'nearest'}); setTimeout(()=>tr.classList.remove('flash'), 4000); }
+  }
+  function proximoLivre(){
+    if(!detDoc) return;
+    const fases = Object.keys(data);
+    const num = s => parseInt(s,10) || 0;
+    let fi = fases.indexOf(faseSel.value), q = String(detDoc.quadra), l = String(detDoc.lote);
+    for (let passo = 0; passo < 20000; passo++){
+      const qs = Object.keys(data[fases[fi]].quadras).sort((a,b)=>num(a)-num(b));
+      const ids = Object.keys(data[fases[fi]].quadras[q] || {}).sort((a,b)=>num(a)-num(b));
+      const il = ids.indexOf(l);
+      if (il >= 0 && il < ids.length - 1){ l = ids[il + 1]; }
+      else {
+        const iq = qs.indexOf(q);
+        if (iq >= 0 && iq < qs.length - 1){ q = qs[iq + 1]; l = (Object.keys(data[fases[fi]].quadras[q] || {}).sort((a,b)=>num(a)-num(b)))[0]; }
+        else { fi = (fi + 1) % fases.length; const qs2 = Object.keys(data[fases[fi]].quadras).sort((a,b)=>num(a)-num(b)); q = qs2[0]; l = (Object.keys(data[fases[fi]].quadras[q] || {}).sort((a,b)=>num(a)-num(b)))[0]; }
+      }
+      if (!l) continue;
+      const it = (data[fases[fi]].quadras[q] || {})[l];
+      if (it && it.status === 'tabela_out2026'){ vaiParaLote(fases[fi], q, l); return; }
+    }
+  }
   function mostraFluxo(fase, quadra, lote){
     const det = document.getElementById('det'), detb = document.getElementById('detb');
     const pk = pkey(data[fase].fase);
@@ -241,11 +285,17 @@ Promise.all([fetch('lotes.json').then(r=>r.json()), fetch('plano.json').then(r=>
       </div>
       <span style="font-size:12px;color:#555">Títulos dos planos e cabeçalhos conforme o documento original da loteadora; confirmar condições antes de propor.</span><br>
       <button id="detpdf" style="margin-top:8px;width:100%;padding:12px;font:700 15px system-ui;background:#0a6b3d;color:#fff;border:0;border-radius:8px">Baixar PDF deste lote (fluxo de pagamento)</button>
-      <button id="detqro" style="margin-top:6px;width:100%;padding:12px;font:700 15px system-ui;background:#1d4ed8;color:#fff;border:0;border-radius:8px">Quero este lote — iniciar proposta</button>`;
+      <button id="detqro" style="margin-top:6px;width:100%;padding:12px;font:700 15px system-ui;background:#1d4ed8;color:#fff;border:0;border-radius:8px">Quero este lote — iniciar proposta</button>
+      <div class="acoes">
+        <button id="detlink" style="background:#475569;color:#fff;border:0">🔗 Copiar link deste lote</button>
+        <button id="detprox" style="background:#fff;color:#0a6b3d;border:1px solid #0a6b3d">Próximo lote livre →</button>
+      </div>`;
     det.style.display='block';
     detDoc = {nome, quadra, lote, row, p13, pav};
     document.getElementById('detpdf').onclick = baixaPDF;
     document.getElementById('detqro').onclick = abreFormProposta;
+    document.getElementById('detlink').onclick = copiaLink;
+    document.getElementById('detprox').onclick = proximoLivre;
   }
   function baixaPDF(){
     if (!detDoc) return;
@@ -328,6 +378,8 @@ Promise.all([fetch('lotes.json').then(r=>r.json()), fetch('plano.json').then(r=>
   faseSel.onchange = ()=>{ fillQuadras(); const bb=FASE_BBOX[pkey(data[faseSel.value].fase)]; if(bb){ const mob=matchMedia('(max-width:640px)').matches; const cam=map.cameraForBounds(bb,{padding:mob?{top:96,bottom:120,left:10,right:10}:60,bearing:-15,pitch:42}); if(cam) map.easeTo({center:cam.center,zoom:cam.zoom,bearing:-15,pitch:42,duration:900}); } };
   quadraSel.onchange = fillLotes;
   fillQuadras();
+  { const prm = new URLSearchParams(location.search), f = prm.get('fase'), q = prm.get('quadra'), l = prm.get('lote');
+    if (f && q && l && data[f] && data[f].quadras[q] && data[f].quadras[q][l] && data[f].quadras[q][l].status === 'tabela_out2026') vaiParaLote(f, q, l); }
 });
 
 </script>
