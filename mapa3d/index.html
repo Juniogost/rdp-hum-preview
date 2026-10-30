@@ -205,21 +205,24 @@ Promise.all([fetch('lotes.json').then(r=>r.json()), fetch('plano.json').then(r=>
     let html = '<table><tr><th>Lote</th><th>Área (m²)</th><th>Logradouro</th><th>Situação</th></tr>';
     for (const id of ids){
       const l = lotesQ[id];
+      const av = RDPStatus.avail(l), temTab = RDPStatus.temTabela(l);
       let st;
-      if (l.status === 'tabela_out2026'){
+      if (av === 'livre' && temTab){
         livres++;
         const vals = [l.valor_avista && brl(l.valor_avista)+' à vista', l.valor_proposta && brl(l.valor_proposta)+' proposta'].filter(Boolean).join('<br>');
         st = `<span class="chip livre">Livre</span><span class="val">${vals}</span>`;
-      } else if (l.status === 'vendido'){
+      } else if (av === 'vendido'){
         vendidos++; st = '<span class="chip vendido">Vendido</span>';
-      } else if (l.status === 'reservado'){
+      } else if (av === 'reservado'){
         reservados++; st = '<span class="chip reservado">Reservado</span>';
-      } else if (l.status === 'consultar' || l.status === 'divergente_app_vendido_consta_tabela'){
+      } else if (av === 'consultar'){
         consultar++; st = '<span class="chip consultar">Consultar a equipe</span>';
+      } else if (av === 'livre'){
+        livres++; st = '<span class="chip livre">Livre</span><span class="val">valor sob consulta</span>';
       } else {
         st = '<span class="chip embreve">Em breve</span>';
       }
-      const clic = l.status === 'tabela_out2026' ? ` data-lote="${id}" style="cursor:pointer"` : '';
+      const clic = (av === 'livre' && temTab) ? ` data-lote="${id}" style="cursor:pointer"` : '';
       html += `<tr${clic}><td>${id}</td><td>${l.area_m2.toLocaleString('pt-BR',{minimumFractionDigits:2})}</td><td>${l.logradouro}</td><td>${st}</td></tr>`;
     }
     lotes.innerHTML = html + '</table>';
@@ -256,7 +259,7 @@ Promise.all([fetch('lotes.json').then(r=>r.json()), fetch('plano.json').then(r=>
       const qs = Object.keys(data[f].quadras).sort((a,b)=>num(a)-num(b));
       for (const q of qs){
         const ids = Object.keys(data[f].quadras[q] || {}).sort((a,b)=>num(a)-num(b));
-        for (const l of ids){ const it = data[f].quadras[q][l]; if (it && it.status === 'tabela_out2026') out.push([f, q, l]); }
+        for (const l of ids){ const it = data[f].quadras[q][l]; if (it && RDPStatus.avail(it) === 'livre' && RDPStatus.temTabela(it)) out.push([f, q, l]); }
       }
     }
     return out;
@@ -416,7 +419,7 @@ Promise.all([fetch('lotes.json').then(r=>r.json()), fetch('plano.json').then(r=>
   quadraSel.onchange = fillLotes;
   fillQuadras();
   { const prm = new URLSearchParams(location.search), f = prm.get('fase'), q = prm.get('quadra'), l = prm.get('lote');
-    if (f && q && l && data[f] && data[f].quadras[q] && data[f].quadras[q][l] && data[f].quadras[q][l].status === 'tabela_out2026') vaiParaLote(f, q, l); }
+    if (f && q && l && data[f] && data[f].quadras[q] && data[f].quadras[q][l] && RDPStatus.avail(data[f].quadras[q][l]) === 'livre' && RDPStatus.temTabela(data[f].quadras[q][l])) vaiParaLote(f, q, l); }
 });
 
 </script>

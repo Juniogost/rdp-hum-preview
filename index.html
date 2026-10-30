@@ -149,13 +149,10 @@ Promise.all([fetch('mapa/lotes.json?v=7').then(r=>r.json()), fetch('mapa/plano.j
   const dotsLayer = L.layerGroup().addTo(map); // bolinhas (zoom baixo)
   let quadraHL = null;
   function pinInfo(l){
-    const vend = l.disp==='vendido' || l.status==='vendido';
-    const resv = l.disp==='reservado' || l.status==='reservado';
-    const livrTab = l.status==='tabela_out2026' && !vend && !resv;
-    const livr = l.disp==='livre' || (livrTab && !l.disp);
-    if (vend) return {cor:'#dc2626', clica:false, tipo:'v'};
-    if (resv) return {cor:'#ea580c', clica:false, tipo:'r'};
-    if (livr) return {cor:'#16a34a', clica:livrTab, tipo:'l'};
+    const a = RDPStatus.avail(l);
+    if (a === 'vendido') return {cor:'#dc2626', clica:false, tipo:'v'};
+    if (a === 'reservado') return {cor:'#ea580c', clica:false, tipo:'r'};
+    if (a === 'livre') return {cor:'#16a34a', clica:RDPStatus.temTabela(l), tipo:'l'};
     return null;
   }
   function buildPins(){
@@ -225,22 +222,18 @@ Promise.all([fetch('mapa/lotes.json?v=7').then(r=>r.json()), fetch('mapa/plano.j
     html += '<table><tr><th>Lote</th><th>Área (m²)</th><th>Logradouro</th><th>Situação</th></tr>';
     for (const id of ids){
       const l = lotesQ[id];
+      const av = RDPStatus.avail(l), temTab = RDPStatus.temTabela(l);
       let st;
-      if (l.disp === 'livre' && l.status !== 'tabela_out2026'){
-        st = '<span class="chip livre">Livre</span><span class="val">valor sob consulta</span>';
-      } else if (l.status === 'tabela_out2026'){
+      if (av === 'vendido') st = '<span class="chip vendido">Vendido</span>';
+      else if (av === 'reservado') st = '<span class="chip reservado">Reservado</span>';
+      else if (av === 'consultar') st = '<span class="chip consultar">Consultar</span>';
+      else if (av === 'livre' && temTab){
         livres++;
         const vals = [l.valor_avista && brl(l.valor_avista)+' à vista', l.valor_proposta && brl(l.valor_proposta)+' proposta'].filter(Boolean).join('<br>');
         st = `<span class="chip livre">Livre</span><span class="val">${vals}</span>`;
-      } else {
-        st = '<span class="chip embreve">Em breve</span>';
-      }
-      const vend = l.disp === 'vendido' || l.status === 'vendido', resv = l.disp === 'reservado' || l.status === 'reservado';
-      const diverg = l.status === 'consultar';
-      const clic = (!vend && !resv && l.status === 'tabela_out2026') ? ` data-lote="${id}" style="cursor:pointer"` : '';
-      if (vend) st = '<span class="chip vendido">Vendido</span>';
-      else if (resv) st = '<span class="chip reservado">Reservado</span>';
-      else if (diverg) st = '<span class="chip consultar">Consultar</span>';
+      } else if (av === 'livre') st = '<span class="chip livre">Livre</span><span class="val">valor sob consulta</span>';
+      else st = '<span class="chip embreve">Em breve</span>';
+      const clic = (av === 'livre' && temTab) ? ` data-lote="${id}" style="cursor:pointer"` : '';
       html += `<tr${clic}><td>${id}</td><td>${l.area_m2==null?'\u2014':l.area_m2.toLocaleString('pt-BR',{minimumFractionDigits:2})}</td><td>${l.logradouro}</td><td>${st}</td></tr>`;
     }
     lotes.innerHTML = html + '</table>';
