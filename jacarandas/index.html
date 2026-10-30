@@ -160,21 +160,22 @@ Promise.all([fetch('mapa/lotes.json').then(r=>r.json()), fetch('mapa/plano.json'
     html += '<table><tr><th>Lote</th><th>Área (m²)</th><th>Logradouro</th><th>Situação</th></tr>';
     for (const id of ids){
       const l = lotesQ[id];
+      const av = RDPStatus.avail(l);
       let st;
-      if (l.status === 'tabela_out2026'){
+      if (av === 'livre'){
         livres++;
         const vals = [l.valor_avista && brl(l.valor_avista)+' à vista', l.valor_proposta && brl(l.valor_proposta)+' proposta'].filter(Boolean).join('<br>');
         st = `<span class="chip livre">Livre</span><span class="val">${vals}</span>`;
-      } else if (l.status === 'vendido'){
+      } else if (av === 'vendido'){
         vend++; st = '<span class="chip vendido">Vendido</span>';
-      } else if (l.status === 'reservado'){
+      } else if (av === 'reservado'){
         res++; st = '<span class="chip reservado">Reservado</span>';
-      } else if (l.status === 'divergente_app_vendido_consta_tabela'){
+      } else if (av === 'consultar'){
         cons++; st = '<span class="chip consultar" title="App de vendas marca vendido, mas consta na tabela out/2026 — confirmar com a equipe">Consultar</span>';
       } else {
         st = '<span class="chip embreve">Em breve</span>';
       }
-      const clic = l.status === 'tabela_out2026' ? ` data-lote="${id}" style="cursor:pointer"` : '';
+      const clic = av === 'livre' ? ` data-lote="${id}" style="cursor:pointer"` : '';
       const area = (l.area_m2 != null) ? l.area_m2.toLocaleString('pt-BR',{minimumFractionDigits:2}) : '—';
       html += `<tr${clic}><td>${id}</td><td>${area}</td><td>${l.logradouro}</td><td>${st}</td></tr>`;
     }
@@ -194,7 +195,7 @@ Promise.all([fetch('mapa/lotes.json').then(r=>r.json()), fetch('mapa/plano.json'
     const meta = pk && plano[pk] ? plano[pk].meta : null;
     let nome = data[fase].fase.split('— ')[1] || data[fase].fase;
     const inf = (data[fase].quadras[quadra] || {})[lote] || {};
-    const stLbl = {'vendido':'Vendido','reservado':'Reservado','divergente_app_vendido_consta_tabela':'Consultar a equipe','tabela_out2026':'Livre','sem_tabela':'Em breve'}[inf.status] || 'Consultar a equipe';
+    const stLbl = {'vendido':'Vendido','reservado':'Reservado','consultar':'Consultar a equipe','livre':'Livre'}[RDPStatus.avail(inf)] || 'Em breve';
     const stCor = {'Vendido':'#dc2626','Reservado':'#ea580c','Consultar a equipe':'#ca8a04','Livre':'#16a34a','Em breve':'#6b7280'}[stLbl];
     const cab = `<b>${nome} — Quadra ${quadra}, Lote ${lote}</b>${inf.area_m2!=null?` · Área ${Number(inf.area_m2).toLocaleString('pt-BR',{minimumFractionDigits:2})} m²`:''}${inf.logradouro?` · ${inf.logradouro}`:''}<br>
       <span class="chip" style="background:${stCor}1a;color:${stCor};font-weight:700">${stLbl}</span> <span style="font-size:12px;color:#555">Valores exatos da tabela oficial outubro/2026 (vigência 01/10/2026), sem cálculo nosso. Estoque não confirmado.</span>`;
