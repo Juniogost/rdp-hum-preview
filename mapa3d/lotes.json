@@ -643,9 +643,7 @@
      "logradouro": "RUA AROEIRA 5",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "consultar",
-     "valor_avista": "102750.00",
-     "valor_proposta": "100695.00"
+     "status": "consultar"
     },
     "14": {
      "logradouro": "RUA IPÊ 20",
@@ -2439,9 +2437,7 @@
      "logradouro": "RUA AROEIRA 10",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "consultar",
-     "valor_avista": "105000.00",
-     "valor_proposta": "102900.00"
+     "status": "consultar"
     },
     "7": {
      "logradouro": "RUA AROEIRA 10",
@@ -4913,9 +4909,7 @@
      "logradouro": "RUA AROEIRA 9",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "consultar",
-     "valor_avista": "92000.00",
-     "valor_proposta": "90160.00"
+     "status": "consultar"
     },
     "18": {
      "logradouro": "RUA AROEIRA 9",
@@ -5005,9 +4999,7 @@
      "logradouro": "RUA AROEIRA 16",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "consultar",
-     "valor_avista": "92000.00",
-     "valor_proposta": "90160.00"
+     "status": "consultar"
     },
     "33": {
      "logradouro": "RUA AROEIRA 16",
@@ -6288,17 +6280,13 @@
      "logradouro": "RUA JACARANDÁ 3",
      "area_m2": 250.73,
      "frente_m": "10.08",
-     "status": "consultar",
-     "valor_avista": "98988.20",
-     "valor_proposta": "97008.44"
+     "status": "consultar"
     },
     "16": {
      "logradouro": "RUA JACARANDÁ 3",
      "area_m2": 251.06,
      "frente_m": "10.22",
-     "status": "consultar",
-     "valor_avista": "99118.49",
-     "valor_proposta": "97136.12"
+     "status": "consultar"
     },
     "17": {
      "logradouro": "RUA JACARANDÁ 3",
@@ -6638,9 +6626,7 @@
      "logradouro": "RUA LUISMAR MARTINS",
      "area_m2": 350.0,
      "frente_m": "10.46",
-     "status": "consultar",
-     "valor_avista": "472500.00",
-     "valor_proposta": "463050.00"
+     "status": "consultar"
     },
     "2": {
      "logradouro": "RUA JACARANDÁ 2",
@@ -6872,9 +6858,7 @@
      "logradouro": "RUA LUISMAR MARTINS",
      "area_m2": 250.0,
      "frente_m": "18.20",
-     "status": "reservado",
-     "valor_avista": "337500.00",
-     "valor_proposta": "330750.00"
+     "status": "reservado"
     }
    },
    "12": {
@@ -7879,9 +7863,7 @@
      "logradouro": "RUA AROEIRA 6",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "consultar",
-     "valor_avista": "98700.00",
-     "valor_proposta": "96726.00"
+     "status": "consultar"
     },
     "34": {
      "logradouro": "RUA AROEIRA 6",
@@ -8259,17 +8241,13 @@
      "logradouro": "RUA ANGICO 3",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "consultar",
-     "valor_avista": "98700.00",
-     "valor_proposta": "96726.00"
+     "status": "consultar"
     },
     "10": {
      "logradouro": "RUA ANGICO 3",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "consultar",
-     "valor_avista": "98700.00",
-     "valor_proposta": "96726.00"
+     "status": "consultar"
     },
     "11": {
      "logradouro": "RUA ANGICO 3",
@@ -8393,17 +8371,13 @@
      "logradouro": "RUA ANGICO 2",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "consultar",
-     "valor_avista": "98700.00",
-     "valor_proposta": "96726.00"
+     "status": "consultar"
     },
     "32": {
      "logradouro": "RUA ANGICO 2",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "consultar",
-     "valor_avista": "98700.00",
-     "valor_proposta": "96726.00"
+     "status": "consultar"
     },
     "33": {
      "logradouro": "RUA ANGICO 2",
@@ -8415,9 +8389,7 @@
      "logradouro": "RUA ANGICO 2",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "consultar",
-     "valor_avista": "98700.00",
-     "valor_proposta": "96726.00"
+     "status": "consultar"
     },
     "35": {
      "logradouro": "RUA ANGICO 2",
@@ -8479,9 +8451,7 @@
      "logradouro": "RUA ANGICO 2",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "consultar",
-     "valor_avista": "98700.00",
-     "valor_proposta": "96726.00"
+     "status": "consultar"
     },
     "44": {
      "logradouro": "RUA ANGICO 2",
@@ -8513,17 +8483,13 @@
      "logradouro": "RUA ANGICO 5",
      "area_m2": 362.5,
      "frente_m": "10.00",
-     "status": "consultar",
-     "valor_avista": "146015.00",
-     "valor_proposta": "143094.70"
+     "status": "consultar"
     },
     "2": {
      "logradouro": "RUA ANGICO 5",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "consultar",
-     "valor_avista": "100700.00",
-     "valor_proposta": "98686.00"
+     "status": "consultar"
     },
     "3": {
      "logradouro": "RUA ANGICO 5",
@@ -8609,9 +8575,7 @@
      "logradouro": "RUA ANGICO 5",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "consultar",
-     "valor_avista": "100700.00",
-     "valor_proposta": "98686.00"
+     "status": "consultar"
     },
     "14": {
      "logradouro": "RUA ANGICO 5",
@@ -8757,9 +8721,7 @@
      "logradouro": "AV. TEREZINHA G.",
      "area_m2": 362.5,
      "frente_m": "10.00",
-     "status": "consultar",
-     "valor_avista": "274050.00",
-     "valor_proposta": "268569.00"
+     "status": "consultar"
     }
    },
    "7": {
@@ -8849,17 +8811,13 @@
      "logradouro": "RUA DO PARQUE",
      "area_m2": 362.5,
      "frente_m": "10.00",
-     "status": "consultar",
-     "valor_avista": "145000.00",
-     "valor_proposta": "142100.00"
+     "status": "consultar"
     },
     "13": {
      "logradouro": "RUA ANGICO 6",
      "area_m2": 362.5,
      "frente_m": "10.00",
-     "status": "consultar",
-     "valor_avista": "145000.00",
-     "valor_proposta": "142100.00"
+     "status": "consultar"
     },
     "14": {
      "logradouro": "RUA ANGICO 6",
@@ -9361,17 +9319,13 @@
      "logradouro": "RUA ANGICO 9",
      "area_m2": 251.43,
      "frente_m": "10.01",
-     "status": "consultar",
-     "valor_avista": "100572.00",
-     "valor_proposta": "98560.56"
+     "status": "consultar"
     },
     "33": {
      "logradouro": "RUA ANGICO 9",
      "area_m2": 260.06,
      "frente_m": "10.09",
-     "status": "consultar",
-     "valor_avista": "104024.00",
-     "valor_proposta": "101943.52"
+     "status": "consultar"
     },
     "34": {
      "logradouro": "RUA ANGICO 9",
@@ -9439,17 +9393,13 @@
      "logradouro": "RUA HEBROM 17",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "consultar",
-     "valor_avista": "100000.00",
-     "valor_proposta": "98000.00"
+     "status": "consultar"
     },
     "10": {
      "logradouro": "RUA HEBROM 17",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "consultar",
-     "valor_avista": "100000.00",
-     "valor_proposta": "98000.00"
+     "status": "consultar"
     },
     "11": {
      "logradouro": "RUA HEBROM 17",
@@ -9497,9 +9447,7 @@
      "logradouro": "RUA HEBROM 17",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "consultar",
-     "valor_avista": "100000.00",
-     "valor_proposta": "98000.00"
+     "status": "consultar"
     },
     "19": {
      "logradouro": "RUA HEBROM 17",
@@ -9705,9 +9653,7 @@
      "logradouro": "AV. ADRIANO AUAD",
      "area_m2": 250.0,
      "frente_m": "10.23",
-     "status": "consultar",
-     "valor_avista": "100000.00",
-     "valor_proposta": "98000.00"
+     "status": "consultar"
     }
    },
    "12": {

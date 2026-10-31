@@ -656,8 +656,6 @@
      "area_m2": 250.0,
      "frente_m": "10.00",
      "status": "consultar",
-     "valor_avista": "102750.00",
-     "valor_proposta": "100695.00",
      "disp": "vendido"
     },
     "14": {
@@ -2546,8 +2544,6 @@
      "area_m2": 250.0,
      "frente_m": "10.00",
      "status": "consultar",
-     "valor_avista": "105000.00",
-     "valor_proposta": "102900.00",
      "disp": "vendido"
     },
     "7": {
@@ -5173,8 +5169,6 @@
      "area_m2": 250.0,
      "frente_m": "10.00",
      "status": "consultar",
-     "valor_avista": "92000.00",
-     "valor_proposta": "90160.00",
      "disp": "vendido"
     },
     "18": {
@@ -5280,8 +5274,6 @@
      "area_m2": 250.0,
      "frente_m": "10.00",
      "status": "consultar",
-     "valor_avista": "92000.00",
-     "valor_proposta": "90160.00",
      "disp": "vendido"
     },
     "33": {
@@ -6575,17 +6567,13 @@
      "logradouro": "RUA JACARANDÁ 3",
      "area_m2": 250.73,
      "frente_m": "10.08",
-     "status": "consultar",
-     "valor_avista": "98988.20",
-     "valor_proposta": "97008.44"
+     "status": "consultar"
     },
     "16": {
      "logradouro": "RUA JACARANDÁ 3",
      "area_m2": 251.06,
      "frente_m": "10.22",
-     "status": "consultar",
-     "valor_avista": "99118.49",
-     "valor_proposta": "97136.12"
+     "status": "consultar"
     },
     "17": {
      "logradouro": "RUA JACARANDÁ 3",
@@ -6925,9 +6913,7 @@
      "logradouro": "RUA LUISMAR MARTINS",
      "area_m2": 350.0,
      "frente_m": "10.46",
-     "status": "consultar",
-     "valor_avista": "472500.00",
-     "valor_proposta": "463050.00"
+     "status": "consultar"
     },
     "2": {
      "logradouro": "RUA JACARANDÁ 2",
@@ -7159,9 +7145,7 @@
      "logradouro": "RUA LUISMAR MARTINS",
      "area_m2": 250.0,
      "frente_m": "18.20",
-     "status": "reservado",
-     "valor_avista": "337500.00",
-     "valor_proposta": "330750.00"
+     "status": "reservado"
     },
     "18": {
      "logradouro": "RUA JACARANDÁ 1",
@@ -8216,8 +8200,6 @@
      "area_m2": 250.0,
      "frente_m": "10.00",
      "status": "consultar",
-     "valor_avista": "98700.00",
-     "valor_proposta": "96726.00",
      "disp": "vendido"
     },
     "34": {
@@ -8611,8 +8593,6 @@
      "area_m2": 250.0,
      "frente_m": "10.00",
      "status": "consultar",
-     "valor_avista": "98700.00",
-     "valor_proposta": "96726.00",
      "disp": "vendido"
     },
     "10": {
@@ -8620,8 +8600,6 @@
      "area_m2": 250.0,
      "frente_m": "10.00",
      "status": "consultar",
-     "valor_avista": "98700.00",
-     "valor_proposta": "96726.00",
      "disp": "vendido"
     },
     "11": {
@@ -8766,8 +8744,6 @@
      "area_m2": 250.0,
      "frente_m": "10.00",
      "status": "consultar",
-     "valor_avista": "98700.00",
-     "valor_proposta": "96726.00",
      "disp": "vendido"
     },
     "32": {
@@ -8775,8 +8751,6 @@
      "area_m2": 250.0,
      "frente_m": "10.00",
      "status": "consultar",
-     "valor_avista": "98700.00",
-     "valor_proposta": "96726.00",
      "disp": "vendido"
     },
     "33": {
@@ -8791,8 +8765,6 @@
      "area_m2": 250.0,
      "frente_m": "10.00",
      "status": "consultar",
-     "valor_avista": "98700.00",
-     "valor_proposta": "96726.00",
      "disp": "vendido"
     },
     "35": {
@@ -8863,8 +8835,6 @@
      "area_m2": 250.0,
      "frente_m": "10.00",
      "status": "consultar",
-     "valor_avista": "98700.00",
-     "valor_proposta": "96726.00",
      "disp": "vendido"
     },
     "44": {
@@ -8902,8 +8872,6 @@
      "area_m2": 362.5,
      "frente_m": "10.00",
      "status": "consultar",
-     "valor_avista": "146015.00",
-     "valor_proposta": "143094.70",
      "disp": "vendido"
     },
     "2": {
@@ -8911,8 +8879,6 @@
      "area_m2": 250.0,
      "frente_m": "10.00",
      "status": "consultar",
-     "valor_avista": "100700.00",
-     "valor_proposta": "98686.00",
      "disp": "vendido"
     },
     "3": {
@@ -9010,8 +8976,6 @@
      "area_m2": 250.0,
      "frente_m": "10.00",
      "status": "consultar",
-     "valor_avista": "100700.00",
-     "valor_proposta": "98686.00",
      "disp": "vendido"
     },
     "14": {
@@ -9177,8 +9141,6 @@
      "area_m2": 362.5,
      "frente_m": "10.00",
      "status": "consultar",
-     "valor_avista": "274050.00",
-     "valor_proposta": "268569.00",
      "disp": "vendido"
     }
    },
@@ -9281,8 +9243,6 @@
      "area_m2": 362.5,
      "frente_m": "10.00",
      "status": "consultar",
-     "valor_avista": "145000.00",
-     "valor_proposta": "142100.00",
      "disp": "vendido"
     },
     "13": {
@@ -9290,8 +9250,6 @@
      "area_m2": 362.5,
      "frente_m": "10.00",
      "status": "consultar",
-     "valor_avista": "145000.00",
-     "valor_proposta": "142100.00",
      "disp": "vendido"
     },
     "14": {
@@ -9838,8 +9796,6 @@
      "area_m2": 251.43,
      "frente_m": "10.01",
      "status": "consultar",
-     "valor_avista": "100572.00",
-     "valor_proposta": "98560.56",
      "disp": "vendido"
     },
     "33": {
@@ -9847,8 +9803,6 @@
      "area_m2": 260.06,
      "frente_m": "10.09",
      "status": "consultar",
-     "valor_avista": "104024.00",
-     "valor_proposta": "101943.52",
      "disp": "vendido"
     },
     "34": {
@@ -9928,8 +9882,6 @@
      "area_m2": 250.0,
      "frente_m": "10.00",
      "status": "consultar",
-     "valor_avista": "100000.00",
-     "valor_proposta": "98000.00",
      "disp": "vendido"
     },
     "10": {
@@ -9937,8 +9889,6 @@
      "area_m2": 250.0,
      "frente_m": "10.00",
      "status": "consultar",
-     "valor_avista": "100000.00",
-     "valor_proposta": "98000.00",
      "disp": "vendido"
     },
     "11": {
@@ -9995,8 +9945,6 @@
      "area_m2": 250.0,
      "frente_m": "10.00",
      "status": "consultar",
-     "valor_avista": "100000.00",
-     "valor_proposta": "98000.00",
      "disp": "vendido"
     },
     "19": {
@@ -10232,8 +10180,6 @@
      "area_m2": 250.0,
      "frente_m": "10.23",
      "status": "consultar",
-     "valor_avista": "100000.00",
-     "valor_proposta": "98000.00",
      "disp": "vendido"
     }
    },
