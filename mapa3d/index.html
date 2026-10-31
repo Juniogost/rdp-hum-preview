@@ -180,7 +180,7 @@ document.getElementById('btnPor').addEventListener('click', ()=>{
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="../status.js"></script>
 <script>
-Promise.all([fetch('lotes.json').then(r=>r.json()), fetch('plano.json').then(r=>r.json())]).then(async ([data, plano])=>{
+Promise.all([fetch('lotes.json?v=8').then(r=>r.json()), fetch('plano.json?v=7').then(r=>r.json())]).then(async ([data, plano])=>{
   const rdpSt = await RDPStatus.aplicar('../status.json', data);
   { const dd = document.getElementById('dispdata'); if (dd) dd.textContent = RDPStatus.linha(rdpSt); }
   const faseSel = document.getElementById('fase'), quadraSel = document.getElementById('quadra');
