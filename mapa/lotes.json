@@ -2273,55 +2273,49 @@
      "logradouro": "RUA AROEIRA 8",
      "area_m2": 263.37,
      "frente_m": "11.07",
-     "status": "tabela_out2026",
+     "status": "divergente_app_vendido_consta_tabela",
      "valor_avista": "115882.80",
-     "valor_proposta": "113565.14",
-     "disp": "vendido"
+     "valor_proposta": "113565.14"
     },
     "7": {
      "logradouro": "RUA AROEIRA 8",
      "area_m2": 263.37,
      "frente_m": "11.07",
-     "status": "tabela_out2026",
+     "status": "divergente_app_vendido_consta_tabela",
      "valor_avista": "115882.80",
-     "valor_proposta": "113565.14",
-     "disp": "vendido"
+     "valor_proposta": "113565.14"
     },
     "8": {
      "logradouro": "RUA AROEIRA 8",
      "area_m2": 263.37,
      "frente_m": "11.07",
-     "status": "tabela_out2026",
+     "status": "divergente_app_vendido_consta_tabela",
      "valor_avista": "115882.80",
-     "valor_proposta": "113565.14",
-     "disp": "vendido"
+     "valor_proposta": "113565.14"
     },
     "9": {
      "logradouro": "RUA AROEIRA 8",
      "area_m2": 263.37,
      "frente_m": "11.07",
-     "status": "tabela_out2026",
+     "status": "divergente_app_vendido_consta_tabela",
      "valor_avista": "115882.80",
-     "valor_proposta": "113565.14",
-     "disp": "vendido"
+     "valor_proposta": "113565.14"
     },
     "10": {
      "logradouro": "RUA AROEIRA 8",
      "area_m2": 263.37,
      "frente_m": "11.07",
-     "status": "tabela_out2026",
+     "status": "divergente_app_vendido_consta_tabela",
      "valor_avista": "115882.80",
-     "valor_proposta": "113565.14",
-     "disp": "vendido"
+     "valor_proposta": "113565.14"
     },
     "11": {
      "logradouro": "RUA AROEIRA 8",
      "area_m2": 263.37,
      "frente_m": "11.07",
-     "status": "tabela_out2026",
+     "status": "divergente_app_vendido_consta_tabela",
      "valor_avista": "115882.80",
-     "valor_proposta": "113565.14",
-     "disp": "vendido"
+     "valor_proposta": "113565.14"
     },
     "12": {
      "logradouro": "RUA AROEIRA 8",
@@ -2395,10 +2389,9 @@
      "logradouro": "RUA AROEIRA 9",
      "area_m2": 264.98,
      "frente_m": "10.00",
-     "status": "tabela_out2026",
+     "status": "divergente_app_vendido_consta_tabela",
      "valor_avista": "116591.20",
-     "valor_proposta": "114259.38",
-     "disp": "vendido"
+     "valor_proposta": "114259.38"
     },
     "23": {
      "logradouro": "RUA AROEIRA 9",
@@ -2418,19 +2411,17 @@
      "logradouro": "RUA AROEIRA 9",
      "area_m2": 264.98,
      "frente_m": "10.00",
-     "status": "tabela_out2026",
+     "status": "divergente_app_vendido_consta_tabela",
      "valor_avista": "116591.20",
-     "valor_proposta": "114259.38",
-     "disp": "vendido"
+     "valor_proposta": "114259.38"
     },
     "26": {
      "logradouro": "RUA AROEIRA 9",
      "area_m2": 264.98,
      "frente_m": "10.00",
-     "status": "tabela_out2026",
+     "status": "divergente_app_vendido_consta_tabela",
      "valor_avista": "116591.20",
-     "valor_proposta": "114259.38",
-     "disp": "vendido"
+     "valor_proposta": "114259.38"
     },
     "27": {
      "logradouro": "RUA AROEIRA 9",
@@ -2499,10 +2490,9 @@
      "logradouro": "RUA AROEIRA 7",
      "area_m2": 358.86,
      "frente_m": "20.00",
-     "status": "tabela_out2026",
+     "status": "divergente_app_vendido_consta_tabela",
      "valor_avista": "157898.40",
-     "valor_proposta": "154740.43",
-     "disp": "vendido"
+     "valor_proposta": "154740.43"
     }
    },
    "11": {
@@ -4303,10 +4293,9 @@
      "logradouro": "RUA AROEIRA 8",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "tabela_out2026",
+     "status": "divergente_app_vendido_consta_tabela",
      "valor_avista": "97000.00",
-     "valor_proposta": "95060.00",
-     "disp": "vendido"
+     "valor_proposta": "95060.00"
     },
     "12": {
      "logradouro": "RUA AROEIRA 8",
@@ -4819,10 +4808,9 @@
      "logradouro": "RUA AROEIRA 18",
      "area_m2": 255.33,
      "frente_m": "10.00",
-     "status": "tabela_out2026",
+     "status": "divergente_app_vendido_consta_tabela",
      "valor_avista": "78389.70",
-     "valor_proposta": "76821.91",
-     "disp": "vendido"
+     "valor_proposta": "76821.91"
     },
     "6": {
      "logradouro": "RUA AROEIRA 18",
@@ -5110,10 +5098,9 @@
      "logradouro": "RUA AROEIRA 9",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "tabela_out2026",
+     "status": "divergente_app_vendido_consta_tabela",
      "valor_avista": "92000.00",
-     "valor_proposta": "90160.00",
-     "disp": "vendido"
+     "valor_proposta": "90160.00"
     },
     "10": {
      "logradouro": "RUA AROEIRA 9",
@@ -8169,8 +8156,7 @@
      "logradouro": "RUA AROEIRA 6",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "tabela_out2026",
-     "disp": "vendido",
+     "status": "divergente_app_vendido_consta_tabela",
      "valor_avista": "98700.00",
      "valor_proposta": "96726.00"
     },
@@ -8648,8 +8634,7 @@
      "logradouro": "RUA ANGICO 3",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "tabela_out2026",
-     "disp": "vendido",
+     "status": "divergente_app_vendido_consta_tabela",
      "valor_avista": "98700.00",
      "valor_proposta": "96726.00"
     },
@@ -8657,8 +8642,7 @@
      "logradouro": "RUA ANGICO 3",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "tabela_out2026",
-     "disp": "vendido",
+     "status": "divergente_app_vendido_consta_tabela",
      "valor_avista": "98700.00",
      "valor_proposta": "96726.00"
     },
@@ -8771,10 +8755,9 @@
      "logradouro": "RUA ANGICO 2",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "tabela_out2026",
+     "status": "divergente_app_vendido_consta_tabela",
      "valor_avista": "98700.00",
-     "valor_proposta": "96726.00",
-     "disp": "vendido"
+     "valor_proposta": "96726.00"
     },
     "36": {
      "logradouro": "RUA ANGICO 2",
@@ -8803,10 +8786,9 @@
      "logradouro": "RUA ANGICO 2",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "tabela_out2026",
+     "status": "divergente_app_vendido_consta_tabela",
      "valor_avista": "98700.00",
-     "valor_proposta": "96726.00",
-     "disp": "vendido"
+     "valor_proposta": "96726.00"
     },
     "40": {
      "logradouro": "RUA ANGICO 2",
@@ -8825,10 +8807,9 @@
      "logradouro": "RUA ANGICO 2",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "tabela_out2026",
+     "status": "divergente_app_vendido_consta_tabela",
      "valor_avista": "98700.00",
-     "valor_proposta": "96726.00",
-     "disp": "reservado"
+     "valor_proposta": "96726.00"
     },
     "43": {
      "logradouro": "RUA ANGICO 2",
@@ -8966,10 +8947,9 @@
      "logradouro": "RUA ANGICO 5",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "tabela_out2026",
+     "status": "divergente_app_vendido_consta_tabela",
      "valor_avista": "100700.00",
-     "valor_proposta": "98686.00",
-     "disp": "reservado"
+     "valor_proposta": "98686.00"
     },
     "13": {
      "logradouro": "RUA ANGICO 5",
@@ -8991,10 +8971,9 @@
      "logradouro": "RUA ANGICO 5",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "tabela_out2026",
+     "status": "divergente_app_vendido_consta_tabela",
      "valor_avista": "100700.00",
-     "valor_proposta": "98686.00",
-     "disp": "reservado"
+     "valor_proposta": "98686.00"
     },
     "16": {
      "logradouro": "RUA ANGICO 5",
@@ -9179,55 +9158,49 @@
      "logradouro": "RUA DO PARQUE",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "tabela_out2026",
+     "status": "divergente_app_vendido_consta_tabela",
      "valor_avista": "100000.00",
-     "valor_proposta": "98000.00",
-     "disp": "vendido"
+     "valor_proposta": "98000.00"
     },
     "6": {
      "logradouro": "RUA DO PARQUE",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "tabela_out2026",
+     "status": "divergente_app_vendido_consta_tabela",
      "valor_avista": "100000.00",
-     "valor_proposta": "98000.00",
-     "disp": "vendido"
+     "valor_proposta": "98000.00"
     },
     "7": {
      "logradouro": "RUA DO PARQUE",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "tabela_out2026",
+     "status": "divergente_app_vendido_consta_tabela",
      "valor_avista": "100000.00",
-     "valor_proposta": "98000.00",
-     "disp": "vendido"
+     "valor_proposta": "98000.00"
     },
     "8": {
      "logradouro": "RUA DO PARQUE",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "tabela_out2026",
+     "status": "divergente_app_vendido_consta_tabela",
      "valor_avista": "100000.00",
-     "valor_proposta": "98000.00",
-     "disp": "vendido"
+     "valor_proposta": "98000.00"
     },
     "9": {
      "logradouro": "RUA DO PARQUE",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "tabela_out2026",
+     "status": "divergente_app_vendido_consta_tabela",
      "valor_avista": "100000.00",
-     "valor_proposta": "98000.00",
-     "disp": "vendido"
+     "valor_proposta": "98000.00"
     },
     "10": {
      "logradouro": "RUA DO PARQUE",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "tabela_out2026",
+     "status": "divergente_app_vendido_consta_tabela",
      "valor_avista": "100000.00",
-     "valor_proposta": "98000.00",
-     "disp": "vendido"
+     "valor_proposta": "98000.00"
     },
     "11": {
      "logradouro": "RUA DO PARQUE",
@@ -9256,46 +9229,41 @@
      "logradouro": "RUA ANGICO 6",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "tabela_out2026",
+     "status": "divergente_app_vendido_consta_tabela",
      "valor_avista": "100000.00",
-     "valor_proposta": "98000.00",
-     "disp": "vendido"
+     "valor_proposta": "98000.00"
     },
     "15": {
      "logradouro": "RUA ANGICO 6",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "tabela_out2026",
+     "status": "divergente_app_vendido_consta_tabela",
      "valor_avista": "100000.00",
-     "valor_proposta": "98000.00",
-     "disp": "vendido"
+     "valor_proposta": "98000.00"
     },
     "16": {
      "logradouro": "RUA ANGICO 6",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "tabela_out2026",
+     "status": "divergente_app_vendido_consta_tabela",
      "valor_avista": "100000.00",
-     "valor_proposta": "98000.00",
-     "disp": "vendido"
+     "valor_proposta": "98000.00"
     },
     "17": {
      "logradouro": "RUA ANGICO 6",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "tabela_out2026",
+     "status": "divergente_app_vendido_consta_tabela",
      "valor_avista": "100000.00",
-     "valor_proposta": "98000.00",
-     "disp": "vendido"
+     "valor_proposta": "98000.00"
     },
     "18": {
      "logradouro": "RUA ANGICO 6",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "tabela_out2026",
+     "status": "divergente_app_vendido_consta_tabela",
      "valor_avista": "100000.00",
-     "valor_proposta": "98000.00",
-     "disp": "vendido"
+     "valor_proposta": "98000.00"
     },
     "19": {
      "logradouro": "RUA ANGICO 6",
@@ -9727,19 +9695,17 @@
      "logradouro": "RUA ANGICO 9",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "tabela_out2026",
+     "status": "divergente_app_vendido_consta_tabela",
      "valor_avista": "100000.00",
-     "valor_proposta": "98000.00",
-     "disp": "vendido"
+     "valor_proposta": "98000.00"
     },
     "25": {
      "logradouro": "RUA ANGICO 9",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "tabela_out2026",
+     "status": "divergente_app_vendido_consta_tabela",
      "valor_avista": "100000.00",
-     "valor_proposta": "98000.00",
-     "disp": "vendido"
+     "valor_proposta": "98000.00"
     },
     "26": {
      "logradouro": "RUA ANGICO 9",
@@ -9761,28 +9727,25 @@
      "logradouro": "RUA ANGICO 9",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "tabela_out2026",
+     "status": "divergente_app_vendido_consta_tabela",
      "valor_avista": "100000.00",
-     "valor_proposta": "98000.00",
-     "disp": "vendido"
+     "valor_proposta": "98000.00"
     },
     "29": {
      "logradouro": "RUA ANGICO 9",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "tabela_out2026",
+     "status": "divergente_app_vendido_consta_tabela",
      "valor_avista": "100000.00",
-     "valor_proposta": "98000.00",
-     "disp": "vendido"
+     "valor_proposta": "98000.00"
     },
     "30": {
      "logradouro": "RUA ANGICO 9",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "tabela_out2026",
+     "status": "divergente_app_vendido_consta_tabela",
      "valor_avista": "100000.00",
-     "valor_proposta": "98000.00",
-     "disp": "vendido"
+     "valor_proposta": "98000.00"
     },
     "31": {
      "logradouro": "RUA ANGICO 9",
@@ -10009,19 +9972,17 @@
      "logradouro": "RUA ANGICO 9",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "tabela_out2026",
+     "status": "divergente_app_vendido_consta_tabela",
      "valor_avista": "100000.00",
-     "valor_proposta": "98000.00",
-     "disp": "vendido"
+     "valor_proposta": "98000.00"
     },
     "28": {
      "logradouro": "RUA ANGICO 9",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "tabela_out2026",
+     "status": "divergente_app_vendido_consta_tabela",
      "valor_avista": "100000.00",
-     "valor_proposta": "98000.00",
-     "disp": "vendido"
+     "valor_proposta": "98000.00"
     },
     "29": {
      "logradouro": "RUA ANGICO 9",
@@ -10070,10 +10031,9 @@
      "logradouro": "RUA ANGICO 9",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "tabela_out2026",
+     "status": "divergente_app_vendido_consta_tabela",
      "valor_avista": "100000.00",
-     "valor_proposta": "98000.00",
-     "disp": "vendido"
+     "valor_proposta": "98000.00"
     },
     "35": {
      "logradouro": "RUA ANGICO 9",
@@ -11600,10 +11560,9 @@
      "logradouro": "AV. ADRIANO AUAD",
      "area_m2": 260.0,
      "frente_m": "10.00",
-     "status": "tabela_out2026",
+     "status": "divergente_app_vendido_consta_tabela",
      "valor_avista": "95680.00",
-     "valor_proposta": "93766.40",
-     "disp": "vendido"
+     "valor_proposta": "93766.40"
     },
     "4": {
      "logradouro": "AV. ADRIANO AUAD",
@@ -11672,10 +11631,9 @@
      "logradouro": "RUA ANGICO 5",
      "area_m2": 250.0,
      "frente_m": "10.97",
-     "status": "tabela_out2026",
+     "status": "divergente_app_vendido_consta_tabela",
      "valor_avista": "92000.00",
-     "valor_proposta": "90160.00",
-     "disp": "vendido"
+     "valor_proposta": "90160.00"
     },
     "14": {
      "logradouro": "RUA ANGICO 13",
@@ -11695,10 +11653,9 @@
      "logradouro": "RUA ANGICO 13",
      "area_m2": 253.37,
      "frente_m": "10.00",
-     "status": "tabela_out2026",
+     "status": "divergente_app_vendido_consta_tabela",
      "valor_avista": "93240.16",
-     "valor_proposta": "91375.36",
-     "disp": "vendido"
+     "valor_proposta": "91375.36"
     },
     "17": {
      "logradouro": "RUA ANGICO 13",
@@ -11725,10 +11682,9 @@
      "logradouro": "RUA ANGICO 13",
      "area_m2": 253.37,
      "frente_m": "10.00",
-     "status": "tabela_out2026",
+     "status": "divergente_app_vendido_consta_tabela",
      "valor_avista": "93240.16",
-     "valor_proposta": "91375.36",
-     "disp": "vendido"
+     "valor_proposta": "91375.36"
     },
     "21": {
      "logradouro": "RUA ANGICO 13",
@@ -11771,19 +11727,17 @@
      "logradouro": "AV. TEREZINHA G.",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "tabela_out2026",
+     "status": "divergente_app_vendido_consta_tabela",
      "valor_avista": "150000.00",
-     "valor_proposta": "147000.00",
-     "disp": "vendido"
+     "valor_proposta": "147000.00"
     },
     "5": {
      "logradouro": "AV. TEREZINHA G.",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "tabela_out2026",
+     "status": "divergente_app_vendido_consta_tabela",
      "valor_avista": "150000.00",
-     "valor_proposta": "147000.00",
-     "disp": "vendido"
+     "valor_proposta": "147000.00"
     },
     "6": {
      "logradouro": "AV. TEREZINHA G.",
@@ -11841,19 +11795,17 @@
      "logradouro": "RUA AROEIRA 8",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "tabela_out2026",
+     "status": "divergente_app_vendido_consta_tabela",
      "valor_avista": "95000.00",
-     "valor_proposta": "93100.00",
-     "disp": "vendido"
+     "valor_proposta": "93100.00"
     },
     "13": {
      "logradouro": "RUA AROEIRA 8",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "tabela_out2026",
+     "status": "divergente_app_vendido_consta_tabela",
      "valor_avista": "95000.00",
-     "valor_proposta": "93100.00",
-     "disp": "vendido"
+     "valor_proposta": "93100.00"
     },
     "14": {
      "logradouro": "RUA AROEIRA 8",
@@ -12067,8 +12019,7 @@
      "logradouro": "RUA AROEIRA 8",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "tabela_out2026",
-     "disp": "vendido",
+     "status": "divergente_app_vendido_consta_tabela",
      "valor_avista": "81250.00",
      "valor_proposta": "79625.00"
     },
@@ -12118,8 +12069,7 @@
      "logradouro": "RUA AROEIRA 8",
      "area_m2": 261.6,
      "frente_m": "11.28",
-     "status": "tabela_out2026",
-     "disp": "vendido",
+     "status": "divergente_app_vendido_consta_tabela",
      "valor_avista": "85020.00",
      "valor_proposta": "83319.60"
     },
@@ -12289,8 +12239,7 @@
      "logradouro": "RUA ANGICO 18",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "tabela_out2026",
-     "disp": "vendido",
+     "status": "divergente_app_vendido_consta_tabela",
      "valor_avista": "81250.00",
      "valor_proposta": "79625.00"
     },
