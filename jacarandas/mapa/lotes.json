@@ -37,7 +37,9 @@
      "logradouro": "RUA AROEIRA 1",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "sem_tabela"
+     "status": "tabela_out2026",
+     "valor_avista": "105000.00",
+     "valor_proposta": "102900.00"
     },
     "7": {
      "logradouro": "RUA AROEIRA 1",
@@ -473,13 +475,17 @@
      "logradouro": "RUA AROEIRA 2",
      "area_m2": 257.11,
      "frente_m": "10.57",
-     "status": "sem_tabela"
+     "status": "tabela_out2026",
+     "valor_avista": "107986.20",
+     "valor_proposta": "105826.48"
     },
     "10": {
      "logradouro": "RUA AROEIRA 2",
      "area_m2": 253.35,
      "frente_m": "5.03",
-     "status": "sem_tabela"
+     "status": "tabela_out2026",
+     "valor_avista": "106407.00",
+     "valor_proposta": "104278.86"
     },
     "11": {
      "logradouro": "RUA AROEIRA 2",
@@ -637,9 +643,7 @@
      "logradouro": "RUA AROEIRA 5",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "tabela_out2026",
-     "valor_avista": "102750.00",
-     "valor_proposta": "100695.00",
+     "status": "consultar",
      "fonte": "TABELA AROEIRAS_OUTUBRO2026.pdf (Solot, vigente 01/10/2026)"
     },
     "14": {
@@ -864,7 +868,9 @@
      "logradouro": "RUA AROEIRA 6",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "sem_tabela"
+     "status": "tabela_out2026",
+     "valor_avista": "98625.00",
+     "valor_proposta": "96652.50"
     },
     "24": {
      "logradouro": "RUA AROEIRA 6",
@@ -1522,7 +1528,9 @@
      "logradouro": "RUA AROEIRA 8",
      "area_m2": 273.56,
      "frente_m": "10.46",
-     "status": "sem_tabela"
+     "status": "tabela_out2026",
+     "valor_avista": "114895.20",
+     "valor_proposta": "112597.30"
     },
     "34": {
      "logradouro": "RUA AROEIRA 8",
@@ -2170,45 +2178,35 @@
      "logradouro": "RUA AROEIRA 7",
      "area_m2": 358.86,
      "frente_m": "20.00",
-     "status": "tabela_out2026",
-     "valor_avista": "157898.40",
-     "valor_proposta": "154740.43",
+     "status": "consultar",
      "fonte": "TABELA AROEIRAS_OUTUBRO2026.pdf (Solot, vigente 01/10/2026)"
     },
     "2": {
      "logradouro": "RUA AROEIRA 8",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "tabela_out2026",
-     "valor_avista": "110000.00",
-     "valor_proposta": "107800.00",
+     "status": "consultar",
      "fonte": "TABELA AROEIRAS_OUTUBRO2026.pdf (Solot, vigente 01/10/2026)"
     },
     "3": {
      "logradouro": "RUA AROEIRA 8",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "tabela_out2026",
-     "valor_avista": "110000.00",
-     "valor_proposta": "107800.00",
+     "status": "consultar",
      "fonte": "TABELA AROEIRAS_OUTUBRO2026.pdf (Solot, vigente 01/10/2026)"
     },
     "4": {
      "logradouro": "RUA AROEIRA 8",
      "area_m2": 263.37,
      "frente_m": "11.07",
-     "status": "tabela_out2026",
-     "valor_avista": "115882.80",
-     "valor_proposta": "113565.14",
+     "status": "consultar",
      "fonte": "TABELA AROEIRAS_OUTUBRO2026.pdf (Solot, vigente 01/10/2026)"
     },
     "5": {
      "logradouro": "RUA AROEIRA 8",
      "area_m2": 263.37,
      "frente_m": "11.07",
-     "status": "tabela_out2026",
-     "valor_avista": "115882.80",
-     "valor_proposta": "113565.14",
+     "status": "consultar",
      "fonte": "TABELA AROEIRAS_OUTUBRO2026.pdf (Solot, vigente 01/10/2026)"
     },
     "6": {
@@ -2269,63 +2267,49 @@
      "logradouro": "RUA AROEIRA 8",
      "area_m2": 263.37,
      "frente_m": "11.07",
-     "status": "tabela_out2026",
-     "valor_avista": "115882.80",
-     "valor_proposta": "113565.14",
+     "status": "consultar",
      "fonte": "TABELA AROEIRAS_OUTUBRO2026.pdf (Solot, vigente 01/10/2026)"
     },
     "13": {
      "logradouro": "RUA AROEIRA 8",
      "area_m2": 263.37,
      "frente_m": "11.07",
-     "status": "tabela_out2026",
-     "valor_avista": "115882.80",
-     "valor_proposta": "113565.14",
+     "status": "consultar",
      "fonte": "TABELA AROEIRAS_OUTUBRO2026.pdf (Solot, vigente 01/10/2026)"
     },
     "14": {
      "logradouro": "RUA AROEIRA 8",
      "area_m2": 263.37,
      "frente_m": "11.07",
-     "status": "tabela_out2026",
-     "valor_avista": "115882.80",
-     "valor_proposta": "113565.14",
+     "status": "consultar",
      "fonte": "TABELA AROEIRAS_OUTUBRO2026.pdf (Solot, vigente 01/10/2026)"
     },
     "15": {
      "logradouro": "RUA AROEIRA 8",
      "area_m2": 263.37,
      "frente_m": "11.07",
-     "status": "tabela_out2026",
-     "valor_avista": "115882.80",
-     "valor_proposta": "113565.14",
+     "status": "consultar",
      "fonte": "TABELA AROEIRAS_OUTUBRO2026.pdf (Solot, vigente 01/10/2026)"
     },
     "16": {
      "logradouro": "RUA AROEIRA 8",
      "area_m2": 263.37,
      "frente_m": "11.07",
-     "status": "tabela_out2026",
-     "valor_avista": "115882.80",
-     "valor_proposta": "113565.14",
+     "status": "consultar",
      "fonte": "TABELA AROEIRAS_OUTUBRO2026.pdf (Solot, vigente 01/10/2026)"
     },
     "17": {
      "logradouro": "RUA AROEIRA 8",
      "area_m2": 250.0,
      "frente_m": "5.52",
-     "status": "tabela_out2026",
-     "valor_avista": "110000.00",
-     "valor_proposta": "107800.00",
+     "status": "consultar",
      "fonte": "TABELA AROEIRAS_OUTUBRO2026.pdf (Solot, vigente 01/10/2026)"
     },
     "18": {
      "logradouro": "RUA AROEIRA 8",
      "area_m2": 350.0,
      "frente_m": "13.43",
-     "status": "tabela_out2026",
-     "valor_avista": "154000.00",
-     "valor_proposta": "150920.00",
+     "status": "consultar",
      "fonte": "TABELA AROEIRAS_OUTUBRO2026.pdf (Solot, vigente 01/10/2026)"
     },
     "19": {
@@ -2344,9 +2328,7 @@
      "logradouro": "RUA AROEIRA 9",
      "area_m2": 264.98,
      "frente_m": "10.00",
-     "status": "tabela_out2026",
-     "valor_avista": "116591.20",
-     "valor_proposta": "114259.38",
+     "status": "consultar",
      "fonte": "TABELA AROEIRAS_OUTUBRO2026.pdf (Solot, vigente 01/10/2026)"
     },
     "22": {
@@ -2362,18 +2344,14 @@
      "logradouro": "RUA AROEIRA 9",
      "area_m2": 264.98,
      "frente_m": "10.00",
-     "status": "tabela_out2026",
-     "valor_avista": "116591.20",
-     "valor_proposta": "114259.38",
+     "status": "consultar",
      "fonte": "TABELA AROEIRAS_OUTUBRO2026.pdf (Solot, vigente 01/10/2026)"
     },
     "24": {
      "logradouro": "RUA AROEIRA 9",
      "area_m2": 264.98,
      "frente_m": "10.00",
-     "status": "tabela_out2026",
-     "valor_avista": "116591.20",
-     "valor_proposta": "114259.38",
+     "status": "consultar",
      "fonte": "TABELA AROEIRAS_OUTUBRO2026.pdf (Solot, vigente 01/10/2026)"
     },
     "25": {
@@ -2502,9 +2480,7 @@
      "logradouro": "RUA AROEIRA 10",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "tabela_out2026",
-     "valor_avista": "105000.00",
-     "valor_proposta": "102900.00",
+     "status": "consultar",
      "fonte": "TABELA AROEIRAS_OUTUBRO2026.pdf (Solot, vigente 01/10/2026)"
     },
     "7": {
@@ -2553,7 +2529,9 @@
      "logradouro": "RUA AROEIRA 10",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "sem_tabela"
+     "status": "tabela_out2026",
+     "valor_avista": "105000.00",
+     "valor_proposta": "102900.00"
     },
     "15": {
      "logradouro": "RUA AROEIRA 10",
@@ -2742,7 +2720,9 @@
      "logradouro": "RUA PS 1",
      "area_m2": 362.5,
      "frente_m": "10.00",
-     "status": "sem_tabela"
+     "status": "tabela_out2026",
+     "valor_avista": "152250.00",
+     "valor_proposta": "149205.00"
     }
    },
    "12": {
@@ -4138,18 +4118,14 @@
      "logradouro": "RUA AROEIRA 8",
      "area_m2": 380.0,
      "frente_m": "12.96",
-     "status": "tabela_out2026",
-     "valor_avista": "147440.00",
-     "valor_proposta": "144491.20",
+     "status": "consultar",
      "fonte": "TABELA AROEIRAS_OUTUBRO2026.pdf (Solot, vigente 01/10/2026)"
     },
     "2": {
      "logradouro": "RUA AROEIRA 8",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "tabela_out2026",
-     "valor_avista": "97000.00",
-     "valor_proposta": "95060.00",
+     "status": "consultar",
      "fonte": "TABELA AROEIRAS_OUTUBRO2026.pdf (Solot, vigente 01/10/2026)"
     },
     "3": {
@@ -4306,9 +4282,7 @@
      "logradouro": "RUA AROEIRA 9",
      "area_m2": 362.5,
      "frente_m": "10.00",
-     "status": "tabela_out2026",
-     "valor_avista": "140650.00",
-     "valor_proposta": "137837.00",
+     "status": "consultar",
      "fonte": "TABELA AROEIRAS_OUTUBRO2026.pdf (Solot, vigente 01/10/2026)"
     },
     "21": {
@@ -4342,9 +4316,7 @@
      "logradouro": "RUA AROEIRA 9",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "tabela_out2026",
-     "valor_avista": "97000.00",
-     "valor_proposta": "95060.00",
+     "status": "consultar",
      "fonte": "TABELA AROEIRAS_OUTUBRO2026.pdf (Solot, vigente 01/10/2026)"
     },
     "25": {
@@ -4486,9 +4458,7 @@
      "logradouro": "RUA AROEIRA 17",
      "area_m2": 253.98,
      "frente_m": "10.48",
-     "status": "tabela_out2026",
-     "valor_avista": "98544.24",
-     "valor_proposta": "96573.36",
+     "status": "consultar",
      "fonte": "TABELA AROEIRAS_OUTUBRO2026.pdf (Solot, vigente 01/10/2026)"
     }
    },
@@ -4679,9 +4649,7 @@
      "logradouro": "RUA AROEIRA 17",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "tabela_out2026",
-     "valor_avista": "86250.00",
-     "valor_proposta": "84525.00",
+     "status": "consultar",
      "fonte": "TABELA AROEIRAS_OUTUBRO2026.pdf (Solot, vigente 01/10/2026)"
     },
     "21": {
@@ -5028,9 +4996,7 @@
      "logradouro": "RUA AROEIRA 9",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "tabela_out2026",
-     "valor_avista": "92000.00",
-     "valor_proposta": "90160.00",
+     "status": "consultar",
      "fonte": "TABELA AROEIRAS_OUTUBRO2026.pdf (Solot, vigente 01/10/2026)"
     },
     "18": {
@@ -5121,9 +5087,7 @@
      "logradouro": "RUA AROEIRA 16",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "tabela_out2026",
-     "valor_avista": "92000.00",
-     "valor_proposta": "90160.00",
+     "status": "consultar",
      "fonte": "TABELA AROEIRAS_OUTUBRO2026.pdf (Solot, vigente 01/10/2026)"
     },
     "33": {
@@ -7291,7 +7255,9 @@
      "logradouro": "RUA JACARANDÁ 12",
      "area_m2": 350.0,
      "frente_m": "21.51",
-     "status": "vendido"
+     "status": "divergente_app_vendido_consta_tabela",
+     "valor_avista": "147000.00",
+     "valor_proposta": "144060.00"
     },
     "23": {
      "logradouro": "RUA JACARANDÁ 10",
@@ -7769,7 +7735,9 @@
      "logradouro": "RUA JACARANDÁ 10",
      "area_m2": 253.51,
      "frente_m": "25.00",
-     "status": "vendido"
+     "status": "divergente_app_vendido_consta_tabela",
+     "valor_avista": "96333.80",
+     "valor_proposta": "94407.12"
     },
     "11": {
      "logradouro": "RUA JACARANDÁ 10",
@@ -8009,7 +7977,9 @@
      "logradouro": "RUA AROEIRA 6",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "sem_tabela"
+     "status": "tabela_out2026",
+     "valor_avista": "98700.00",
+     "valor_proposta": "96726.00"
     },
     "30": {
      "logradouro": "RUA AROEIRA 6",
@@ -8033,9 +8003,7 @@
      "logradouro": "RUA AROEIRA 6",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "tabela_out2026",
-     "valor_avista": "98700.00",
-     "valor_proposta": "96726.00",
+     "status": "consultar",
      "fonte": "TABELA ANGICOS_OUTUBRO2026.pdf (Solot, vigente 01/10/2026)"
     },
     "34": {
@@ -8060,7 +8028,9 @@
      "logradouro": "RUA AROEIRA 6",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "sem_tabela"
+     "status": "tabela_out2026",
+     "valor_avista": "98700.00",
+     "valor_proposta": "96726.00"
     },
     "38": {
      "logradouro": "RUA AROEIRA 6",
@@ -8412,18 +8382,14 @@
      "logradouro": "RUA ANGICO 3",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "tabela_out2026",
-     "valor_avista": "98700.00",
-     "valor_proposta": "96726.00",
+     "status": "consultar",
      "fonte": "TABELA ANGICOS_OUTUBRO2026.pdf (Solot, vigente 01/10/2026)"
     },
     "10": {
      "logradouro": "RUA ANGICO 3",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "tabela_out2026",
-     "valor_avista": "98700.00",
-     "valor_proposta": "96726.00",
+     "status": "consultar",
      "fonte": "TABELA ANGICOS_OUTUBRO2026.pdf (Solot, vigente 01/10/2026)"
     },
     "11": {
@@ -8466,13 +8432,17 @@
      "logradouro": "RUA ANGICO 3",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "sem_tabela"
+     "status": "tabela_out2026",
+     "valor_avista": "98700.00",
+     "valor_proposta": "96726.00"
     },
     "18": {
      "logradouro": "RUA ANGICO 3",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "sem_tabela"
+     "status": "tabela_out2026",
+     "valor_avista": "98700.00",
+     "valor_proposta": "96726.00"
     },
     "19": {
      "logradouro": "RUA ANGICO 3",
@@ -8544,18 +8514,14 @@
      "logradouro": "RUA ANGICO 2",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "tabela_out2026",
-     "valor_avista": "98700.00",
-     "valor_proposta": "96726.00",
+     "status": "consultar",
      "fonte": "TABELA ANGICOS_OUTUBRO2026.pdf (Solot, vigente 01/10/2026)"
     },
     "32": {
      "logradouro": "RUA ANGICO 2",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "tabela_out2026",
-     "valor_avista": "98700.00",
-     "valor_proposta": "96726.00",
+     "status": "consultar",
      "fonte": "TABELA ANGICOS_OUTUBRO2026.pdf (Solot, vigente 01/10/2026)"
     },
     "33": {
@@ -8568,9 +8534,7 @@
      "logradouro": "RUA ANGICO 2",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "tabela_out2026",
-     "valor_avista": "98700.00",
-     "valor_proposta": "96726.00",
+     "status": "consultar",
      "fonte": "TABELA ANGICOS_OUTUBRO2026.pdf (Solot, vigente 01/10/2026)"
     },
     "35": {
@@ -8622,9 +8586,7 @@
      "logradouro": "RUA ANGICO 2",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "tabela_out2026",
-     "valor_avista": "98700.00",
-     "valor_proposta": "96726.00",
+     "status": "consultar",
      "fonte": "TABELA ANGICOS_OUTUBRO2026.pdf (Solot, vigente 01/10/2026)"
     },
     "42": {
@@ -8640,9 +8602,7 @@
      "logradouro": "RUA ANGICO 2",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "tabela_out2026",
-     "valor_avista": "98700.00",
-     "valor_proposta": "96726.00",
+     "status": "consultar",
      "fonte": "TABELA ANGICOS_OUTUBRO2026.pdf (Solot, vigente 01/10/2026)"
     },
     "44": {
@@ -8675,18 +8635,14 @@
      "logradouro": "RUA ANGICO 5",
      "area_m2": 362.5,
      "frente_m": "10.00",
-     "status": "tabela_out2026",
-     "valor_avista": "146015.00",
-     "valor_proposta": "143094.70",
+     "status": "consultar",
      "fonte": "TABELA ANGICOS_OUTUBRO2026.pdf (Solot, vigente 01/10/2026)"
     },
     "2": {
      "logradouro": "RUA ANGICO 5",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "tabela_out2026",
-     "valor_avista": "100700.00",
-     "valor_proposta": "98686.00",
+     "status": "consultar",
      "fonte": "TABELA ANGICOS_OUTUBRO2026.pdf (Solot, vigente 01/10/2026)"
     },
     "3": {
@@ -8783,9 +8739,7 @@
      "logradouro": "RUA ANGICO 5",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "tabela_out2026",
-     "valor_avista": "100700.00",
-     "valor_proposta": "98686.00",
+     "status": "consultar",
      "fonte": "TABELA ANGICOS_OUTUBRO2026.pdf (Solot, vigente 01/10/2026)"
     },
     "14": {
@@ -8810,18 +8764,14 @@
      "logradouro": "RUA ANGICO 5",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "tabela_out2026",
-     "valor_avista": "100700.00",
-     "valor_proposta": "98686.00",
+     "status": "consultar",
      "fonte": "TABELA ANGICOS_OUTUBRO2026.pdf (Solot, vigente 01/10/2026)"
     },
     "17": {
      "logradouro": "RUA ANGICO 5",
      "area_m2": 434.06,
      "frente_m": "18.89",
-     "status": "tabela_out2026",
-     "valor_avista": "174839.37",
-     "valor_proposta": "171342.58",
+     "status": "consultar",
      "fonte": "TABELA ANGICOS_OUTUBRO2026.pdf (Solot, vigente 01/10/2026)"
     },
     "18": {
@@ -8954,9 +8904,7 @@
      "logradouro": "AV. TEREZINHA G.",
      "area_m2": 362.5,
      "frente_m": "10.00",
-     "status": "tabela_out2026",
-     "valor_avista": "274050.00",
-     "valor_proposta": "268569.00",
+     "status": "consultar",
      "fonte": "TABELA ANGICOS_OUTUBRO2026.pdf (Solot, vigente 01/10/2026)"
     }
    },
@@ -8974,27 +8922,21 @@
      "logradouro": "RUA DO PARQUE",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "tabela_out2026",
-     "valor_avista": "100000.00",
-     "valor_proposta": "98000.00",
+     "status": "consultar",
      "fonte": "TABELA ANGICOS_OUTUBRO2026.pdf (Solot, vigente 01/10/2026)"
     },
     "3": {
      "logradouro": "RUA DO PARQUE",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "tabela_out2026",
-     "valor_avista": "100000.00",
-     "valor_proposta": "98000.00",
+     "status": "consultar",
      "fonte": "TABELA ANGICOS_OUTUBRO2026.pdf (Solot, vigente 01/10/2026)"
     },
     "4": {
      "logradouro": "RUA DO PARQUE",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "tabela_out2026",
-     "valor_avista": "100000.00",
-     "valor_proposta": "98000.00",
+     "status": "consultar",
      "fonte": "TABELA ANGICOS_OUTUBRO2026.pdf (Solot, vigente 01/10/2026)"
     },
     "5": {
@@ -9064,18 +9006,14 @@
      "logradouro": "RUA DO PARQUE",
      "area_m2": 362.5,
      "frente_m": "10.00",
-     "status": "tabela_out2026",
-     "valor_avista": "145000.00",
-     "valor_proposta": "142100.00",
+     "status": "consultar",
      "fonte": "TABELA ANGICOS_OUTUBRO2026.pdf (Solot, vigente 01/10/2026)"
     },
     "13": {
      "logradouro": "RUA ANGICO 6",
      "area_m2": 362.5,
      "frente_m": "10.00",
-     "status": "tabela_out2026",
-     "valor_avista": "145000.00",
-     "valor_proposta": "142100.00",
+     "status": "consultar",
      "fonte": "TABELA ANGICOS_OUTUBRO2026.pdf (Solot, vigente 01/10/2026)"
     },
     "14": {
@@ -9386,9 +9324,7 @@
      "logradouro": "RUA HEBROM 17",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "tabela_out2026",
-     "valor_avista": "100000.00",
-     "valor_proposta": "98000.00",
+     "status": "consultar",
      "fonte": "TABELA ANGICOS_OUTUBRO2026.pdf (Solot, vigente 01/10/2026)"
     },
     "3": {
@@ -9605,18 +9541,14 @@
      "logradouro": "RUA ANGICO 9",
      "area_m2": 251.43,
      "frente_m": "10.01",
-     "status": "tabela_out2026",
-     "valor_avista": "100572.00",
-     "valor_proposta": "98560.56",
+     "status": "consultar",
      "fonte": "TABELA ANGICOS_OUTUBRO2026.pdf (Solot, vigente 01/10/2026)"
     },
     "33": {
      "logradouro": "RUA ANGICO 9",
      "area_m2": 260.06,
      "frente_m": "10.09",
-     "status": "tabela_out2026",
-     "valor_avista": "104024.00",
-     "valor_proposta": "101943.52",
+     "status": "consultar",
      "fonte": "TABELA ANGICOS_OUTUBRO2026.pdf (Solot, vigente 01/10/2026)"
     },
     "34": {
@@ -9685,54 +9617,42 @@
      "logradouro": "RUA HEBROM 17",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "tabela_out2026",
-     "valor_avista": "100000.00",
-     "valor_proposta": "98000.00",
+     "status": "consultar",
      "fonte": "TABELA ANGICOS_OUTUBRO2026.pdf (Solot, vigente 01/10/2026)"
     },
     "10": {
      "logradouro": "RUA HEBROM 17",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "tabela_out2026",
-     "valor_avista": "100000.00",
-     "valor_proposta": "98000.00",
+     "status": "consultar",
      "fonte": "TABELA ANGICOS_OUTUBRO2026.pdf (Solot, vigente 01/10/2026)"
     },
     "11": {
      "logradouro": "RUA HEBROM 17",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "tabela_out2026",
-     "valor_avista": "100000.00",
-     "valor_proposta": "98000.00",
+     "status": "consultar",
      "fonte": "TABELA ANGICOS_OUTUBRO2026.pdf (Solot, vigente 01/10/2026)"
     },
     "12": {
      "logradouro": "RUA HEBROM 17",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "tabela_out2026",
-     "valor_avista": "100000.00",
-     "valor_proposta": "98000.00",
+     "status": "consultar",
      "fonte": "TABELA ANGICOS_OUTUBRO2026.pdf (Solot, vigente 01/10/2026)"
     },
     "13": {
      "logradouro": "RUA HEBROM 17",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "tabela_out2026",
-     "valor_avista": "100000.00",
-     "valor_proposta": "98000.00",
+     "status": "consultar",
      "fonte": "TABELA ANGICOS_OUTUBRO2026.pdf (Solot, vigente 01/10/2026)"
     },
     "14": {
      "logradouro": "RUA HEBROM 17",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "tabela_out2026",
-     "valor_avista": "100000.00",
-     "valor_proposta": "98000.00",
+     "status": "consultar",
      "fonte": "TABELA ANGICOS_OUTUBRO2026.pdf (Solot, vigente 01/10/2026)"
     },
     "15": {
@@ -9757,9 +9677,7 @@
      "logradouro": "RUA HEBROM 17",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "tabela_out2026",
-     "valor_avista": "100000.00",
-     "valor_proposta": "98000.00",
+     "status": "consultar",
      "fonte": "TABELA ANGICOS_OUTUBRO2026.pdf (Solot, vigente 01/10/2026)"
     },
     "19": {
@@ -9982,9 +9900,7 @@
      "logradouro": "AV. ADRIANO AUAD",
      "area_m2": 250.0,
      "frente_m": "10.23",
-     "status": "tabela_out2026",
-     "valor_avista": "100000.00",
-     "valor_proposta": "98000.00",
+     "status": "consultar",
      "fonte": "TABELA ANGICOS_OUTUBRO2026.pdf (Solot, vigente 01/10/2026)"
     }
    },
@@ -11418,9 +11334,7 @@
      "logradouro": "AV. ADRIANO AUAD",
      "area_m2": 260.0,
      "frente_m": "10.00",
-     "status": "tabela_out2026",
-     "valor_avista": "95680.00",
-     "valor_proposta": "93766.40",
+     "status": "consultar",
      "fonte": "TABELA ANGICOS_OUTUBRO2026.pdf (Solot, vigente 01/10/2026)"
     },
     "6": {
@@ -11511,9 +11425,7 @@
      "logradouro": "RUA ANGICO 13",
      "area_m2": 253.37,
      "frente_m": "10.00",
-     "status": "tabela_out2026",
-     "valor_avista": "93240.16",
-     "valor_proposta": "91375.36",
+     "status": "consultar",
      "fonte": "TABELA ANGICOS_OUTUBRO2026.pdf (Solot, vigente 01/10/2026)"
     },
     "20": {
@@ -11529,9 +11441,7 @@
      "logradouro": "RUA ANGICO 13",
      "area_m2": 253.37,
      "frente_m": "10.00",
-     "status": "tabela_out2026",
-     "valor_avista": "93240.16",
-     "valor_proposta": "91375.36",
+     "status": "consultar",
      "fonte": "TABELA ANGICOS_OUTUBRO2026.pdf (Solot, vigente 01/10/2026)"
     },
     "22": {
@@ -11618,9 +11528,7 @@
      "logradouro": "RUA AROEIRA 8",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "tabela_out2026",
-     "valor_avista": "95000.00",
-     "valor_proposta": "93100.00",
+     "status": "consultar",
      "fonte": "TABELA ANGICOS_OUTUBRO2026.pdf (Solot, vigente 01/10/2026)"
     },
     "11": {
@@ -11856,7 +11764,9 @@
      "logradouro": "RUA AROEIRA 8",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "sem_tabela"
+     "status": "tabela_out2026",
+     "valor_avista": "81250.00",
+     "valor_proposta": "79625.00"
     },
     "5": {
      "logradouro": "RUA AROEIRA 8",
@@ -11898,7 +11808,9 @@
      "logradouro": "RUA AROEIRA 8",
      "area_m2": 261.6,
      "frente_m": "11.28",
-     "status": "sem_tabela"
+     "status": "tabela_out2026",
+     "valor_avista": "85020.00",
+     "valor_proposta": "83319.60"
     },
     "12": {
      "logradouro": "RUA AROEIRA 8",
@@ -11976,9 +11888,7 @@
      "logradouro": "RUA ANGICO 17",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "tabela_out2026",
-     "valor_avista": "81250.00",
-     "valor_proposta": "79625.00",
+     "status": "consultar",
      "fonte": "TABELA ANGICOS_OUTUBRO2026.pdf (Solot, vigente 01/10/2026)"
     },
     "25": {
@@ -12047,7 +11957,9 @@
      "logradouro": "RUA ANGICO 18",
      "area_m2": 250.0,
      "frente_m": "10.00",
-     "status": "sem_tabela"
+     "status": "tabela_out2026",
+     "valor_avista": "81250.00",
+     "valor_proposta": "79625.00"
     },
     "9": {
      "logradouro": "RUA ANGICO 18",

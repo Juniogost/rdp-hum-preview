@@ -77,7 +77,7 @@
 </div>
 <div id="nota">
   <div id="dispdata"></div>
-  <b>Aviso:</b> versão ilustrada da prancha oficial de implantação (nada acrescentado). Situação dos lotes (bolinhas): conforme o mapa da incorporadora em 27/10/2026 — reservas valem por até 24h. Valores: tabelas oficiais outubro/2026 (vigência 01/10/2026). <b>Confirme disponibilidade e condições pelo WhatsApp</b>
+  <b>Aviso:</b> versão ilustrada da prancha oficial de implantação (nada acrescentado). Situação dos lotes (bolinhas): conforme o mapa da incorporadora em 27/10/2026 — reservas valem por até 24h. Valores: tabelas oficiais novembro/2026 (vigência 01/11/2026). <b>Confirme disponibilidade e condições pelo WhatsApp</b>
   <a style="color:#86efac" href="https://wa.me/5562981428585">62 98142-8585</a>. Quadras ainda não liberadas aparecem sem bolinha; lote "Em breve" fica sem preço enquanto isso.
   Norte conforme a prancha; análise de insolação por lote é estimativa visual, pendente de georreferenciamento.
   Uso do solo e do subsolo: pendentes de fonte oficial.
@@ -252,7 +252,7 @@ Promise.all([fetch('mapa/lotes.json?v=7').then(r=>r.json()), fetch('mapa/plano.j
     const meta = pk && plano[pk] ? plano[pk].meta : null;
     let nome = data[fase].fase.split('— ')[1] || data[fase].fase;
     if (!row){
-      detb.innerHTML = `<b>${nome} — Quadra ${quadra}, Lote ${lote}</b><p>Fluxo de pagamento detalhado não consta para este lote na tabela de outubro/2026 extraída. Confira pelo WhatsApp.</p><a href="https://wa.me/5562981428585?text=${encodeURIComponent('Olá! Quero consultar o lote '+lote+', quadra '+quadra+' ('+nome+').')}" style="display:block;margin-top:8px;text-align:center;background:#0a6b3d;color:#fff;padding:12px;border-radius:8px;text-decoration:none;font-weight:700">Consultar pelo WhatsApp</a><div style="margin-top:6px;padding:6px 8px;background:#fef9c3;border:1px solid #eab308;border-radius:6px;font-size:13px"><b>Sinal + taxa administrativa de R$ 150,00</b> — taxa fixa por lote, cobrada com o sinal e n&atilde;o somada &agrave;s parcelas.</div>`;
+      detb.innerHTML = `<b>${nome} — Quadra ${quadra}, Lote ${lote}</b><p>Fluxo de pagamento detalhado não consta para este lote na tabela de novembro/2026 extraída. Confira pelo WhatsApp.</p><a href="https://wa.me/5562981428585?text=${encodeURIComponent('Olá! Quero consultar o lote '+lote+', quadra '+quadra+' ('+nome+').')}" style="display:block;margin-top:8px;text-align:center;background:#0a6b3d;color:#fff;padding:12px;border-radius:8px;text-decoration:none;font-weight:700">Consultar pelo WhatsApp</a><div style="margin-top:6px;padding:6px 8px;background:#fef9c3;border:1px solid #eab308;border-radius:6px;font-size:13px"><b>Sinal + taxa administrativa de R$ 150,00</b> — taxa fixa por lote, cobrada com o sinal e n&atilde;o somada &agrave;s parcelas.</div>`;
       document.getElementById('detgsum').textContent = `${nome} — Q${quadra} · Lote ${lote}`;
       det.style.display='block';
       if (matchMedia('(max-width:640px)').matches) det.classList.add('min'); else det.classList.remove('min');
@@ -272,7 +272,7 @@ Promise.all([fetch('mapa/lotes.json?v=7').then(r=>r.json()), fetch('mapa/plano.j
     const linhaAv = row.av.map((v,i)=>`<tr><td>${pav[i]}x</td><td>R$ ${v}</td></tr>`).join('');
     detb.innerHTML = `
       <b>${nome} — Quadra ${quadra}, Lote ${lote}</b> · Área ${row.area} m²<br>
-      <span style="font-size:12px;color:#555">Valores exatos da tabela oficial outubro/2026 (vigência 01/10/2026), sem cálculo nosso. Estoque não confirmado.</span>
+      <span style="font-size:12px;color:#555">Valores exatos da tabela oficial novembro/2026 (vigência 01/11/2026), sem cálculo nosso. Estoque não confirmado.</span>
       <p style="margin:8px 0 2px"><b>Valor à vista: R$ ${row.cash}</b></p>
       <div style="border:1px solid #cde;border-radius:8px;padding:8px;margin:6px 0">
         <b>Plano 1 — Entrada 1 + 3 (1ª parcela em 120 dias)</b><br>
@@ -302,7 +302,7 @@ Promise.all([fetch('mapa/lotes.json?v=7').then(r=>r.json()), fetch('mapa/plano.j
     ajustaMapaSheet();
     document.getElementById('detpdf').onclick = baixaPDF;
     document.getElementById('detqro').onclick = abreFormProposta;
-    document.getElementById('detres').href = 'https://wa.me/5562982165619?text=' + encodeURIComponent(`Olá! Quero RESERVAR o lote ${lote}, quadra ${quadra} (${nome}), área ${row.area} m² — tabela out/2026 à vista R$ ${row.cash}. Entendo que a reserva vale por até 24h e só vale após confirmação da equipe. Meu nome e telefone:`);
+    document.getElementById('detres').href = 'https://wa.me/5562982165619?text=' + encodeURIComponent(`Olá! Quero RESERVAR o lote ${lote}, quadra ${quadra} (${nome}), área ${row.area} m² — tabela nov/2026 à vista R$ ${row.cash}. Entendo que a reserva vale por até 24h e só vale após confirmação da equipe. Meu nome e telefone:`);
   }
   function baixaPDF(){
     if (!detDoc) return;
@@ -314,7 +314,7 @@ Promise.all([fetch('mapa/lotes.json?v=7').then(r=>r.json()), fetch('mapa/plano.j
     let y = 18;
     d.setFontSize(15); d.text('Reserva do Parque — fluxo de pagamento do lote (PRÉVIA)', 14, y); y += 9;
     d.setFontSize(12); d.text(`${nome} — Quadra ${quadra}, Lote ${lote} — Área ${row.area} m²`, 14, y); y += 8;
-    d.setFontSize(9); d.text('Valores exatos da tabela oficial outubro/2026 (vigência 01/10/2026). Estoque e condições não confirmados.', 14, y); y += 10;
+    d.setFontSize(9); d.text('Valores exatos da tabela oficial novembro/2026 (vigência 01/11/2026). Estoque e condições não confirmados.', 14, y); y += 10;
     d.setFontSize(12); d.text(`Valor à vista: R$ ${row.cash}`, 14, y); y += 9;
     d.setFontSize(11); d.text('Plano 1 — Entrada 1 + 3 (1ª parcela em 120 dias)', 14, y); y += 6;
     d.setFontSize(10); d.text(`Valor na proposta: R$ ${row.prop} — Ato: R$ ${row.ato} + 3x de R$ ${row.com3} + taxa adm R$ ${spePdfT}`, 14, y); y += 6;
@@ -427,7 +427,7 @@ Promise.all([fetch('mapa/lotes.json?v=7').then(r=>r.json()), fetch('mapa/plano.j
       </div>
       <label style="display:flex;gap:8px;margin:10px 0;font-size:13px;align-items:flex-start">
         <input id="f_lgpd" type="checkbox" style="margin-top:3px">
-        <span>Autorizo o uso dos meus dados apenas para montar e revisar esta proposta (LGPD). Sei que é um RASCUNHO sujeito à revisão do Junio, que os valores vêm da tabela oficial outubro/2026 e que a leitura dos documentos acontece no meu aparelho.</span>
+        <span>Autorizo o uso dos meus dados apenas para montar e revisar esta proposta (LGPD). Sei que é um RASCUNHO sujeito à revisão do Junio, que os valores vêm da tabela oficial novembro/2026 e que a leitura dos documentos acontece no meu aparelho.</span>
       </label>
       <button id="f_gerar" style="width:100%;padding:12px;font:700 15px system-ui;background:#0a6b3d;color:#fff;border:0;border-radius:8px">Gerar proposta rascunho (PDF no modelo Solot)</button>
       <div id="f_out" style="margin-top:8px"></div>`;
@@ -494,7 +494,7 @@ Promise.all([fetch('mapa/lotes.json?v=7').then(r=>r.json()), fetch('mapa/plano.j
       rua: logradouro || undefined,
       quadra: 'Q'+quadra, lote: 'L'+lote, area: areaFmt,
       valorTotal, condicoes,
-      obs: 'RASCUNHO sem validade comercial, gerado pelo interessado no mapa digital e SUJEITO À REVISÃO do Junio. Valores da tabela oficial outubro/2026 (vigência 01/10/2026). '+obsPlano+' Demais prazos e condições conforme a tabela. Estoque e disponibilidade a confirmar.',
+      obs: 'RASCUNHO sem validade comercial, gerado pelo interessado no mapa digital e SUJEITO À REVISÃO do Junio. Valores da tabela oficial novembro/2026 (vigência 01/11/2026). '+obsPlano+' Demais prazos e condições conforme a tabela. Estoque e disponibilidade a confirmar.',
       cidade: 'Senador Canedo/GO', dataDoc,
       corretagem: false
     };
@@ -509,7 +509,7 @@ Promise.all([fetch('mapa/lotes.json?v=7').then(r=>r.json()), fetch('mapa/plano.j
     }
     const fname = 'proposta-rascunho-q'+quadra+'-l'+lote+'.pdf';
     doc.save(fname);
-    const resumo = 'Olá! Segue minha PROPOSTA RASCUNHO: '+nome+', quadra '+quadra+', lote '+lote+', área '+row.area+' m². Tabela out/2026: à vista R$ '+row.cash+'; '+(plano==='2' ? 'plano 2 proposta R$ '+row.avprop+' (entrada à vista a confirmar, '+pav[i]+'x de R$ '+row.av[i]+')' : 'plano 1 proposta R$ '+row.prop+' (ato R$ '+row.ato+' + 3x R$ '+row.com3+', '+p13[i]+'x de R$ '+row.par[i]+')')+'. Interessado: '+v('f_nome')+', CPF '+v('f_cpf')+', WhatsApp '+v('f_tel')+(v('f_email') ? ', e-mail '+v('f_email') : '')+'. Anexo o PDF do rascunho. Sei que é rascunho sujeito à revisão do Junio.';
+    const resumo = 'Olá! Segue minha PROPOSTA RASCUNHO: '+nome+', quadra '+quadra+', lote '+lote+', área '+row.area+' m². Tabela nov/2026: à vista R$ '+row.cash+'; '+(plano==='2' ? 'plano 2 proposta R$ '+row.avprop+' (entrada à vista a confirmar, '+pav[i]+'x de R$ '+row.av[i]+')' : 'plano 1 proposta R$ '+row.prop+' (ato R$ '+row.ato+' + 3x R$ '+row.com3+', '+p13[i]+'x de R$ '+row.par[i]+')')+'. Interessado: '+v('f_nome')+', CPF '+v('f_cpf')+', WhatsApp '+v('f_tel')+(v('f_email') ? ', e-mail '+v('f_email') : '')+'. Anexo o PDF do rascunho. Sei que é rascunho sujeito à revisão do Junio.';
     out.innerHTML = '<b>PDF rascunho gerado e baixado.</b> Envie para a equipe do Junio:'+
       '<div style="display:grid;gap:6px;margin-top:6px">'+
       '<button id="f_share" style="padding:12px;background:#25d366;color:#fff;border:0;border-radius:8px;font:700 15px system-ui">Enviar PDF pelo WhatsApp</button>'+
