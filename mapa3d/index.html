@@ -458,7 +458,7 @@ Promise.all([fetch('lotes.json?v=8').then(r=>r.json()), fetch('plano.json?v=7').
     map.on('mouseenter','lotesv-pt',()=>{map.getCanvas().style.cursor='pointer';});
     map.on('mouseleave','lotesv-pt',()=>{map.getCanvas().style.cursor='';});
     const lg=document.createElement('div');
-    lg.style.cssText='position:absolute;right:8px;bottom:64px;z-index:900;background:rgba(255,255,255,.93);border-radius:8px;padding:6px 9px;font:12px system-ui;box-shadow:0 1px 6px rgba(0,0,0,.25);line-height:1.85';
+    lg.style.cssText='position:absolute;right:8px;top:56px;z-index:900;background:rgba(255,255,255,.93);border-radius:8px;padding:6px 9px;font:12px system-ui;box-shadow:0 1px 6px rgba(0,0,0,.25);line-height:1.85';
     lg.innerHTML='<b style="font-size:11px">Lotes (Jacarandás)</b><br><span style="color:#16a34a">&#9679;</span> Livre<br><span style="color:#dc2626">&#9679;</span> Vendido<br><span style="color:#f97316">&#9679;</span> Reservado<br><span style="color:#f59e0b">&#9679;</span> Consultar<br><span style="color:#9ca3af">&#9679;</span> Em breve';
     document.getElementById('map').appendChild(lg);
   } catch(e){ console.warn('pins-geo indisponível', e); }
