@@ -445,7 +445,7 @@ Promise.all([fetch('lotes.json?v=8').then(r=>r.json()), fetch('plano.json?v=7').
     map.addLayer({id:'lotesv-lb',type:'symbol',source:'lotesv',minzoom:18.2,layout:{
       'text-field':['get','rotulo'],'text-size':['interpolate',['linear'],['zoom'],18.2,10,20.5,13],
       'text-offset':[0,0.95],'text-anchor':'top','text-font':['Open Sans Semibold','Arial Unicode MS Bold'],
-      'text-allow-overlap':false,'symbol-sort-key':['-',1]},
+      'text-allow-overlap':true,'text-ignore-placement':true,'text-padding':1},
       paint:{'text-color':'#111827','text-halo-color':'#ffffff','text-halo-width':1.6}});
     map.on('click','lotesv-pt',e=>{
       const p=e.features[0].properties;
