@@ -32,7 +32,7 @@
   <span class="tag">Prévia em teste</span>
   <strong>Reserva do Parque — Senador Canedo/GO</strong>
   <span class="on">3D + Sol</span>
-  <a href="https://juniogost.github.io/rdp-hum-preview/">Versão 2D →</a>
+  <a href="https://juniogost.github.io/rdp-mapa/">Versão 2D →</a>
   <button class="vista" id="vistaAerea">Aérea</button>
   <button class="vista" id="vistaPersp">Perspectiva</button>
 </div>
@@ -72,7 +72,7 @@ tr.flash{animation:pisca 1.2s ease 3}
 <div id="nota">
   <div id="dispdata"></div>
   <b>Aviso:</b> visão 3D EXPERIMENTAL da prancha oficial (planta plana inclinada; sem volumes/altimetria).
-  PRANCHA OFICIAL GEORREFERENCIADA pelas coordenadas UTM da moldura (SIRGAS 2000); norte verdadeiro aplicado (convergência -0,5°). Fundo de satélite: Esri World Imagery.
+  PRANCHA OFICIAL GEORREFERENCIADA pelas coordenadas UTM da moldura (SIRGAS 2000); norte verdadeiro aplicado (convergência -0,5°). Fundo de satélite: Esri World Imagery. Lotes clicáveis coloridos no mapa nesta etapa: apenas Jardim dos Jacarandás (demais fases em calibração).
   Disponibilidade e valores: WhatsApp <a style="color:#86efac" href="https://wa.me/5562981428585">62 98142-8585</a>.
 </div>
 <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
@@ -81,7 +81,7 @@ const LAT0=-16.670380, LNG0=-49.143633;
 const CENTRO = [LNG0, LAT0];
 const map = new maplibregl.Map({
   container:'map',
-  style:{version:8, sky:{'sky-color':'#bcd6ee','horizon-color':'#e9e5db','fog-color':'#e9e5db','sky-horizon-blend':0.4,'horizon-fog-blend':0,'fog-ground-blend':0,'atmosphere-blend':0}, sources:{esri:{type:'raster', tiles:['https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'], tileSize:256, maxzoom:19, attribution:'Esri, Maxar, Earthstar Geographics'}, prancha:{type:'raster', tiles:['tiles3dgeo/{z}/{x}/{y}.png?v=2'], tileSize:256, minzoom:13, maxzoom:20}},
+  style:{version:8, glyphs:'https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf', sky:{'sky-color':'#bcd6ee','horizon-color':'#e9e5db','fog-color':'#e9e5db','sky-horizon-blend':0.4,'horizon-fog-blend':0,'fog-ground-blend':0,'atmosphere-blend':0}, sources:{esri:{type:'raster', tiles:['https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'], tileSize:256, maxzoom:19, attribution:'Esri, Maxar, Earthstar Geographics'}, prancha:{type:'raster', tiles:['tiles3dgeo/{z}/{x}/{y}.png?v=2'], tileSize:256, minzoom:13, maxzoom:20}},
     layers:[{id:'fundo',type:'background',paint:{'background-color':'#e9e5db'}},
       {id:'esri',type:'raster',source:'esri',paint:{'raster-fade-duration':0}},
       {id:'prancha',type:'raster',source:'prancha',paint:{'raster-fade-duration':0,'raster-resampling':'linear'}}]},
@@ -417,6 +417,51 @@ Promise.all([fetch('lotes.json?v=8').then(r=>r.json()), fetch('plano.json?v=7').
   const FASE_BBOX={jacarandas:[[-49.147378,-16.674434],[-49.139888,-16.666325]],angicos:[[-49.1424105,-16.6698121],[-49.1331422,-16.6588858]],aroeiras:[[-49.1367777,-16.6706651],[-49.1298749,-16.6575009]]};
   faseSel.onchange = ()=>{ fillQuadras(); const bb=FASE_BBOX[pkey(data[faseSel.value].fase)]; if(bb){ const mob=matchMedia('(max-width:640px)').matches; const cam=map.cameraForBounds(bb,{padding:mob?{top:96,bottom:120,left:10,right:10}:60,bearing:-15,pitch:42}); if(cam) map.easeTo({center:cam.center,zoom:cam.zoom,bearing:-15,pitch:42,duration:900}); } };
   quadraSel.onchange = fillLotes;
+  // === Lotes vetoriais clicáveis no mapa (etapa 1: apenas Jacarandás, georreferência validada pino a pino) ===
+  try {
+    const pinsGeo = await fetch('pins-geo.json?v=1').then(r=>r.json());
+    const feats = [];
+    for (const fk of Object.keys(pinsGeo)){
+      if (!data[fk] || !data[fk].quadras) continue;
+      for (const q of Object.keys(pinsGeo[fk])){
+        const lq = data[fk].quadras[q] || {};
+        for (const l of Object.keys(pinsGeo[fk][q])){
+          const lot = lq[l]; if (!lot) continue;
+          const av = RDPStatus.avail(lot), tt = RDPStatus.temTabela(lot);
+          const cat = av==='vendido'?'vendido':av==='reservado'?'reservado':av==='consultar'?'consultar':(av==='livre'||tt)?'livre':'embreve';
+          feats.push({type:'Feature',properties:{fase:fk,quadra:q,lote:l,cat:cat,rotulo:q+'·'+l},geometry:{type:'Point',coordinates:pinsGeo[fk][q][l]}});
+        }
+      }
+    }
+    if (!map.loaded()) await new Promise(r=>map.once('load', r));
+    map.addSource('lotesv',{type:'geojson',data:{type:'FeatureCollection',features:feats}});
+    map.addLayer({id:'lotesv-pt',type:'circle',source:'lotesv',paint:{
+      'circle-color':['match',['get','cat'],'livre','#22c55e','vendido','#dc2626','reservado','#f97316','consultar','#f59e0b','#9ca3af'],
+      'circle-radius':['interpolate',['linear'],['zoom'],13,2.5,16,4.5,19,7.5],
+      'circle-stroke-width':1.2,'circle-stroke-color':'#ffffff','circle-opacity':0.95}});
+    map.addLayer({id:'lotesv-sel',type:'circle',source:'lotesv',filter:['==',['get','rotulo'],'§'],paint:{
+      'circle-color':'rgba(0,0,0,0)','circle-radius':['interpolate',['linear'],['zoom'],13,6,16,9,19,13],
+      'circle-stroke-width':3,'circle-stroke-color':'#1d4ed8'}});
+    map.addLayer({id:'lotesv-lb',type:'symbol',source:'lotesv',minzoom:17,layout:{
+      'text-field':['get','rotulo'],'text-size':['interpolate',['linear'],['zoom'],17,9,20,13],
+      'text-offset':[0,0.95],'text-anchor':'top','text-font':['Open Sans Semibold','Arial Unicode MS Bold'],
+      'text-allow-overlap':false,'symbol-sort-key':['-',1]},
+      paint:{'text-color':'#111827','text-halo-color':'#ffffff','text-halo-width':1.6}});
+    map.on('click','lotesv-pt',e=>{
+      const p=e.features[0].properties;
+      if (data[p.fase] && data[p.fase].quadras[p.quadra] && data[p.fase].quadras[p.quadra][p.lote]){
+        faseSel.value=p.fase; fillQuadras(); quadraSel.value=p.quadra; fillLotes();
+        map.setFilter('lotesv-sel',['==',['get','rotulo'],p.quadra+'·'+p.lote]);
+        mostraFluxo(p.fase,p.quadra,p.lote);
+      }
+    });
+    map.on('mouseenter','lotesv-pt',()=>{map.getCanvas().style.cursor='pointer';});
+    map.on('mouseleave','lotesv-pt',()=>{map.getCanvas().style.cursor='';});
+    const lg=document.createElement('div');
+    lg.style.cssText='position:absolute;right:8px;bottom:64px;z-index:900;background:rgba(255,255,255,.93);border-radius:8px;padding:6px 9px;font:12px system-ui;box-shadow:0 1px 6px rgba(0,0,0,.25);line-height:1.85';
+    lg.innerHTML='<b style="font-size:11px">Lotes (Jacarandás)</b><br><span style="color:#16a34a">&#9679;</span> Livre<br><span style="color:#dc2626">&#9679;</span> Vendido<br><span style="color:#f97316">&#9679;</span> Reservado<br><span style="color:#f59e0b">&#9679;</span> Consultar<br><span style="color:#9ca3af">&#9679;</span> Em breve';
+    document.getElementById('map').appendChild(lg);
+  } catch(e){ console.warn('pins-geo indisponível', e); }
   fillQuadras();
   { const prm = new URLSearchParams(location.search), f = prm.get('fase'), q = prm.get('quadra'), l = prm.get('lote');
     if (f && q && l && data[f] && data[f].quadras[q] && data[f].quadras[q][l] && RDPStatus.avail(data[f].quadras[q][l]) === 'livre' && RDPStatus.temTabela(data[f].quadras[q][l])) vaiParaLote(f, q, l); }
