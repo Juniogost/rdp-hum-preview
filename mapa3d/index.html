@@ -81,7 +81,7 @@ const LAT0=-16.670380, LNG0=-49.143633;
 const CENTRO = [LNG0, LAT0];
 const map = new maplibregl.Map({
   container:'map',
-  style:{version:8, glyphs:'https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf', sky:{'sky-color':'#bcd6ee','horizon-color':'#e9e5db','fog-color':'#e9e5db','sky-horizon-blend':0.4,'horizon-fog-blend':0,'fog-ground-blend':0,'atmosphere-blend':0}, sources:{esri:{type:'raster', tiles:['https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'], tileSize:256, maxzoom:19, attribution:'Esri, Maxar, Earthstar Geographics'}, prancha:{type:'raster', tiles:['tiles3dgeo/{z}/{x}/{y}.png?v=2'], tileSize:256, minzoom:13, maxzoom:20}},
+  style:{version:8, glyphs:'./glyphs/{fontstack}/{range}.pbf', sky:{'sky-color':'#bcd6ee','horizon-color':'#e9e5db','fog-color':'#e9e5db','sky-horizon-blend':0.4,'horizon-fog-blend':0,'fog-ground-blend':0,'atmosphere-blend':0}, sources:{esri:{type:'raster', tiles:['https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'], tileSize:256, maxzoom:19, attribution:'Esri, Maxar, Earthstar Geographics'}, prancha:{type:'raster', tiles:['tiles3dgeo/{z}/{x}/{y}.png?v=2'], tileSize:256, minzoom:13, maxzoom:20}},
     layers:[{id:'fundo',type:'background',paint:{'background-color':'#e9e5db'}},
       {id:'esri',type:'raster',source:'esri',paint:{'raster-fade-duration':0}},
       {id:'prancha',type:'raster',source:'prancha',paint:{'raster-fade-duration':0,'raster-resampling':'linear'}}]},
@@ -444,7 +444,7 @@ Promise.all([fetch('lotes.json?v=8').then(r=>r.json()), fetch('plano.json?v=7').
       'circle-stroke-width':3,'circle-stroke-color':'#1d4ed8'}});
     map.addLayer({id:'lotesv-lb',type:'symbol',source:'lotesv',minzoom:18,layout:{
       'text-field':['get','rotulo'],'text-size':12.5,
-      'text-offset':[0,0.95],'text-anchor':'top','text-font':['Open Sans Semibold','Arial Unicode MS Bold'],
+      'text-offset':[0,0.95],'text-anchor':'top','text-font':['Open Sans Semibold'],
       'text-allow-overlap':true,'text-ignore-placement':true,'text-padding':1},
       paint:{'text-color':'#111827','text-halo-color':'#ffffff','text-halo-width':1.6}});
     map.on('click','lotesv-pt',e=>{
