@@ -89,7 +89,7 @@ const map = new maplibregl.Map({
   maxBounds: [[-49.156,-16.684],[-49.128,-16.656]]
 });
 const BBOX=[[-49.1486,-16.6752],[-49.1387,-16.6655]];
-if (matchMedia('(max-width:640px)').matches){
+if (!location.hash.includes('/') && matchMedia('(max-width:640px)').matches){
   const cam=map.cameraForBounds(BBOX,{padding:{top:96,bottom:120,left:10,right:10},bearing:-15,pitch:42});
   if(cam) map.jumpTo(cam);
 }
