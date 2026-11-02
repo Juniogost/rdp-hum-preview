@@ -252,7 +252,7 @@ ren.domElement.addEventListener('pointerup', ev=>{
 
 function sobeCena(on){
   const min = document.getElementById('det').classList.contains('min');
-  alturaCena = on ? Math.round(innerHeight*(min?0.9:0.52)) : innerHeight;
+  alturaCena = on ? (min ? innerHeight-46 : Math.round(innerHeight*0.52)) : innerHeight;
   ren.setSize(innerWidth, alturaCena);
   enquadrar();
 }
@@ -280,7 +280,7 @@ function mostraApto(u){
   document.getElementById('detSel').onclick = ()=>{ location.href = '../index.html'; };
 }
 document.getElementById('detc').onclick = ()=>{ document.getElementById('det').style.display='none'; limpaSelecao(); sobeCena(false); };
-document.getElementById('detm').onclick = ()=>{ const d=document.getElementById('det'), m=document.getElementById('detm'); d.classList.toggle('min'); sobeCena(!d.classList.contains('min')); m.textContent = d.classList.contains('min') ? 'reabrir ▴' : 'ver mapa ▾'; };
+document.getElementById('detm').onclick = ()=>{ const d=document.getElementById('det'), m=document.getElementById('detm'); d.classList.toggle('min'); sobeCena(true); m.textContent = d.classList.contains('min') ? 'reabrir ▴' : 'ver mapa ▾'; };
 
 addEventListener('resize', ()=>{ const aberto = document.getElementById('det').style.display==='block'; alturaCena = aberto ? Math.round(innerHeight*0.52) : innerHeight; ren.setSize(innerWidth, alturaCena); enquadrar(); });
 let tAnim = performance.now();
