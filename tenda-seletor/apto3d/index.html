@@ -6,12 +6,12 @@
 <meta name="robots" content="noindex">
 <title>Itá Nobre — Maquete 3D por apartamento (prévia em teste)</title>
 <style>
-  html,body{margin:0;height:100%;overflow:hidden;font-family:system-ui,sans-serif;background:#e8e4da}
+  html,body{margin:0;height:100%;overflow:hidden;font-family:system-ui,sans-serif;background:#dfe6ec}
   #hud{position:absolute;top:0;left:0;right:0;z-index:10;background:#14532d;color:#fff;padding:calc(6px + env(safe-area-inset-top)) 10px 8px;font-size:14px}
   #hud b{font-size:15px}
   #hud .tag{background:#fbbf24;color:#1f2937;font-size:11px;font-weight:700;border-radius:6px;padding:1px 7px;margin-right:6px;vertical-align:middle}
   #hud a{color:#bbf7d0;font-size:12.5px}
-  #leg{position:absolute;top:64px;right:8px;z-index:10;background:rgba(255,255,255,.95);border-radius:10px;padding:7px 10px;font-size:12px;box-shadow:0 1px 6px rgba(0,0,0,.25)}
+  #leg{position:absolute;top:70px;right:8px;z-index:10;background:rgba(255,255,255,.95);border-radius:10px;padding:7px 10px;font-size:12px;box-shadow:0 1px 6px rgba(0,0,0,.25)}
   #leg div{margin:2px 0}
   .dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px;vertical-align:middle}
   #det{display:none;position:fixed;left:0;right:0;bottom:0;max-height:46%;overflow:auto;background:#fff;border-top:3px solid #14532d;padding:12px 14px calc(12px + env(safe-area-inset-bottom,0px));z-index:1000;font-size:14px;box-shadow:0 -4px 18px rgba(0,0,0,.25)}
@@ -68,69 +68,155 @@ function statusApto(bloco, apto){
 }
 
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0xdfe8ee);
-const cam = new THREE.PerspectiveCamera(46, innerWidth/innerHeight, 0.5, 2000);
+scene.background = new THREE.Color(0xdfe6ec);
+const cam = new THREE.PerspectiveCamera(44, innerWidth/innerHeight, 0.5, 3000);
 const ren = new THREE.WebGLRenderer({antialias:true});
 ren.setSize(innerWidth, innerHeight);
 ren.setPixelRatio(Math.min(devicePixelRatio, 2));
 document.body.appendChild(ren.domElement);
 const ctl = new OrbitControls(cam, ren.domElement);
 ctl.enableDamping = true; ctl.dampingFactor = 0.08; ctl.maxPolarAngle = Math.PI/2.15;
-ctl.minDistance = 20; ctl.maxDistance = 400;
+ctl.minDistance = 15; ctl.maxDistance = 900;
 
-scene.add(new THREE.AmbientLight(0xffffff, 1.15));
-const sun = new THREE.DirectionalLight(0xffffff, 1.6); sun.position.set(60, 120, 40); scene.add(sun);
+scene.add(new THREE.HemisphereLight(0xffffff, 0x8a97a5, 1.05));
+const sun = new THREE.DirectionalLight(0xfff6e8, 1.5); sun.position.set(80, 140, 90); scene.add(sun);
 
-// chão
+// chão com a foto oficial da maquete
 const ground = new THREE.Mesh(new THREE.PlaneGeometry(W, D), new THREE.MeshLambertMaterial({color:0x9cb07e}));
 ground.rotation.x = -Math.PI/2; scene.add(ground);
 new THREE.TextureLoader().load('../3d/assets/site-finished-ita-OACKZLXR.jpg', t=>{
+  t.colorSpace = THREE.SRGBColorSpace;
   ground.material = new THREE.MeshLambertMaterial({map:t}); ground.material.needsUpdate = true;
 });
 
-const cells = [];
-function rotuloSprite(txt, x, y, z){
-  const c = document.createElement('canvas'); c.width=256; c.height=128;
+// ---------- fachada (textura por status) ----------
+function fachadaTex(st){
+  const c = document.createElement('canvas'); c.width=256; c.height=256;
   const g = c.getContext('2d');
-  g.fillStyle='rgba(20,83,45,.92)'; g.beginPath(); g.roundRect(28,22,200,84,24); g.fill();
-  g.fillStyle='#fff'; g.font='bold 56px system-ui'; g.textAlign='center'; g.textBaseline='middle'; g.fillText(txt,128,66);
-  const sp = new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(c), depthTest:false}));
-  sp.scale.set(10,5,1); sp.position.set(x,y,z); scene.add(sp);
+  // parede
+  g.fillStyle = '#f0ebe1'; g.fillRect(0,0,256,256);
+  // sombreado suave nas bordas da parede
+  g.fillStyle = 'rgba(0,0,0,.06)'; g.fillRect(0,0,10,256); g.fillRect(246,0,10,256);
+  // laje do piso (faixa clara no topo)
+  g.fillStyle = '#ffffff'; g.fillRect(0,0,256,22);
+  g.fillStyle = 'rgba(0,0,0,.12)'; g.fillRect(0,22,256,5);
+  // moldura da janela na cor do status
+  g.fillStyle = CORCSS[st]; g.fillRect(26,46,204,164);
+  // vidro
+  const grad = g.createLinearGradient(30,50,220,206);
+  grad.addColorStop(0,'#46586a'); grad.addColorStop(.45,'#1e2a38'); grad.addColorStop(1,'#0f1722');
+  g.fillStyle = grad; g.fillRect(36,56,184,144);
+  // reflexo diagonal no vidro
+  g.fillStyle = 'rgba(255,255,255,.16)';
+  g.beginPath(); g.moveTo(48,200); g.lineTo(120,56); g.lineTo(150,56); g.lineTo(78,200); g.fill();
+  g.beginPath(); g.moveTo(96,200); g.lineTo(168,56); g.lineTo(178,56); g.lineTo(106,200); g.fill();
+  // montante central + peitoril/guarda
+  g.fillStyle = CORCSS[st];
+  g.fillRect(124,56,8,144);
+  g.fillRect(36,150,184,7);
+  // rodapé na cor do status
+  g.fillRect(0,244,256,12);
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4;
+  return t;
+}
+const TEX = {livre:fachadaTex('livre'), reservado:fachadaTex('reservado'), vendido:fachadaTex('vendido'), aconfirmar:fachadaTex('aconfirmar')};
+const MATS = {};
+for (const st of Object.keys(TEX)){
+  const side = new THREE.MeshLambertMaterial({map:TEX[st]});
+  const topo = new THREE.MeshLambertMaterial({color:0xd8d2c6});
+  MATS[st] = [side, side, topo, topo, side, side];
 }
 
+// núcleo da torre (fecha as frestas entre apartamentos) + laje de cobertura
+const coreMat = new THREE.MeshLambertMaterial({color:0xe6e0d4});
+const roofMat = new THREE.MeshLambertMaterial({color:0xfafafa});
+
+function rotuloSprite(txt, x, y, z){
+  const c = document.createElement('canvas'); c.width=320; c.height=160;
+  const g = c.getContext('2d');
+  g.fillStyle='rgba(255,255,255,.96)'; g.beginPath(); g.roundRect(20,18,280,124,26); g.fill();
+  g.lineWidth=7; g.strokeStyle='#14532d'; g.stroke();
+  g.fillStyle='#14532d'; g.textAlign='center'; g.textBaseline='middle';
+  g.font='700 40px system-ui'; g.fillText('BLOCO',160,62);
+  g.font='800 62px system-ui'; g.fillText(txt,160,116);
+  const sp = new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(c), depthTest:false, transparent:true}));
+  sp.scale.set(13,6.5,1); sp.position.set(x,y,z); sp.renderOrder = 5; scene.add(sp);
+}
+
+const cells = [];
+let minX=1e9,maxX=-1e9,minZ=1e9,maxZ=-1e9,maxH=0;
 for (const b of BLO){
   const cx = X(b.cx), cz = Z(b.cy);
   const long = Math.max(b.sx, b.sz), alongX = b.sx >= b.sz;
   const fh = b.h / b.pav, uw = long/4;
+  // núcleo
+  const core = new THREE.Mesh(new THREE.BoxGeometry(b.sx-0.18, b.h, b.sz-0.18), coreMat);
+  core.position.set(cx, b.h/2, cz); scene.add(core);
+  // laje de cobertura
+  const roof = new THREE.Mesh(new THREE.BoxGeometry(b.sx+0.7, 0.5, b.sz+0.7), roofMat);
+  roof.position.set(cx, b.h+0.25, cz); scene.add(roof);
   for (let f=1; f<=b.pav; f++){
     for (let u=1; u<=4; u++){
       const apto = f*100 + u;
       const st = statusApto(b.id, apto);
-      const w = uw*0.93, d = (alongX? b.sz : b.sx)*0.93;
-      const geo = new THREE.BoxGeometry(alongX? w : d, fh*0.88, alongX? d : w);
-      const m = new THREE.Mesh(geo, new THREE.MeshLambertMaterial({color:COR[st]}));
+      const w = uw*0.94, d = (alongX? b.sz : b.sx)*0.97;
+      const geo = new THREE.BoxGeometry(alongX? w : d, fh*0.9, alongX? d : w);
+      const m = new THREE.Mesh(geo, MATS[st]);
       const off = -long/2 + uw*(u-0.5);
       m.position.set(cx + (alongX? off : 0), fh*(f-0.5), cz + (alongX? 0 : off));
-      m.userData = {bloco:b.id, apto, andar:f, st};
+      m.userData = {bloco:b.id, apto, andar:f, st, w:(alongX?w:d), h:fh*0.9, d:(alongX?d:w)};
       scene.add(m); cells.push(m);
     }
   }
-  rotuloSprite(b.id, cx, b.h + 4, cz);
+  rotuloSprite(b.id, cx, b.h + 6.4, cz);
+  minX=Math.min(minX,cx-b.sx/2); maxX=Math.max(maxX,cx+b.sx/2);
+  minZ=Math.min(minZ,cz-b.sz/2); maxZ=Math.max(maxZ,cz+b.sz/2);
+  maxH=Math.max(maxH,b.h);
 }
 
-// enquadrar conjunto
-const meio = new THREE.Vector3(X(4790), 0, Z(660));
-ctl.maxDistance = 700;
-{ // enquadrar os 6 blocos na largura da tela (retrato)
-  const hfov = 2*Math.atan(Math.tan(cam.fov*Math.PI/360)*cam.aspect);
-  const dist = Math.min(680, (80*1.04)/Math.tan(hfov/2));
-  const dir = new THREE.Vector3(0, 0.55, 1).normalize();
-  cam.position.copy(meio).addScaledVector(dir, dist);
+// ---------- enquadramento (foco nas torres, não na faixa de terreno inteira) ----------
+const alvo = new THREE.Vector3((minX+maxX)/2, maxH*0.45, (minZ+maxZ)/2);
+const spanX = maxX-minX, spanZ = maxZ-minZ, span = Math.max(spanX, spanZ);
+function enquadrar(){
+  cam.aspect = innerWidth/innerHeight; cam.updateProjectionMatrix();
+  const vfov = cam.fov*Math.PI/180;
+  const hfov = 2*Math.atan(Math.tan(vfov/2)*cam.aspect);
+  const needW = (spanX*1.14/2)/Math.tan(hfov/2);
+  const needH = ((maxH + spanZ*0.85)*1.18/2)/Math.tan(vfov/2);
+  const dist = Math.min(800, Math.max(60, needW, needH));
+  const az = 0.62, el = 0.60;
+  const dir = new THREE.Vector3(Math.sin(az)*Math.cos(el), Math.sin(el), Math.cos(az)*Math.cos(el));
+  cam.position.copy(alvo).addScaledVector(dir, dist);
+  ctl.target.copy(alvo);
 }
-ctl.target.copy(meio); ctl.update();
+enquadrar(); ctl.update();
+
+// ---------- seleção ----------
+let selBox = null, selLbl = null, sel = null;
+function marcaSelecao(m){
+  limpaSelecao();
+  const u = m.userData;
+  selBox = new THREE.LineSegments(
+    new THREE.EdgesGeometry(new THREE.BoxGeometry(u.w+0.5, u.h+0.5, u.d+0.5)),
+    new THREE.LineBasicMaterial({color:0xfacc15}));
+  selBox.position.copy(m.position); scene.add(selBox);
+  const c = document.createElement('canvas'); c.width=384; c.height=128;
+  const g = c.getContext('2d');
+  g.fillStyle='#facc15'; g.beginPath(); g.roundRect(8,14,368,100,22); g.fill();
+  g.fillStyle='#1f2937'; g.font='800 52px system-ui'; g.textAlign='center'; g.textBaseline='middle';
+  g.fillText(`${u.bloco} · ap ${u.apto}`,192,66);
+  selLbl = new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(c), depthTest:false, transparent:true}));
+  selLbl.scale.set(11,3.7,1); selLbl.position.set(m.position.x, m.position.y + u.h/2 + 3.4, m.position.z);
+  selLbl.renderOrder = 6; scene.add(selLbl);
+}
+function limpaSelecao(){
+  if (selBox){ scene.remove(selBox); selBox.geometry.dispose(); selBox.material.dispose(); selBox=null; }
+  if (selLbl){ scene.remove(selLbl); selLbl.material.map.dispose(); selLbl.material.dispose(); selLbl=null; }
+  if (sel){ sel.material.emissive && sel.material.emissive.setHex(0); sel=null; }
+}
 
 const ray = new THREE.Raycaster(), ptr = new THREE.Vector2();
-let sel = null, downAt = 0;
+let downAt = 0;
 ren.domElement.addEventListener('pointerdown', ()=>{ downAt = performance.now(); });
 ren.domElement.addEventListener('pointerup', ev=>{
   if (performance.now() - downAt > 220) return;      // foi arraste, não toque
@@ -138,9 +224,11 @@ ren.domElement.addEventListener('pointerup', ev=>{
   ray.setFromCamera(ptr, cam);
   const hit = ray.intersectObjects(cells)[0];
   if (!hit) return;
-  if (sel) sel.material.emissive && sel.material.emissive.setHex(0);
+  limpaSelecao();
   sel = hit.object;
-  sel.material.emissive = new THREE.Color(0x1d4ed8); sel.material.emissiveIntensity = 0.55;
+  sel.material = MATS[sel.userData.st].map(m2=>m2.clone());
+  sel.material.forEach(mm=>{ if(mm.emissive){ mm.emissive = new THREE.Color(0x1d4ed8); mm.emissiveIntensity = 0.28; } });
+  marcaSelecao(sel);
   mostraApto(sel.userData);
 });
 
@@ -167,11 +255,16 @@ function mostraApto(u){
   det.style.display='block'; det.classList.remove('min'); document.getElementById('detm').textContent='ver mapa ▾';
   document.getElementById('detSel').onclick = ()=>{ location.href = '../index.html'; };
 }
-document.getElementById('detc').onclick = ()=>{ document.getElementById('det').style.display='none'; if(sel){ sel.material.emissive.setHex(0); sel=null; } };
+document.getElementById('detc').onclick = ()=>{ document.getElementById('det').style.display='none'; limpaSelecao(); };
 document.getElementById('detm').onclick = ()=>{ const d=document.getElementById('det'), m=document.getElementById('detm'); d.classList.toggle('min'); m.textContent = d.classList.contains('min') ? 'reabrir ▴' : 'ver mapa ▾'; };
 
 addEventListener('resize', ()=>{ cam.aspect = innerWidth/innerHeight; cam.updateProjectionMatrix(); ren.setSize(innerWidth, innerHeight); });
-(function loop(){ requestAnimationFrame(loop); ctl.update(); ren.render(scene, cam); })();
+let t0 = performance.now();
+(function loop(){
+  requestAnimationFrame(loop);
+  if (selBox){ const s = 1 + 0.05*Math.sin((performance.now()-t0)/180); selBox.scale.set(s,1,s); }
+  ctl.update(); ren.render(scene, cam);
+})();
 </script>
 </body>
 </html>
