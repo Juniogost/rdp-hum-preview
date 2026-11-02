@@ -189,7 +189,7 @@ document.getElementById('btnNascer').addEventListener('click', ()=>{
 document.getElementById('btnPor').addEventListener('click', ()=>{
   const s=solPos(DATA, LAT0, LNG0); if(s.por!=null){document.getElementById('hora').value=s.por; atualizaSol();}});
 </script>
-<div id="det" style="display:none;position:fixed;left:0;right:0;bottom:0;max-height:50%;overflow:auto;background:#fff;border-top:3px solid #0a6b3d;padding:12px 14px calc(12px + env(safe-area-inset-bottom,0px));z-index:1000;font:14px system-ui;box-shadow:0 -4px 18px rgba(0,0,0,.25)">
+<div id="det" style="display:none;position:fixed;left:0;right:0;bottom:0;max-height:44%;overflow:auto;background:#fff;border-top:3px solid #0a6b3d;padding:12px 14px calc(12px + env(safe-area-inset-bottom,0px));z-index:1000;font:14px system-ui;box-shadow:0 -4px 18px rgba(0,0,0,.25)">
 <button id="detm" style="float:right;border:0;background:#eee;border-radius:6px;padding:4px 10px;font-weight:700;margin-right:6px">ver mapa ▾</button>
 <button id="detc" style="float:right;border:0;background:#eee;border-radius:6px;padding:4px 10px;font-weight:700">fechar ✕</button>
 <div id="detb"></div></div>
