@@ -484,12 +484,28 @@ Promise.all([fetch('lotes.json?v=8').then(r=>r.json()), fetch('plano.json?v=7').
           rows.push(cur);
           rows.forEach(r=>r.sort((a,b)=>a.su-b.su));
           const rowSv = rows.map(r=>r.reduce((t,p)=>t+p.sv,0)/r.length);
+          const medDu = r=>{ const ds=[]; for(let i=1;i<r.length;i++) ds.push(r[i].su-r[i-1].su); ds.sort((a,b)=>a-b); return ds.length?ds[Math.floor(ds.length/2)]:10; };
+          const gaps=[]; for (let i=1;i<rowSv.length;i++){ const g=rowSv[i]-rowSv[i-1]; if(g<=40) gaps.push(g); } gaps.sort((a,b)=>a-b);
+          const medDepth = gaps.length?gaps[Math.floor(gaps.length/2)]:25;
           for (let r=0;r<rows.length;r++){
-            const top=rowSv[r], bot=(r+1<rows.length)?rowSv[r+1]:rowSv[r]+(r>0?rowSv[r]-rowSv[r-1]:25);
+            const lastRow = (r+1>=rows.length);
+            const du=medDu(rows[r]);
+            if (!lastRow && (rowSv[r+1]-rowSv[r])>40) continue; // gap grande (rua) entre as linhas -> não extrapolar
             for (let c=0;c<rows[r].length;c++){
               const pp=rows[r][c];
-              const lft=pp.su, rgt=(c+1<rows[r].length)?rows[r][c+1].su:pp.su+(c>0?pp.su-rows[r][c-1].su:10);
-              const corners=[[lft,top],[rgt,top],[rgt,bot],[lft,bot],[lft,top]].map(([su,sv])=>{
+              const su0=pp.su, sv0=pp.sv;
+              let su1, sv1;
+              if (c+1<rows[r].length && (rows[r][c+1].su-su0)<1.8*du){ su1=rows[r][c+1].su; sv1=rows[r][c+1].sv; }
+              else { su1=su0+(c>0?(su0-rows[r][c-1].su):du); sv1=sv0; } // lote de ponta: largura do vizinho
+              let cBL, cBR;
+              if (lastRow){ cBL=[su0,sv0+medDepth]; cBR=[su1,sv1+medDepth]; } // última linha: profundidade mediana da quadra (não cruza outra linha)
+              else {
+                let bl=null, br=null;
+                for (const q2 of rows[r+1]){ const d0=Math.abs(q2.su-su0); if(!bl||d0<bl.d) bl={d:d0,p:q2}; const d1=Math.abs(q2.su-su1); if(!br||d1<br.d) br={d:d1,p:q2}; }
+                if (!bl||!br||bl.d>6||br.d>6) continue; // sem âncoras reais embaixo -> sem polígono
+                cBL=[bl.p.su,bl.p.sv]; cBR=[br.p.su,br.p.sv];
+              }
+              const corners=[[su0,sv0],[su1,sv1],cBR,cBL,[su0,sv0]].map(([su,sv])=>{
                 const px=mx+ux*su+vx*sv, py=my+uy*su+vy*sv; return [px/KX, py/KY];
               });
               const lot=(data[fk].quadras[q]||{})[pp.l];
@@ -529,6 +545,11 @@ Promise.all([fetch('lotes.json?v=8').then(r=>r.json()), fetch('plano.json?v=7').
     };
     map.on('click','lotesv-pt',e=>{const p=e.features[0].properties; selecionaLote(p.fase,p.quadra,p.lote);});
     map.on('click','lotesv-pg',e=>{const p=e.features[0].properties; selecionaLote(p.fase,p.quadra,p.lote);});
+    map.on('click',e=>{ if (map.queryRenderedFeatures(e.point,{layers:['lotesv-pg','lotesv-pt']}).length) return;
+      const cand=map.queryRenderedFeatures([[e.point.x-45,e.point.y-45],[e.point.x+45,e.point.y+45]],{layers:['lotesv-pt']});
+      if (!cand.length) return; let best=null;
+      for (const f of cand){ const c=map.project(f.geometry.coordinates); const d=Math.hypot(c.x-e.point.x,c.y-e.point.y); if(!best||d<best.d) best={d,f}; }
+      if (best && best.d<=45){ const p=best.f.properties; selecionaLote(p.fase,p.quadra,p.lote); } });
     map.on('mouseenter','lotesv-pt',()=>{map.getCanvas().style.cursor='pointer';});
     map.on('mouseleave','lotesv-pt',()=>{map.getCanvas().style.cursor='';});
     map.on('mouseenter','lotesv-pg',()=>{map.getCanvas().style.cursor='pointer';});
