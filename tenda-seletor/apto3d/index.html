@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Itá Nobre — Maquete 3D por apartamento (prévia em teste)</title>
+<style>
+  html,body{margin:0;height:100%;overflow:hidden;font-family:system-ui,sans-serif;background:#e8e4da}
+  #hud{position:absolute;top:0;left:0;right:0;z-index:10;background:#14532d;color:#fff;padding:calc(6px + env(safe-area-inset-top)) 10px 8px;font-size:14px}
+  #hud b{font-size:15px}
+  #hud .tag{background:#fbbf24;color:#1f2937;font-size:11px;font-weight:700;border-radius:6px;padding:1px 7px;margin-right:6px;vertical-align:middle}
+  #hud a{color:#bbf7d0;font-size:12.5px}
+  #leg{position:absolute;top:64px;right:8px;z-index:10;background:rgba(255,255,255,.95);border-radius:10px;padding:7px 10px;font-size:12px;box-shadow:0 1px 6px rgba(0,0,0,.25)}
+  #leg div{margin:2px 0}
+  .dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px;vertical-align:middle}
+  #det{display:none;position:fixed;left:0;right:0;bottom:0;max-height:46%;overflow:auto;background:#fff;border-top:3px solid #14532d;padding:12px 14px calc(12px + env(safe-area-inset-bottom,0px));z-index:1000;font-size:14px;box-shadow:0 -4px 18px rgba(0,0,0,.25)}
+  #det.min{max-height:44px !important;overflow:hidden !important}
+  #detc,#detm{float:right;border:0;background:#eee;border-radius:6px;padding:4px 10px;font-weight:700}
+  #detm{margin-right:6px}
+  .chip{display:inline-block;padding:2px 9px;border-radius:999px;color:#fff;font-size:12px;font-weight:700;vertical-align:middle}
+  #det .ac{color:#b91c1c;font-weight:700}
+  #detSel{width:100%;margin-top:8px;padding:12px;font:700 15px system-ui;background:#14532d;color:#fff;border:0;border-radius:8px}
+  #nota{position:absolute;bottom:8px;left:8px;z-index:9;background:rgba(17,24,39,.85);color:#e5e7eb;font-size:10.5px;line-height:1.4;padding:6px 9px;border-radius:8px;max-width:62%}
+  #nota b{color:#fbbf24}
+</style>
+</head>
+<body>
+<div id="hud"><span class="tag">Prévia em teste</span><b>Itá Nobre — Maquete 3D por apartamento</b><br>
+<a href="../index.html">← Versão do seletor</a></div>
+<div id="leg">
+  <div><span class="dot" style="background:#22c55e"></span>Disponível</div>
+  <div><span class="dot" style="background:#f97316"></span>Reservado</div>
+  <div><span class="dot" style="background:#dc2626"></span>Vendido</div>
+  <div><span class="dot" style="background:#9ca3af"></span>A confirmar</div>
+</div>
+<div id="nota"><b>Estudo ilustrativo:</b> posição aproximada dos apartamentos nas torres (planta tipo, 4 por andar). Numeração e disponibilidade: confirmar na tabela.</div>
+<div id="det">
+<button id="detm">ver mapa ▾</button>
+<button id="detc">fechar ✕</button>
+<div id="detb"></div></div>
+<script type="module">
+import * as THREE from '../3d/three.module-V7ASZNKV.js';
+import {OrbitControls} from '../3d/OrbitControls-4EM7FTJS.js';
+
+const N = 22.6, W = 9056/N, D = 1560/N;          // px -> m (mesma escala da maquete oficial)
+const BLO = [
+  {id:'B1', cx:5919.4, cy:741.1, sx:14.9, sz:34.42, pav:5, h:14.2},
+  {id:'B2', cx:5449.2, cy:739.7, sx:14.9, sz:35.82, pav:5, h:14.2},
+  {id:'B3', cx:4978.9, cy:744.9, sx:14.9, sz:35.82, pav:5, h:14.2},
+  {id:'B4', cx:4508.7, cy:749.8, sx:14.9, sz:35.82, pav:5, h:14.2},
+  {id:'B5', cx:4040.4, cy:750.2, sx:14.9, sz:35.82, pav:5, h:14.2},
+  {id:'B6', cx:3265.3, cy:554.7, sx:43.22, sz:14.9, pav:4, h:11.58},
+];
+const X = c => c/N - W/2, Z = c => c/N - D/2;
+const COR = {livre:0x22c55e, reservado:0xf97316, vendido:0xdc2626, aconfirmar:0x9ca3af};
+const CORCSS = {livre:'#22c55e', reservado:'#f97316', vendido:'#dc2626', aconfirmar:'#9ca3af'};
+const TXT = {livre:'Disponível', reservado:'Reservado', vendido:'Vendido', aconfirmar:'A confirmar'};
+
+let UNITS = {empreendimentos:[{id:'ita', disponibilidade:{}, disponibilidade_padrao:'livre', ref:{}}]};
+try { UNITS = await (await fetch('../units.json')).json(); } catch(e){}
+const ITA = (UNITS.empreendimentos||[]).find(e=>e.id==='ita') || UNITS.empreendimentos[0];
+const DISP = (ITA && ITA.disponibilidade) || {}, PAD = (ITA && ITA.disponibilidade_padrao) || 'livre';
+const REF = (ITA && ITA.ref) || {};
+function statusApto(bloco, apto){
+  const v = DISP[bloco+'-'+apto] ?? DISP[bloco+'_'+apto] ?? PAD;
+  return COR[v] ? v : 'aconfirmar';
+}
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0xdfe8ee);
+const cam = new THREE.PerspectiveCamera(46, innerWidth/innerHeight, 0.5, 2000);
+const ren = new THREE.WebGLRenderer({antialias:true});
+ren.setSize(innerWidth, innerHeight);
+ren.setPixelRatio(Math.min(devicePixelRatio, 2));
+document.body.appendChild(ren.domElement);
+const ctl = new OrbitControls(cam, ren.domElement);
+ctl.enableDamping = true; ctl.dampingFactor = 0.08; ctl.maxPolarAngle = Math.PI/2.15;
+ctl.minDistance = 20; ctl.maxDistance = 400;
+
+scene.add(new THREE.AmbientLight(0xffffff, 1.15));
+const sun = new THREE.DirectionalLight(0xffffff, 1.6); sun.position.set(60, 120, 40); scene.add(sun);
+
+// chão
+const ground = new THREE.Mesh(new THREE.PlaneGeometry(W, D), new THREE.MeshLambertMaterial({color:0x9cb07e}));
+ground.rotation.x = -Math.PI/2; scene.add(ground);
+new THREE.TextureLoader().load('../3d/assets/site-finished-ita-OACKZLXR.jpg', t=>{
+  ground.material = new THREE.MeshLambertMaterial({map:t}); ground.material.needsUpdate = true;
+});
+
+const cells = [];
+function rotuloSprite(txt, x, y, z){
+  const c = document.createElement('canvas'); c.width=256; c.height=128;
+  const g = c.getContext('2d');
+  g.fillStyle='rgba(20,83,45,.92)'; g.beginPath(); g.roundRect(28,22,200,84,24); g.fill();
+  g.fillStyle='#fff'; g.font='bold 56px system-ui'; g.textAlign='center'; g.textBaseline='middle'; g.fillText(txt,128,66);
+  const sp = new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(c), depthTest:false}));
+  sp.scale.set(10,5,1); sp.position.set(x,y,z); scene.add(sp);
+}
+
+for (const b of BLO){
+  const cx = X(b.cx), cz = Z(b.cy);
+  const long = Math.max(b.sx, b.sz), alongX = b.sx >= b.sz;
+  const fh = b.h / b.pav, uw = long/4;
+  for (let f=1; f<=b.pav; f++){
+    for (let u=1; u<=4; u++){
+      const apto = f*100 + u;
+      const st = statusApto(b.id, apto);
+      const w = uw*0.93, d = (alongX? b.sz : b.sx)*0.93;
+      const geo = new THREE.BoxGeometry(alongX? w : d, fh*0.88, alongX? d : w);
+      const m = new THREE.Mesh(geo, new THREE.MeshLambertMaterial({color:COR[st]}));
+      const off = -long/2 + uw*(u-0.5);
+      m.position.set(cx + (alongX? off : 0), fh*(f-0.5), cz + (alongX? 0 : off));
+      m.userData = {bloco:b.id, apto, andar:f, st};
+      scene.add(m); cells.push(m);
+    }
+  }
+  rotuloSprite(b.id, cx, b.h + 4, cz);
+}
+
+// enquadrar conjunto
+const meio = new THREE.Vector3(X(4790), 0, Z(660));
+cam.position.set(meio.x + 95, 85, meio.z + 110);
+ctl.target.copy(meio); ctl.update();
+
+const ray = new THREE.Raycaster(), ptr = new THREE.Vector2();
+let sel = null, downAt = 0;
+ren.domElement.addEventListener('pointerdown', ()=>{ downAt = performance.now(); });
+ren.domElement.addEventListener('pointerup', ev=>{
+  if (performance.now() - downAt > 220) return;      // foi arraste, não toque
+  ptr.x = (ev.clientX/innerWidth)*2 - 1; ptr.y = -(ev.clientY/innerHeight)*2 + 1;
+  ray.setFromCamera(ptr, cam);
+  const hit = ray.intersectObjects(cells)[0];
+  if (!hit) return;
+  if (sel) sel.material.emissive && sel.material.emissive.setHex(0);
+  sel = hit.object;
+  sel.material.emissive = new THREE.Color(0x1d4ed8); sel.material.emissiveIntensity = 0.55;
+  mostraApto(sel.userData);
+});
+
+function mostraApto(u){
+  const det = document.getElementById('det'), detb = document.getElementById('detb');
+  const stTxt = TXT[u.st], stCor = CORCSS[u.st];
+  const linha = (k,v,ac)=>`<tr><td style="padding:3px 8px 3px 0;color:#4b5563">${k}</td><td>${ac?`<span class="ac">${v}</span>`:`<b>${v}</b>`}</td></tr>`;
+  detb.innerHTML = `
+    <b>Itá Nobre — Bloco ${u.bloco}, apartamento ${u.apto}</b>
+    <span class="chip" style="background:${stCor}">${stTxt}</span>
+    <span style="font-size:13px;color:#374151"> · ${u.andar}º andar</span><br>
+    <span style="font-size:12px;color:#555">${ITA.disponibilidade_fonte || 'Disponibilidade: confirmar na tabela.'}</span>
+    <table style="margin-top:6px;border-collapse:collapse">
+      ${linha('Metragem', REF.metragem || 'a confirmar', !REF.metragem)}
+      ${linha('Condição', REF.condicao || 'a confirmar', !REF.condicao)}
+      ${linha('Valor de tabela da unidade', 'a confirmar', true)}
+      ${linha('Sinal', REF.sinal || 'a confirmar', !REF.sinal)}
+      ${linha('Mensais', REF.mensais || 'a confirmar', !REF.mensais)}
+      ${linha('Intermediárias', REF.intermediarias || 'a confirmar', !REF.intermediarias)}
+      ${linha('Parcelas (financiamento)', REF.parcelas || 'a confirmar', !REF.parcelas)}
+    </table>
+    <span style="font-size:12px;color:#555">Valores de referência por empreendimento (não por apartamento). Conferir tabela vigente. Estudo ilustrativo, não é proposta oficial.</span><br>
+    <button id="detSel">Ver este apartamento no seletor completo</button>`;
+  det.style.display='block'; det.classList.remove('min'); document.getElementById('detm').textContent='ver mapa ▾';
+  document.getElementById('detSel').onclick = ()=>{ location.href = '../index.html'; };
+}
+document.getElementById('detc').onclick = ()=>{ document.getElementById('det').style.display='none'; if(sel){ sel.material.emissive.setHex(0); sel=null; } };
+document.getElementById('detm').onclick = ()=>{ const d=document.getElementById('det'), m=document.getElementById('detm'); d.classList.toggle('min'); m.textContent = d.classList.contains('min') ? 'reabrir ▴' : 'ver mapa ▾'; };
+
+addEventListener('resize', ()=>{ cam.aspect = innerWidth/innerHeight; cam.updateProjectionMatrix(); ren.setSize(innerWidth, innerHeight); });
+(function loop(){ requestAnimationFrame(loop); ctl.update(); ren.render(scene, cam); })();
+</script>
+</body>
+</html>
