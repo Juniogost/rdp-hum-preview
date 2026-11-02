@@ -43,6 +43,11 @@
 <button id="detm">ver mapa ▾</button>
 <button id="detc">fechar ✕</button>
 <div id="detb"></div></div>
+<script>
+window.__errs=[];
+window.addEventListener('error',e=>{window.__errs.push((e.message||'')+' @ '+(e.filename||'')+':'+(e.lineno||''));document.title='ERR';});
+window.addEventListener('unhandledrejection',e=>{window.__errs.push('rej: '+(e.reason&&(e.reason.message||e.reason)||''));document.title='ERR';});
+</script>
 <script type="module">
 import * as THREE from '../3d/three.module-V7ASZNKV.js';
 import {OrbitControls} from '../3d/OrbitControls-4EM7FTJS.js';
