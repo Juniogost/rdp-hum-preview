@@ -113,7 +113,7 @@ map.on('load', ()=>{
 });
 map.addControl(new maplibregl.NavigationControl({visualizePitch:true}), 'bottom-right');
 document.getElementById('vistaAerea').onclick = ()=>{ const cam = map.cameraForBounds(BBOX,{padding:{top:96,bottom:120,left:10,right:10},bearing:0,pitch:0}); if(cam) map.easeTo({center:cam.center,zoom:cam.zoom,bearing:0,pitch:0,duration:900}); };
-document.getElementById('vistaPersp').onclick = ()=>{ const cam = map.cameraForBounds(BBOX,{padding:{top:96,bottom:120,left:10,right:10},bearing:-15,pitch:55}); if(cam) map.easeTo({center:cam.center,zoom:cam.zoom,bearing:-15,pitch:55,duration:900}); };
+document.getElementById('vistaPersp').onclick = ()=>{ const cam = map.cameraForBounds(BBOX,{padding:{top:96,bottom:120,left:10,right:10},bearing:-15,pitch:55}); if(cam) map.easeTo({center:cam.center,zoom:cam.zoom,bearing:-15,pitch:45,duration:900}); };
 const nota3=document.getElementById('nota');
 if (matchMedia('(max-width:640px)').matches) nota3.classList.add('col');
 nota3.onclick=()=>{nota3.classList.toggle('col');setTimeout(ajustaPainel,30);};
@@ -448,6 +448,7 @@ Promise.all([fetch('lotes.json?v=8').then(r=>r.json()), fetch('plano.json?v=7').
           const lot = lq[l]; if (!lot) continue;
           const av = RDPStatus.avail(lot), tt = RDPStatus.temTabela(lot);
           const cat = av==='vendido'?'vendido':av==='reservado'?'reservado':av==='consultar'?'consultar':(av==='livre'||tt)?'livre':'embreve';
+          if (cat==='consultar'||cat==='embreve') continue; // mapa mostra so Livre/Vendido/Reservado (pedido do Junio); status real segue no painel ao clicar
           feats.push({type:'Feature',properties:{fase:fk,quadra:q,lote:l,cat:cat,rotulo:q+'·'+l},geometry:{type:'Point',coordinates:pinsGeo[fk][q][l]}});
         }
       }
@@ -571,7 +572,7 @@ Promise.all([fetch('lotes.json?v=8').then(r=>r.json()), fetch('plano.json?v=7').
     const lg=document.createElement('div');
     lg.id='lgdiv';
     lg.style.cssText='position:absolute;right:8px;top:56px;z-index:900;background:rgba(255,255,255,.93);border-radius:8px;padding:6px 9px;font:12px system-ui;box-shadow:0 1px 6px rgba(0,0,0,.25);line-height:1.85';
-    lg.innerHTML='<div id="lghd"><b style="font-size:11px">Lotes (Jacarandás) <span style="color:#6b7280">▾</span></b></div><div id="lgbd"><span style="color:#16a34a">&#9679;</span> Livre<br><span style="color:#dc2626">&#9679;</span> Vendido<br><span style="color:#f97316">&#9679;</span> Reservado<br><span style="color:#f59e0b">&#9679;</span> Consultar<br><span style="color:#9ca3af">&#9679;</span> Em breve</div>';
+    lg.innerHTML='<div id="lghd"><b style="font-size:11px">Lotes (Jacarandás) <span style="color:#6b7280">▾</span></b></div><div id="lgbd"><span style="color:#16a34a">&#9679;</span> Livre<br><span style="color:#dc2626">&#9679;</span> Vendido<br><span style="color:#f97316">&#9679;</span> Reservado</div>';
     lg.querySelector('#lghd').onclick=()=>{ lg.classList.toggle('ab'); lg.querySelector('#lghd span').textContent = lg.classList.contains('ab')?'▴':'▾'; };
     { const setLgTop=()=>{ const h=document.getElementById('hud'); lg.style.top=((h?h.offsetHeight:48)+8)+'px'; }; setLgTop(); addEventListener('resize',setLgTop); }
     document.getElementById('map').appendChild(lg);
