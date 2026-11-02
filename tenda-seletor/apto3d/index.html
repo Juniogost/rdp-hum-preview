@@ -141,7 +141,7 @@ for (const b of B){
       const st = statusApto(b.id, apto);
       const w = uw*0.96, d = (alongX? b.sz : b.sx)*1.06;
       const geo = new THREE.BoxGeometry(alongX? w : d, fh*0.92, alongX? d : w);
-      const m = new THREE.Mesh(geo, new THREE.MeshLambertMaterial({color:COR[st], transparent:true, opacity:.34, depthWrite:false}));
+      const m = new THREE.Mesh(geo, new THREE.MeshLambertMaterial({color:COR[st], transparent:true, opacity:.22, depthWrite:false}));
       const off = -long/2 + uw*(u-0.5);
       m.position.set(cx + (alongX? off : 0), fh*(f-0.5), cz + (alongX? 0 : off));
       m.userData = {bloco:b.id, apto, andar:f, st, w:(alongX?w:d), h:fh*0.92, d:(alongX?d:w)};
@@ -160,15 +160,18 @@ for (const b of B){
 }
 const alvo = new THREE.Vector3((minX+maxX)/2, maxH*0.45, (minZ+maxZ)/2);
 const spanX = maxX-minX, spanZ = maxZ-minZ;
+const AZ0 = 1.08, EL0 = 0.50;
 function enquadrar(){
   cam.aspect = innerWidth/innerHeight; cam.updateProjectionMatrix();
   const vfov = cam.fov*Math.PI/180;
   const hfov = 2*Math.atan(Math.tan(vfov/2)*cam.aspect);
-  const needW = (spanX*1.16/2)/Math.tan(hfov/2);
-  const needH = ((maxH + spanZ*0.9)*1.2/2)/Math.tan(vfov/2);
-  const dist = Math.min(800, Math.max(60, needW, needH));
-  const az = 0.62, el = 0.58;
-  const dir = new THREE.Vector3(Math.sin(az)*Math.cos(el), Math.sin(el), Math.cos(az)*Math.cos(el));
+  // largura efetiva no eixo "right" da câmera (fileira recua em profundidade)
+  const rightX = Math.cos(AZ0), rightZ = -Math.sin(AZ0);
+  const effHalfW = (spanX/2)*Math.abs(rightX) + (spanZ/2)*Math.abs(rightZ);
+  const needW = (effHalfW*1.14)/Math.tan(hfov/2);
+  const needH = ((maxH*1.6 + spanZ*0.5)/2)/Math.tan(vfov/2);
+  const dist = Math.min(700, Math.max(45, needW, needH));
+  const dir = new THREE.Vector3(Math.sin(AZ0)*Math.cos(EL0), Math.sin(EL0), Math.cos(AZ0)*Math.cos(EL0));
   cam.position.copy(alvo).addScaledVector(dir, dist);
   ctl.target.copy(alvo);
 }
@@ -227,7 +230,7 @@ function marcaSelecao(m){
 function limpaSelecao(){
   if (selBox){ scene.remove(selBox); selBox.geometry.dispose(); selBox.material.dispose(); selBox=null; }
   if (selLbl){ scene.remove(selLbl); selLbl.material.map.dispose(); selLbl.material.dispose(); selLbl=null; }
-  if (sel){ sel.material.opacity = .34; sel=null; }
+  if (sel){ sel.material.opacity = .22; sel=null; }
 }
 
 const ray = new THREE.Raycaster(), ptr = new THREE.Vector2();
@@ -241,7 +244,7 @@ ren.domElement.addEventListener('pointerup', ev=>{
   if (!hit) return;
   limpaSelecao();
   sel = hit.object;
-  sel.material.opacity = .75;
+  sel.material.opacity = .68;
   marcaSelecao(sel);
   mostraApto(sel.userData);
 });
