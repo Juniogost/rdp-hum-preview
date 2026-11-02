@@ -249,6 +249,11 @@ ren.domElement.addEventListener('pointerup', ev=>{
   mostraApto(hitObj.userData);
 });
 
+function sobeCena(on){
+  if (on) cam.setViewOffset(innerWidth, innerHeight, 0, innerHeight*0.24, innerWidth, innerHeight);
+  else cam.clearViewOffset();
+  cam.updateProjectionMatrix();
+}
 function mostraApto(u){
   const det = document.getElementById('det'), detb = document.getElementById('detb');
   const stTxt = TXT[u.st], stCor = CORCSS[u.st];
