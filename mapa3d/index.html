@@ -289,8 +289,17 @@ Promise.all([fetch('lotes.json?v=8').then(r=>r.json()), fetch('plano.json?v=7').
     const row = pk && plano[pk] && plano[pk].rows ? plano[pk].rows[quadra + '-' + lote] : null;
     const meta = pk && plano[pk] ? plano[pk].meta : null;
     let nome = data[fase].fase.split('— ')[1] || data[fase].fase;
+    const _lot = data[fase].quadras[quadra] && data[fase].quadras[quadra][lote];
+    const _av = _lot ? RDPStatus.avail(_lot) : null, _tt = _lot ? RDPStatus.temTabela(_lot) : false;
+    const _cat = _av==='vendido'?'vendido':_av==='reservado'?'reservado':_av==='consultar'?'consultar':(_av==='livre'||_tt)?'livre':'embreve';
+    const _stTxt = {vendido:'Vendido',reservado:'Reservado',consultar:'Consultar disponibilidade',livre:'Livre',embreve:'Em breve'}[_cat];
+    const _stCor = {vendido:'#dc2626',reservado:'#f97316',consultar:'#f59e0b',livre:'#16a34a',embreve:'#6b7280'}[_cat];
+    const _area = _lot && _lot.area_m2 ? String(_lot.area_m2).replace('.',',')+' m²' : null;
+    const cabLote = `<span style="display:inline-block;padding:2px 9px;border-radius:999px;background:${_stCor};color:#fff;font-size:12px;font-weight:700;vertical-align:middle">${_stTxt}</span>`
+      + (_area ? ` <span style="font-size:13px;color:#374151">· Área: <b>${_area}</b></span>` : ' <span style="font-size:13px;color:#374151">· Área: não consta na tabela</span>')
+      + (_lot && _lot.logradouro ? ` <span style="font-size:13px;color:#374151">· ${_lot.logradouro}</span>` : '');
     if (!row){
-      detb.innerHTML = `<b>${nome} — Quadra ${quadra}, Lote ${lote}</b><p>Fluxo de pagamento detalhado não consta para este lote na tabela de novembro/2026 extraída. Confira pelo WhatsApp.</p><div style="margin-top:6px;padding:6px 8px;background:#fef9c3;border:1px solid #eab308;border-radius:6px;font-size:13px"><b>Sinal + taxa administrativa de R$ 150,00</b> — taxa fixa por lote, cobrada com o sinal e não somada às parcelas.</div>`;
+      detb.innerHTML = `<b>${nome} — Quadra ${quadra}, Lote ${lote}</b> ${cabLote}<p>Fluxo de pagamento detalhado não consta para este lote na tabela de novembro/2026 extraída. Confira pelo WhatsApp.</p><div style="margin-top:6px;padding:6px 8px;background:#fef9c3;border:1px solid #eab308;border-radius:6px;font-size:13px"><b>Sinal + taxa administrativa de R$ 150,00</b> — taxa fixa por lote, cobrada com o sinal e não somada às parcelas.</div>`;
       det.style.display='block'; detDoc=null; return;
     }
     const p13 = meta.prazos13, pav = meta.prazosAv;
@@ -306,7 +315,7 @@ Promise.all([fetch('lotes.json?v=8').then(r=>r.json()), fetch('plano.json?v=7').
     const linha13 = row.par.map((v,i)=>`<tr><td>${p13[i]}x</td><td>R$ ${v}</td></tr>`).join('');
     const linhaAv = row.av.map((v,i)=>`<tr><td>${pav[i]}x</td><td>R$ ${v}</td></tr>`).join('');
     detb.innerHTML = `
-      <b>${nome} — Quadra ${quadra}, Lote ${lote}</b> · Área ${row.area} m²<br>
+      <b>${nome} — Quadra ${quadra}, Lote ${lote}</b> ${cabLote}<br>
       <span style="font-size:12px;color:#555">Valores exatos da tabela oficial novembro/2026 (vigência 01/11/2026), sem cálculo nosso. Estoque não confirmado.</span>
       <p style="margin:8px 0 2px"><b>Valor à vista: R$ ${row.cash}</b></p>
       <div style="border:1px solid #cde;border-radius:8px;padding:8px;margin:6px 0">
@@ -440,7 +449,65 @@ Promise.all([fetch('lotes.json?v=8').then(r=>r.json()), fetch('plano.json?v=7').
         }
       }
     }
+    // === Polígonos clicáveis: cada lote vira uma área (pins = canto da grade; linhas/colunas reconstruídas por quadra) ===
+    const polys = [];
+    {
+      const lat0 = -16.67*Math.PI/180, KX = 111320*Math.cos(lat0), KY = 110540;
+      for (const fk of Object.keys(pinsGeo)){
+        if (!data[fk] || !data[fk].quadras) continue;
+        for (const q of Object.keys(pinsGeo[fk])){
+          const pts = [];
+          for (const l of Object.keys(pinsGeo[fk][q])){
+            const c = pinsGeo[fk][q][l]; if (!c) continue;
+            if (!(data[fk].quadras[q]||{})[l]) continue;
+            pts.push({l, x:c[0]*KX, y:c[1]*KY});
+          }
+          if (pts.length < 6) continue;
+          let mx=0,my=0; pts.forEach(p=>{mx+=p.x;my+=p.y}); mx/=pts.length; my/=pts.length;
+          let sxx=0,sxy=0,syy=0; pts.forEach(p=>{const dx=p.x-mx,dy=p.y-my;sxx+=dx*dx;sxy+=dx*dy;syy+=dy*dy});
+          const ang = 0.5*Math.atan2(2*sxy, sxx-syy);
+          const ux=Math.cos(ang), uy=Math.sin(ang);
+          const proj = (vx,vy)=>{ pts.forEach(p=>{ p.su=(p.x-mx)*ux+(p.y-my)*uy; p.sv=(p.x-mx)*vx+(p.y-my)*vy; }); };
+          // testa os 2 sinais de v: o correto deixa os pins das linhas vizinhas NA BORDA, não no interior
+          let best=null;
+          for (const sgn of [1,-1]){
+            const vx=-uy*sgn, vy=ux*sgn; proj(vx,vy);
+            const orden=[...pts].sort((a,b)=>a.sv-b.sv);
+            const rows=[]; let cur=[orden[0]];
+            for (let i=1;i<orden.length;i++){ if (orden[i].sv-cur[cur.length-1].sv>8){rows.push(cur);cur=[];} cur.push(orden[i]); }
+            rows.push(cur);
+            rows.forEach(r=>r.sort((a,b)=>a.su-b.su));
+            const rowSv = rows.map(r=>r.reduce((t,p)=>t+p.sv,0)/r.length);
+            let interior=0;
+            for (let r=0;r<rows.length;r++){
+              const top=rowSv[r], bot=(r+1<rows.length)?rowSv[r+1]:top+25;
+              for (let r2=0;r2<rows.length;r2++){ if (r2!==r && rowSv[r2]>top+1.5 && rowSv[r2]<bot-1.5) interior+=rows[r2].length; }
+            }
+            if (!best || interior<best.interior) best={interior,rows,rowSv,vx,vy};
+          }
+          const {rows,rowSv,vx,vy} = best;
+          for (let r=0;r<rows.length;r++){
+            const top=rowSv[r], bot=(r+1<rows.length)?rowSv[r+1]:rowSv[r]+(r>0?rowSv[r]-rowSv[r-1]:25);
+            for (let c=0;c<rows[r].length;c++){
+              const pp=rows[r][c];
+              const lft=pp.su, rgt=(c+1<rows[r].length)?rows[r][c+1].su:pp.su+(c>0?pp.su-rows[r][c-1].su:10);
+              const corners=[[lft,top],[rgt,top],[rgt,bot],[lft,bot],[lft,top]].map(([su,sv])=>{
+                const px=mx+ux*su+vx*sv, py=my+uy*su+vy*sv; return [px/KX, py/KY];
+              });
+              const lot=(data[fk].quadras[q]||{})[pp.l];
+              const av=RDPStatus.avail(lot), tt=RDPStatus.temTabela(lot);
+              const cat=av==='vendido'?'vendido':av==='reservado'?'reservado':av==='consultar'?'consultar':(av==='livre'||tt)?'livre':'embreve';
+              polys.push({type:'Feature',properties:{fase:fk,quadra:q,lote:pp.l,cat:cat,rotulo:q+'·'+pp.l},geometry:{type:'Polygon',coordinates:[corners]}});
+            }
+          }
+        }
+      }
+    }
     if (!map.loaded()) await new Promise(r=>map.once('load', r));
+    map.addSource('lotespg',{type:'geojson',data:{type:'FeatureCollection',features:polys}});
+    map.addLayer({id:'lotesv-pg',type:'fill',source:'lotespg',paint:{'fill-color':'#1d4ed8','fill-opacity':0.03}});
+    map.addLayer({id:'lotesv-pgsel',type:'fill',source:'lotespg',filter:['==',['get','rotulo'],'§'],paint:{'fill-color':'#1d4ed8','fill-opacity':0.18}});
+    map.addLayer({id:'lotesv-pgln',type:'line',source:'lotespg',filter:['==',['get','rotulo'],'§'],paint:{'line-color':'#1d4ed8','line-width':3}});
     map.addSource('lotesv',{type:'geojson',data:{type:'FeatureCollection',features:feats}});
     map.addLayer({id:'lotesv-pt',type:'circle',source:'lotesv',paint:{
       'circle-color':['match',['get','cat'],'livre','#22c55e','vendido','#dc2626','reservado','#f97316','consultar','#f59e0b','#9ca3af'],
@@ -454,16 +521,20 @@ Promise.all([fetch('lotes.json?v=8').then(r=>r.json()), fetch('plano.json?v=7').
       'text-offset':[0,0.95],'text-anchor':'top','text-font':['Open Sans Semibold'],
       'text-allow-overlap':true,'text-ignore-placement':true,'text-padding':1},
       paint:{'text-color':'#111827','text-halo-color':'#ffffff','text-halo-width':1.6}});
-    map.on('click','lotesv-pt',e=>{
-      const p=e.features[0].properties;
-      if (data[p.fase] && data[p.fase].quadras[p.quadra] && data[p.fase].quadras[p.quadra][p.lote]){
-        faseSel.value=p.fase; fillQuadras(); quadraSel.value=p.quadra; fillLotes();
-        map.setFilter('lotesv-sel',['==',['get','rotulo'],p.quadra+'·'+p.lote]);
-        mostraFluxo(p.fase,p.quadra,p.lote);
-      }
-    });
+    window.selecionaLote = (fk,q,l)=>{
+      if (!(data[fk] && data[fk].quadras[q] && data[fk].quadras[q][l])) return;
+      faseSel.value=fk; fillQuadras(); quadraSel.value=q; fillLotes();
+      map.setFilter('lotesv-sel',['==',['get','rotulo'],q+'·'+l]);
+      map.setFilter('lotesv-pgsel',['==',['get','rotulo'],q+'·'+l]);
+      map.setFilter('lotesv-pgln',['==',['get','rotulo'],q+'·'+l]);
+      mostraFluxo(fk,q,l);
+    };
+    map.on('click','lotesv-pt',e=>{const p=e.features[0].properties; selecionaLote(p.fase,p.quadra,p.lote);});
+    map.on('click','lotesv-pg',e=>{const p=e.features[0].properties; selecionaLote(p.fase,p.quadra,p.lote);});
     map.on('mouseenter','lotesv-pt',()=>{map.getCanvas().style.cursor='pointer';});
     map.on('mouseleave','lotesv-pt',()=>{map.getCanvas().style.cursor='';});
+    map.on('mouseenter','lotesv-pg',()=>{map.getCanvas().style.cursor='pointer';});
+    map.on('mouseleave','lotesv-pg',()=>{map.getCanvas().style.cursor='';});
     const lg=document.createElement('div');
     lg.id='lgdiv';
     lg.style.cssText='position:absolute;right:8px;top:56px;z-index:900;background:rgba(255,255,255,.93);border-radius:8px;padding:6px 9px;font:12px system-ui;box-shadow:0 1px 6px rgba(0,0,0,.25);line-height:1.85';
