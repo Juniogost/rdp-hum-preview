@@ -123,8 +123,8 @@ const meio = new THREE.Vector3(X(4790), 0, Z(660));
 ctl.maxDistance = 700;
 { // enquadrar os 6 blocos na largura da tela (retrato)
   const hfov = 2*Math.atan(Math.tan(cam.fov*Math.PI/360)*cam.aspect);
-  const dist = Math.min(680, (78*1.12)/Math.tan(hfov/2));
-  const dir = new THREE.Vector3(0.28, 0.62, 1).normalize();
+  const dist = Math.min(680, (80*1.04)/Math.tan(hfov/2));
+  const dir = new THREE.Vector3(0, 0.55, 1).normalize();
   cam.position.copy(meio).addScaledVector(dir, dist);
 }
 ctl.target.copy(meio); ctl.update();
