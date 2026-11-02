@@ -242,11 +242,11 @@ ren.domElement.addEventListener('pointerup', ev=>{
   ray.setFromCamera(ptr, cam);
   const hit = ray.intersectObjects(cells)[0];
   if (!hit) return;
-  limpaSelecao();
-  sel = hit.object;
+  const hitObj = hit.object;
+  marcaSelecao(hitObj);
+  sel = hitObj;
   sel.material.opacity = .68;
-  marcaSelecao(sel);
-  mostraApto(sel.userData);
+  mostraApto(hitObj.userData);
 });
 
 function mostraApto(u){
