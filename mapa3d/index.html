@@ -25,6 +25,13 @@
   #sol.col #solbody{display:none}
   @media (max-width:640px){ #nota{font-size:10px} #sol{width:210px;font-size:11px} }
 #hud{padding-top:calc(6px + env(safe-area-inset-top))}body{padding-bottom:env(safe-area-inset-bottom)}
+@media (max-width:640px){
+  #lgdiv #lghd{cursor:pointer;user-select:none}
+  #lgdiv #lgbd{display:none}
+  #lgdiv.ab #lgbd{display:block}
+  #atdBtn.sobe{bottom:calc(var(--deth,220px) + env(safe-area-inset-bottom,0px))}
+  #atdBtn.sobe+#atdPanel{bottom:calc(var(--deth,220px) + 52px + env(safe-area-inset-bottom,0px))}
+}
 </style>
 </head>
 <body>
@@ -458,11 +465,17 @@ Promise.all([fetch('lotes.json?v=8').then(r=>r.json()), fetch('plano.json?v=7').
     map.on('mouseenter','lotesv-pt',()=>{map.getCanvas().style.cursor='pointer';});
     map.on('mouseleave','lotesv-pt',()=>{map.getCanvas().style.cursor='';});
     const lg=document.createElement('div');
+    lg.id='lgdiv';
     lg.style.cssText='position:absolute;right:8px;top:56px;z-index:900;background:rgba(255,255,255,.93);border-radius:8px;padding:6px 9px;font:12px system-ui;box-shadow:0 1px 6px rgba(0,0,0,.25);line-height:1.85';
-    lg.innerHTML='<b style="font-size:11px">Lotes (Jacarandás)</b><br><span style="color:#16a34a">&#9679;</span> Livre<br><span style="color:#dc2626">&#9679;</span> Vendido<br><span style="color:#f97316">&#9679;</span> Reservado<br><span style="color:#f59e0b">&#9679;</span> Consultar<br><span style="color:#9ca3af">&#9679;</span> Em breve';
+    lg.innerHTML='<div id="lghd"><b style="font-size:11px">Lotes (Jacarandás) <span style="color:#6b7280">▾</span></b></div><div id="lgbd"><span style="color:#16a34a">&#9679;</span> Livre<br><span style="color:#dc2626">&#9679;</span> Vendido<br><span style="color:#f97316">&#9679;</span> Reservado<br><span style="color:#f59e0b">&#9679;</span> Consultar<br><span style="color:#9ca3af">&#9679;</span> Em breve</div>';
+    lg.querySelector('#lghd').onclick=()=>{ lg.classList.toggle('ab'); lg.querySelector('#lghd span').textContent = lg.classList.contains('ab')?'▴':'▾'; };
     document.getElementById('map').appendChild(lg);
   } catch(e){ console.warn('pins-geo indisponível', e); }
   fillQuadras();
+  { const detEl=document.getElementById('det');
+    const syncAtd=()=>{ setTimeout(()=>{ const b=document.getElementById('atdBtn'); if(!b) return; const vis=detEl.style.display!=='none' && detEl.offsetHeight>0; b.classList.toggle('sobe', vis); if(vis) document.documentElement.style.setProperty('--deth',(detEl.offsetHeight+10)+'px'); },40); };
+    new MutationObserver(syncAtd).observe(detEl,{attributes:true,attributeFilter:['style']});
+    window.addEventListener('resize',syncAtd); }
   { const prm = new URLSearchParams(location.search), f = prm.get('fase'), q = prm.get('quadra'), l = prm.get('lote');
     if (f && q && l && data[f] && data[f].quadras[q] && data[f].quadras[q][l] && RDPStatus.avail(data[f].quadras[q][l]) === 'livre' && RDPStatus.temTabela(data[f].quadras[q][l])) vaiParaLote(f, q, l); }
 });
