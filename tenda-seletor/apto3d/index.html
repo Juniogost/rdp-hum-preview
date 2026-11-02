@@ -237,7 +237,7 @@ const ray = new THREE.Raycaster(), ptr = new THREE.Vector2();
 let downAt = 0;
 ren.domElement.addEventListener('pointerdown', ()=>{ downAt = performance.now(); });
 ren.domElement.addEventListener('pointerup', ev=>{
-  if (performance.now() - downAt > 220) return;
+  if (performance.now() - downAt > 450) return;
   ptr.x = (ev.clientX/innerWidth)*2 - 1; ptr.y = -(ev.clientY/innerHeight)*2 + 1;
   ray.setFromCamera(ptr, cam);
   const hit = ray.intersectObjects(cells)[0];
