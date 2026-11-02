@@ -71,7 +71,8 @@ const scene = new THREE.Scene();
 scene.background = new THREE.Color(13098216);
 const cam = new THREE.PerspectiveCamera(68, innerWidth/innerHeight, .5, 3000);
 const ren = new THREE.WebGLRenderer({antialias:true});
-ren.setSize(innerWidth, innerHeight);
+let alturaCena = innerHeight;
+ren.setSize(innerWidth, alturaCena);
 ren.setPixelRatio(Math.min(devicePixelRatio, 2));
 ren.shadowMap.enabled = true;
 ren.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -162,7 +163,7 @@ const alvo = new THREE.Vector3((minX+maxX)/2, maxH*0.45, (minZ+maxZ)/2);
 const spanX = maxX-minX, spanZ = maxZ-minZ;
 const AZ0 = 1.08, EL0 = 0.50;
 function enquadrar(){
-  cam.aspect = innerWidth/innerHeight; cam.updateProjectionMatrix();
+  cam.aspect = innerWidth/alturaCena; cam.updateProjectionMatrix();
   const vfov = cam.fov*Math.PI/180;
   const hfov = 2*Math.atan(Math.tan(vfov/2)*cam.aspect);
   // largura efetiva no eixo "right" da câmera (fileira recua em profundidade)
@@ -250,9 +251,10 @@ ren.domElement.addEventListener('pointerup', ev=>{
 });
 
 function sobeCena(on){
-  if (on) cam.setViewOffset(innerWidth, innerHeight, 0, innerHeight*0.24, innerWidth, innerHeight);
-  else cam.clearViewOffset();
-  cam.updateProjectionMatrix();
+  const min = document.getElementById('det').classList.contains('min');
+  alturaCena = on ? Math.round(innerHeight*(min?0.9:0.52)) : innerHeight;
+  ren.setSize(innerWidth, alturaCena);
+  enquadrar();
 }
 function mostraApto(u){
   const det = document.getElementById('det'), detb = document.getElementById('detb');
@@ -280,7 +282,7 @@ function mostraApto(u){
 document.getElementById('detc').onclick = ()=>{ document.getElementById('det').style.display='none'; limpaSelecao(); sobeCena(false); };
 document.getElementById('detm').onclick = ()=>{ const d=document.getElementById('det'), m=document.getElementById('detm'); d.classList.toggle('min'); sobeCena(!d.classList.contains('min')); m.textContent = d.classList.contains('min') ? 'reabrir ▴' : 'ver mapa ▾'; };
 
-addEventListener('resize', ()=>{ cam.aspect = innerWidth/innerHeight; cam.updateProjectionMatrix(); ren.setSize(innerWidth, innerHeight); });
+addEventListener('resize', ()=>{ const aberto = document.getElementById('det').style.display==='block'; alturaCena = aberto ? Math.round(innerHeight*0.52) : innerHeight; ren.setSize(innerWidth, alturaCena); enquadrar(); });
 let tAnim = performance.now();
 (function loop(){
   requestAnimationFrame(loop);
