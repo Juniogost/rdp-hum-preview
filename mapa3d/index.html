@@ -484,6 +484,8 @@ Promise.all([fetch('lotes.json?v=8').then(r=>r.json()), fetch('plano.json?v=7').
           rows.push(cur);
           rows.forEach(r=>r.sort((a,b)=>a.su-b.su));
           const rowSv = rows.map(r=>r.reduce((t,p)=>t+p.sv,0)/r.length);
+          if (!window.__qFrames) window.__qFrames=[];
+          window.__qFrames.push({fk,q,ux,uy,vx,vy,mx,my,KX,KY,pins:pts.map(pp=>({l:pp.l,su:pp.su,sv:pp.sv}))});
           const medDu = r=>{ const ds=[]; for(let i=1;i<r.length;i++) ds.push(r[i].su-r[i-1].su); ds.sort((a,b)=>a-b); return ds.length?ds[Math.floor(ds.length/2)]:10; };
           const gaps=[]; for (let i=1;i<rowSv.length;i++){ const g=rowSv[i]-rowSv[i-1]; if(g<=40) gaps.push(g); } gaps.sort((a,b)=>a-b);
           const medDepth = gaps.length?gaps[Math.floor(gaps.length/2)]:25;
@@ -511,6 +513,9 @@ Promise.all([fetch('lotes.json?v=8').then(r=>r.json()), fetch('plano.json?v=7').
               const lot=(data[fk].quadras[q]||{})[pp.l];
               const av=RDPStatus.avail(lot), tt=RDPStatus.temTabela(lot);
               const cat=av==='vendido'?'vendido':av==='reservado'?'reservado':av==='consultar'?'consultar':(av==='livre'||tt)?'livre':'embreve';
+              { const cxs=(corners[0][0]+corners[2][0])/2, cys=(corners[0][1]+corners[2][1])/2;
+                const dPin=Math.hypot((cxs-pinsGeo[fk][q][pp.l][0])*KX,(cys-pinsGeo[fk][q][pp.l][1])*KY);
+                if (dPin<4||dPin>40) continue; } // geometria não confirmada -> sem polígono
               polys.push({type:'Feature',properties:{fase:fk,quadra:q,lote:pp.l,cat:cat,rotulo:q+'·'+pp.l},geometry:{type:'Polygon',coordinates:[corners]}});
             }
           }
@@ -545,11 +550,17 @@ Promise.all([fetch('lotes.json?v=8').then(r=>r.json()), fetch('plano.json?v=7').
     };
     map.on('click','lotesv-pt',e=>{const p=e.features[0].properties; selecionaLote(p.fase,p.quadra,p.lote);});
     map.on('click','lotesv-pg',e=>{const p=e.features[0].properties; selecionaLote(p.fase,p.quadra,p.lote);});
-    map.on('click',e=>{ if (map.queryRenderedFeatures(e.point,{layers:['lotesv-pg','lotesv-pt']}).length) return;
-      const cand=map.queryRenderedFeatures([[e.point.x-45,e.point.y-45],[e.point.x+45,e.point.y+45]],{layers:['lotesv-pt']});
-      if (!cand.length) return; let best=null;
-      for (const f of cand){ const c=map.project(f.geometry.coordinates); const d=Math.hypot(c.x-e.point.x,c.y-e.point.y); if(!best||d<best.d) best={d,f}; }
-      if (best && best.d<=45){ const p=best.f.properties; selecionaLote(p.fase,p.quadra,p.lote); } });
+    map.on('click',e=>{
+      const px=e.lngLat.lng, py=e.lngLat.lat;
+      let bestLot=null;
+      for (const Q of (window.__qFrames||[])){
+        const X=px*Q.KX, Y=py*Q.KY;
+        const su=(X-Q.mx)*Q.ux+(Y-Q.my)*Q.uy, sv=(X-Q.mx)*Q.vx+(Y-Q.my)*Q.vy;
+        let cand=null;
+        for (const pp of Q.pins){ if (pp.su<=su+2 && pp.sv<=sv+2){ if(!cand||pp.sv>cand.sv+0.5||((pp.sv>cand.sv-0.5)&&pp.su>cand.su)) cand=pp; } }
+        if (cand){ const d=Math.hypot(su-cand.su, sv-cand.sv); if (d<35 && (!bestLot||d<bestLot.d)) bestLot={d,Q,cand}; }
+      }
+      if (bestLot) selecionaLote(bestLot.Q.fk, bestLot.Q.q, bestLot.cand.l); });
     map.on('mouseenter','lotesv-pt',()=>{map.getCanvas().style.cursor='pointer';});
     map.on('mouseleave','lotesv-pt',()=>{map.getCanvas().style.cursor='';});
     map.on('mouseenter','lotesv-pg',()=>{map.getCanvas().style.cursor='pointer';});
