@@ -469,23 +469,21 @@ Promise.all([fetch('lotes.json?v=8').then(r=>r.json()), fetch('plano.json?v=7').
           const ux=Math.cos(ang), uy=Math.sin(ang);
           const proj = (vx,vy)=>{ pts.forEach(p=>{ p.su=(p.x-mx)*ux+(p.y-my)*uy; p.sv=(p.x-mx)*vx+(p.y-my)*vy; }); };
           // testa os 2 sinais de v: o correto deixa os pins das linhas vizinhas NA BORDA, não no interior
+          // sinal de v: o interior do lote segue o "para baixo" da imagem da prancha, que no georreferenciamento aponta ~para o sul -> vy<0
           let best=null;
           for (const sgn of [1,-1]){
-            const vx=-uy*sgn, vy=ux*sgn; proj(vx,vy);
-            const orden=[...pts].sort((a,b)=>a.sv-b.sv);
-            const rows=[]; let cur=[orden[0]];
-            for (let i=1;i<orden.length;i++){ if (orden[i].sv-cur[cur.length-1].sv>8){rows.push(cur);cur=[];} cur.push(orden[i]); }
-            rows.push(cur);
-            rows.forEach(r=>r.sort((a,b)=>a.su-b.su));
-            const rowSv = rows.map(r=>r.reduce((t,p)=>t+p.sv,0)/r.length);
-            let interior=0;
-            for (let r=0;r<rows.length;r++){
-              const top=rowSv[r], bot=(r+1<rows.length)?rowSv[r+1]:top+25;
-              for (let r2=0;r2<rows.length;r2++){ if (r2!==r && rowSv[r2]>top+1.5 && rowSv[r2]<bot-1.5) interior+=rows[r2].length; }
-            }
-            if (!best || interior<best.interior) best={interior,rows,rowSv,vx,vy};
+            const vx=-uy*sgn, vy=ux*sgn;
+            const cand={vx,vy,score:(vy<0?0:1)};
+            if (!best || cand.score<best.score) best=cand;
           }
-          const {rows,rowSv,vx,vy} = best;
+          const {vx,vy} = best;
+          proj(vx,vy);
+          const orden=[...pts].sort((a,b)=>a.sv-b.sv);
+          const rows=[]; let cur=[orden[0]];
+          for (let i=1;i<orden.length;i++){ if (orden[i].sv-cur[cur.length-1].sv>8){rows.push(cur);cur=[];} cur.push(orden[i]); }
+          rows.push(cur);
+          rows.forEach(r=>r.sort((a,b)=>a.su-b.su));
+          const rowSv = rows.map(r=>r.reduce((t,p)=>t+p.sv,0)/r.length);
           for (let r=0;r<rows.length;r++){
             const top=rowSv[r], bot=(r+1<rows.length)?rowSv[r+1]:rowSv[r]+(r>0?rowSv[r]-rowSv[r-1]:25);
             for (let c=0;c<rows[r].length;c++){
