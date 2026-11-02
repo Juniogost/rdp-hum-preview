@@ -35,6 +35,11 @@ html,body{overflow-x:hidden}
   #atdBtn.sobe{bottom:calc(var(--deth,220px) + env(safe-area-inset-bottom,0px))}
   #atdBtn.sobe+#atdPanel{bottom:calc(var(--deth,220px) + 52px + env(safe-area-inset-bottom,0px))}
 }
+#det.min{max-height:44px !important;overflow:hidden !important}
+@media (max-width:640px){
+  #det{max-height:44%}
+  #det table{font-size:13px}
+}
 </style>
 </head>
 <body>
@@ -185,6 +190,7 @@ document.getElementById('btnPor').addEventListener('click', ()=>{
   const s=solPos(DATA, LAT0, LNG0); if(s.por!=null){document.getElementById('hora').value=s.por; atualizaSol();}});
 </script>
 <div id="det" style="display:none;position:fixed;left:0;right:0;bottom:0;max-height:50%;overflow:auto;background:#fff;border-top:3px solid #0a6b3d;padding:12px 14px calc(12px + env(safe-area-inset-bottom,0px));z-index:1000;font:14px system-ui;box-shadow:0 -4px 18px rgba(0,0,0,.25)">
+<button id="detm" style="float:right;border:0;background:#eee;border-radius:6px;padding:4px 10px;font-weight:700;margin-right:6px">ver mapa ▾</button>
 <button id="detc" style="float:right;border:0;background:#eee;border-radius:6px;padding:4px 10px;font-weight:700">fechar ✕</button>
 <div id="detb"></div></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -303,7 +309,7 @@ Promise.all([fetch('lotes.json?v=8').then(r=>r.json()), fetch('plano.json?v=7').
       + (_lot && _lot.logradouro ? ` <span style="font-size:13px;color:#374151">· ${_lot.logradouro}</span>` : '');
     if (!row){
       detb.innerHTML = `<b>${nome} — Quadra ${quadra}, Lote ${lote}</b> ${cabLote}<p>Fluxo de pagamento detalhado não consta para este lote na tabela de novembro/2026 extraída. Confira pelo WhatsApp.</p><div style="margin-top:6px;padding:6px 8px;background:#fef9c3;border:1px solid #eab308;border-radius:6px;font-size:13px"><b>Sinal + taxa administrativa de R$ 150,00</b> — taxa fixa por lote, cobrada com o sinal e não somada às parcelas.</div>`;
-      det.style.display='block'; detDoc=null; return;
+      det.style.display='block'; det.classList.remove('min'); document.getElementById('detm').textContent='ver mapa ▾'; detDoc=null; return;
     }
     const p13 = meta.prazos13, pav = meta.prazosAv;
     const numS = s => { if (s==null || s==='') return null; const v = parseFloat(String(s).replace(/\./g,'').replace(',','.')); return isNaN(v) ? null : v; };
@@ -345,7 +351,7 @@ Promise.all([fetch('lotes.json?v=8').then(r=>r.json()), fetch('plano.json?v=7').
         <button id="detant" style="background:#fff;color:#0a6b3d;border:1px solid #0a6b3d">← Anterior livre</button>
         <button id="detprox" style="background:#fff;color:#0a6b3d;border:1px solid #0a6b3d">Próximo lote livre →</button>
       </div>`;
-    det.style.display='block';
+    det.style.display='block'; det.classList.remove('min'); document.getElementById('detm').textContent='ver mapa ▾';
     detDoc = {nome, quadra, lote, row, p13, pav};
     document.getElementById('detpdf').onclick = baixaPDF;
     document.getElementById('detqro').onclick = abreFormProposta;
@@ -433,6 +439,7 @@ Promise.all([fetch('lotes.json?v=8').then(r=>r.json()), fetch('plano.json?v=7').
       <span style="font-size:12px;color:#555">Seus dados vão só nessa conversa. O Junio revisa o rascunho antes de qualquer passo oficial.</span>`;
   }
   document.getElementById('detc').onclick = ()=>{document.getElementById('det').style.display='none'};
+  document.getElementById('detm').onclick = ()=>{ const d=document.getElementById('det'), m=document.getElementById('detm'); d.classList.toggle('min'); m.textContent = d.classList.contains('min') ? 'reabrir ▴' : 'ver mapa ▾'; };
   const FASE_BBOX={jacarandas:[[-49.147378,-16.674434],[-49.139888,-16.666325]],angicos:[[-49.1424105,-16.6698121],[-49.1331422,-16.6588858]],aroeiras:[[-49.1367777,-16.6706651],[-49.1298749,-16.6575009]]};
   faseSel.onchange = ()=>{ fillQuadras(); const bb=FASE_BBOX[pkey(data[faseSel.value].fase)]; if(bb){ const mob=matchMedia('(max-width:640px)').matches; const cam=map.cameraForBounds(bb,{padding:mob?{top:96,bottom:120,left:10,right:10}:60,bearing:-15,pitch:42}); if(cam) map.easeTo({center:cam.center,zoom:cam.zoom,bearing:-15,pitch:42,duration:900}); } };
   quadraSel.onchange = fillLotes;
