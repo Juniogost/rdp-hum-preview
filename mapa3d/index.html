@@ -25,7 +25,10 @@
   #sol.col #solbody{display:none}
   @media (max-width:640px){ #nota{font-size:10px} #sol{width:210px;font-size:11px} }
 #hud{padding-top:calc(6px + env(safe-area-inset-top))}body{padding-bottom:env(safe-area-inset-bottom)}
+html,body{overflow-x:hidden}
+#painel{overflow-x:auto}
 @media (max-width:640px){
+  .maplibregl-ctrl-bottom-right{bottom:calc(var(--deth,60px) + 58px) !important; right:8px}
   #lgdiv #lghd{cursor:pointer;user-select:none}
   #lgdiv #lgbd{display:none}
   #lgdiv.ab #lgbd{display:block}
@@ -88,7 +91,7 @@ const LAT0=-16.670380, LNG0=-49.143633;
 const CENTRO = [LNG0, LAT0];
 const map = new maplibregl.Map({
   container:'map',
-  style:{version:8, glyphs:'./glyphs/{fontstack}/{range}.pbf', sky:{'sky-color':'#bcd6ee','horizon-color':'#e9e5db','fog-color':'#e9e5db','sky-horizon-blend':0.4,'horizon-fog-blend':0,'fog-ground-blend':0,'atmosphere-blend':0}, sources:{esri:{type:'raster', tiles:['https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'], tileSize:256, maxzoom:19, attribution:'Esri, Maxar, Earthstar Geographics'}, prancha:{type:'raster', tiles:['tiles3dgeo/{z}/{x}/{y}.png?v=2'], tileSize:256, minzoom:13, maxzoom:20}},
+  style:{version:8, glyphs:'./glyphs/{fontstack}/{range}.pbf', sky:{'sky-color':'#bcd6ee','horizon-color':'#e9e5db','fog-color':'#e9e5db','sky-horizon-blend':0.4,'horizon-fog-blend':0,'fog-ground-blend':0,'atmosphere-blend':0}, sources:{esri:{type:'raster', tiles:['https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'], tileSize:256, maxzoom:19, attribution:'Esri, Maxar, Earthstar Geographics'}, prancha:{type:'raster', tiles:['tiles3dgeo/{z}/{x}/{y}.png?v=3'], tileSize:256, minzoom:13, maxzoom:20}},
     layers:[{id:'fundo',type:'background',paint:{'background-color':'#e9e5db'}},
       {id:'esri',type:'raster',source:'esri',paint:{'raster-fade-duration':0}},
       {id:'prancha',type:'raster',source:'prancha',paint:{'raster-fade-duration':0,'raster-resampling':'linear'}}]},
@@ -574,10 +577,21 @@ Promise.all([fetch('lotes.json?v=8').then(r=>r.json()), fetch('plano.json?v=7').
     document.getElementById('map').appendChild(lg);
   } catch(e){ console.warn('pins-geo indisponível', e); }
   fillQuadras();
-  { const detEl=document.getElementById('det');
-    const syncAtd=()=>{ setTimeout(()=>{ const b=document.getElementById('atdBtn'); if(!b) return; const vis=detEl.style.display!=='none' && detEl.offsetHeight>0; b.classList.toggle('sobe', vis); if(vis) document.documentElement.style.setProperty('--deth',(detEl.offsetHeight+10)+'px'); },40); };
-    new MutationObserver(syncAtd).observe(detEl,{attributes:true,attributeFilter:['style']});
-    window.addEventListener('resize',syncAtd); }
+  { const detEl=document.getElementById('det'), painelEl=document.getElementById('painel'), notaEl=document.getElementById('nota');
+    const syncAtd=()=>{ setTimeout(()=>{ const b=document.getElementById('atdBtn'); if(!b) return;
+      const mob=matchMedia('(max-width:640px)').matches;
+      let topEl=null;
+      if (detEl && detEl.style.display!=='none' && detEl.offsetHeight>0) topEl=detEl;
+      else if (painelEl && painelEl.offsetHeight>0) topEl=painelEl;
+      else if (notaEl && notaEl.offsetHeight>0) topEl=notaEl;
+      const h = (mob && topEl) ? (window.innerHeight - topEl.getBoundingClientRect().top + 8) : 0;
+      b.classList.toggle('sobe', h>0);
+      document.documentElement.style.setProperty('--deth',(h>0?h:60)+'px');
+    },40); };
+    new MutationObserver(syncAtd).observe(detEl,{attributes:true,subtree:true});
+    if (painelEl) new MutationObserver(syncAtd).observe(painelEl,{attributes:true,subtree:true});
+    if (notaEl) new MutationObserver(syncAtd).observe(notaEl,{attributes:true,subtree:true});
+    window.addEventListener('resize',syncAtd); syncAtd(); }
   { const prm = new URLSearchParams(location.search), f = prm.get('fase'), q = prm.get('quadra'), l = prm.get('lote');
     if (f && q && l && data[f] && data[f].quadras[q] && data[f].quadras[q][l] && RDPStatus.avail(data[f].quadras[q][l]) === 'livre' && RDPStatus.temTabela(data[f].quadras[q][l])) vaiParaLote(f, q, l); }
 });
