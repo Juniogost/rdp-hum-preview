@@ -11546,14 +11546,14 @@
      "logradouro": "RUA ANGICO 13",
      "area_m2": 350.0,
      "frente_m": "20.34",
-     "status": "sem_tabela",
+     "status": "consultar",
      "disp": "vendido"
     },
     "2": {
      "logradouro": "RUA ANGICO 13",
      "area_m2": 353.17,
      "frente_m": "21.00",
-     "status": "sem_tabela",
+     "status": "consultar",
      "disp": "vendido"
     },
     "3": {
@@ -11568,63 +11568,63 @@
      "logradouro": "AV. ADRIANO AUAD",
      "area_m2": 260.0,
      "frente_m": "10.00",
-     "status": "sem_tabela",
+     "status": "consultar",
      "disp": "vendido"
     },
     "5": {
      "logradouro": "AV. ADRIANO AUAD",
      "area_m2": 260.0,
      "frente_m": "10.00",
-     "status": "sem_tabela",
+     "status": "consultar",
      "disp": "vendido"
     },
     "6": {
      "logradouro": "AV. ADRIANO AUAD",
      "area_m2": 260.0,
      "frente_m": "10.00",
-     "status": "sem_tabela",
+     "status": "consultar",
      "disp": "vendido"
     },
     "7": {
      "logradouro": "AV. ADRIANO AUAD",
      "area_m2": 260.0,
      "frente_m": "10.00",
-     "status": "sem_tabela",
+     "status": "consultar",
      "disp": "vendido"
     },
     "8": {
      "logradouro": "AV. ADRIANO AUAD",
      "area_m2": 260.0,
      "frente_m": "10.00",
-     "status": "sem_tabela",
+     "status": "consultar",
      "disp": "vendido"
     },
     "9": {
      "logradouro": "AV. ADRIANO AUAD",
      "area_m2": 260.0,
      "frente_m": "10.00",
-     "status": "sem_tabela",
+     "status": "consultar",
      "disp": "vendido"
     },
     "10": {
      "logradouro": "AV. ADRIANO AUAD",
      "area_m2": 260.0,
      "frente_m": "10.00",
-     "status": "sem_tabela",
+     "status": "consultar",
      "disp": "vendido"
     },
     "11": {
      "logradouro": "AV. ADRIANO AUAD",
      "area_m2": 250.0,
      "frente_m": "11.23",
-     "status": "sem_tabela",
+     "status": "consultar",
      "disp": "vendido"
     },
     "12": {
      "logradouro": "AV. ADRIANO AUAD",
      "area_m2": 363.07,
      "frente_m": "14.44",
-     "status": "sem_tabela",
+     "status": "consultar",
      "disp": "vendido"
     },
     "13": {
@@ -11639,14 +11639,14 @@
      "logradouro": "RUA ANGICO 13",
      "area_m2": 359.16,
      "frente_m": "13.25",
-     "status": "sem_tabela",
+     "status": "consultar",
      "disp": "vendido"
     },
     "15": {
      "logradouro": "RUA ANGICO 13",
      "area_m2": 253.37,
      "frente_m": "10.00",
-     "status": "sem_tabela",
+     "status": "consultar",
      "disp": "vendido"
     },
     "16": {
@@ -11661,21 +11661,21 @@
      "logradouro": "RUA ANGICO 13",
      "area_m2": 253.37,
      "frente_m": "10.00",
-     "status": "sem_tabela",
+     "status": "consultar",
      "disp": "vendido"
     },
     "18": {
      "logradouro": "RUA ANGICO 13",
      "area_m2": 253.37,
      "frente_m": "10.00",
-     "status": "sem_tabela",
+     "status": "consultar",
      "disp": "vendido"
     },
     "19": {
      "logradouro": "RUA ANGICO 13",
      "area_m2": 253.37,
      "frente_m": "10.00",
-     "status": "sem_tabela",
+     "status": "consultar",
      "disp": "vendido"
     },
     "20": {
@@ -11690,14 +11690,14 @@
      "logradouro": "RUA ANGICO 13",
      "area_m2": 253.37,
      "frente_m": "10.00",
-     "status": "sem_tabela",
+     "status": "consultar",
      "disp": "vendido"
     },
     "22": {
      "logradouro": "RUA ANGICO 13",
      "area_m2": 253.37,
      "frente_m": "10.00",
-     "status": "sem_tabela",
+     "status": "consultar",
      "disp": "vendido"
     }
    },
