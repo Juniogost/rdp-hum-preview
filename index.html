@@ -128,6 +128,11 @@ Promise.all([fetch('mapa/lotes.json?v=15').then(r=>r.json()), fetch('mapa/plano.
   function ajustaLeg(){leg.style.top=(document.getElementById('hud').offsetHeight+8)+'px';}
   window.addEventListener('load',ajustaLeg);window.addEventListener('resize',ajustaLeg);setTimeout(ajustaLeg,300);setTimeout(ajustaLeg,1500);
   if (matchMedia('(max-width:640px)').matches){ painel.classList.add('col'); nota.classList.add('col'); }
+  if (new URLSearchParams(location.search).has('embed')){
+    const tag=document.querySelector('#hud .tag'); if (tag) tag.style.display='none';
+    const fecha=()=>{ painel.classList.add('col'); nota.classList.add('col'); };
+    fecha(); setTimeout(fecha,600); setTimeout(fecha,1800);
+  }
   document.getElementById('ptit').onclick = ()=>painel.classList.toggle('col');
   document.getElementById('detgrip').onclick = (e)=>{ if (e.target.id!=='detc'){ document.getElementById('det').classList.toggle('min'); setTimeout(updDetH,60); } };
   nota.onclick = ()=>nota.classList.toggle('col');
