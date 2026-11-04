@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
+<!-- apto3d visual v3: fachadas brancas, status em pontos -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex">
@@ -81,8 +82,10 @@ const ctl = new OrbitControls(cam, ren.domElement);
 ctl.enableDamping = true; ctl.dampingFactor = .08; ctl.maxPolarAngle = Math.PI/2.15;
 ctl.minDistance = 15; ctl.maxDistance = 900;
 
-scene.add(new THREE.HemisphereLight(0xffffff, 0x8a97a5, .55));
-const sun = new THREE.DirectionalLight(0xfff4e0, 2.2);
+// Luz neutra de preenchimento: fachadas brancas inclusive no lado oposto ao sol.
+scene.add(new THREE.AmbientLight(0xffffff, 1.35));
+scene.add(new THREE.HemisphereLight(0xffffff, 0xe5e7eb, .9));
+const sun = new THREE.DirectionalLight(0xffffff, 1.6);
 sun.castShadow = true;
 sun.shadow.mapSize.set(2048, 2048);
 sun.shadow.camera.left = -170; sun.shadow.camera.right = 170;
@@ -112,7 +115,7 @@ new THREE.TextureLoader().load('../3d/assets/site-finished-ita-OACKZLXR.jpg', t=
 });
 
 // sombras nos objetos da maquete
-M.traverse(o=>{ if(o.isMesh && o !== ground){ o.castShadow = true; o.receiveShadow = true; } });
+M.traverse(o=>{ if(o.isMesh && o !== ground){ o.castShadow = true; o.receiveShadow = false; } });
 
 // ---- etiquetas das áreas (lazer / portaria) ----
 function etiqueta(txt, x, y, z, esc){
@@ -142,11 +145,22 @@ for (const b of B){
       const st = statusApto(b.id, apto);
       const w = uw*0.96, d = (alongX? b.sz : b.sx)*1.06;
       const geo = new THREE.BoxGeometry(alongX? w : d, fh*0.92, alongX? d : w);
-      const m = new THREE.Mesh(geo, new THREE.MeshLambertMaterial({color:COR[st], transparent:true, opacity:.22, depthWrite:false}));
+      const m = new THREE.Mesh(geo, new THREE.MeshBasicMaterial({transparent:true, opacity:0, depthWrite:false, colorWrite:false}));
       const off = -long/2 + uw*(u-0.5);
       m.position.set(cx + (alongX? off : 0), fh*(f-0.5), cz + (alongX? 0 : off));
       m.userData = {bloco:b.id, apto, andar:f, st, w:(alongX?w:d), h:fh*0.92, d:(alongX?d:w)};
       scene.add(m); cells.push(m);
+      // Status apenas em dois pontos discretos, um em cada fachada longa.
+      // As caixas continuam invisíveis e clicáveis para selecionar a unidade.
+      for (const side of [-1, 1]) {
+        const dot = new THREE.Mesh(new THREE.SphereGeometry(.23, 10, 8),
+          new THREE.MeshBasicMaterial({color:COR[st]}));
+        dot.position.copy(m.position);
+        if (alongX) dot.position.z += side*(d/2 + .12);
+        else dot.position.x += side*(d/2 + .12);
+        dot.userData = {...m.userData, marcadorStatus:true};
+        scene.add(dot);
+      }
     }
   }
 }
@@ -203,7 +217,7 @@ function aplicaSol(hora){
     alvo.z + Rr*(Math.cos(az)*ce*nz + Math.sin(az)*ce*ez));
   sun.target.position.copy(alvo);
   const fraco = el < 0.12;
-  sun.intensity = fraco ? 0.9 : 2.2;
+  sun.intensity = fraco ? 0.65 : 1.6;
   const hh = Math.floor(hora), mm = Math.round((hora-hh)*60);
   document.getElementById('solh').textContent = String(hh).padStart(2,'0')+':'+String(mm).padStart(2,'0');
 }
@@ -231,7 +245,7 @@ function marcaSelecao(m){
 function limpaSelecao(){
   if (selBox){ scene.remove(selBox); selBox.geometry.dispose(); selBox.material.dispose(); selBox=null; }
   if (selLbl){ scene.remove(selLbl); selLbl.material.map.dispose(); selLbl.material.dispose(); selLbl=null; }
-  if (sel){ sel.material.opacity = .22; sel=null; }
+  if (sel){ sel.material.opacity = 0; sel=null; }
 }
 
 const ray = new THREE.Raycaster(), ptr = new THREE.Vector2();
@@ -246,7 +260,7 @@ ren.domElement.addEventListener('pointerup', ev=>{
   const hitObj = hit.object;
   marcaSelecao(hitObj);
   sel = hitObj;
-  sel.material.opacity = .68;
+  sel.material.opacity = 0;
   mostraApto(hitObj.userData);
 });
 
