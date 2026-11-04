@@ -37,7 +37,7 @@
   <div><span class="dot" style="background:#dc2626"></span>Vendido</div>
   <div><span class="dot" style="background:#9ca3af"></span>A confirmar</div>
 </div>
-<div id="nota"><b>Estudo ilustrativo:</b> posição aproximada dos apartamentos nas torres (planta tipo, 4 por andar). Numeração, disponibilidade e orientação do sol: confirmar na tabela.</div>
+<div id="nota"><b>Estudo ilustrativo:</b> posição aproximada dos apartamentos nas torres (planta tipo, cerca de 10 por andar; alvará 46067: 294 unidades, distribuição exata por pavimento a confirmar). Numeração, disponibilidade e orientação do sol: confirmar na tabela.</div>
 <div id="sol">☀️ Posição do sol<div class="h" id="solh">13:00</div><input id="solr" type="range" min="6" max="20" step="0.25" value="13"></div>
 <div id="det">
 <button id="detm">ver mapa ▾</button>
@@ -58,7 +58,7 @@ const CORCSS = {livre:'#22c55e', reservado:'#f97316', vendido:'#dc2626', aconfir
 const TXT = {livre:'Disponível', reservado:'Reservado', vendido:'Vendido', aconfirmar:'A confirmar'};
 
 let UNITS = {empreendimentos:[{id:'ita', disponibilidade:{}, disponibilidade_padrao:'livre', ref:{}}]};
-try { UNITS = await (await fetch('../units.json')).json(); } catch(e){}
+try { UNITS = await (await fetch('../units.json?v=4')).json(); } catch(e){}
 const ITA = (UNITS.empreendimentos||[]).find(e=>e.id==='ita') || UNITS.empreendimentos[0];
 const DISP = (ITA && ITA.disponibilidade) || {}, PAD = (ITA && ITA.disponibilidade_padrao) || 'livre';
 const REF = (ITA && ITA.ref) || {};
@@ -135,9 +135,9 @@ const cells = [];
 for (const b of B){
   const cx = $2(b.cx), cz = l2(b.cy);
   const long = Math.max(b.sx, b.sz), alongX = b.sx >= b.sz;
-  const fh = b.h / b.pav, uw = long/4;
+  const fh = b.h / b.pav, uw = long/10;
   for (let f=1; f<=b.pav; f++){
-    for (let u=1; u<=4; u++){
+    for (let u=1; u<=10; u++){
       const apto = f*100 + u;
       const st = statusApto(b.id, apto);
       const w = uw*0.96, d = (alongX? b.sz : b.sx)*1.06;
