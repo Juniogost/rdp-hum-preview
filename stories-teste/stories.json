@@ -1,0 +1,53 @@
+{
+  "whatsapp": "https://wa.me/5562981428585?text=Oi%21+Vi+os+im%C3%B3veis+e+lan%C3%A7amentos+no+portal+Investe+Canedo+e+quero+consultar+disponibilidade+e+condi%C3%A7%C3%B5es+atuais.",
+  "stories": [
+    {
+      "title": "Reserva do Parque",
+      "city": "Senador Canedo · GO",
+      "img": "hero-aerea.jpg",
+      "tag": "Lotes",
+      "price": "R$ 78.389,70",
+      "detail": "Aroeiras · quadra 24, lote 5 · 252,87 m²",
+      "note": "Valor à vista na tabela de novembro/2026. Estoque e condições precisam de confirmação.",
+      "source": "Tabela oficial Aroeiras · novembro/2026",
+      "photo": "Foto real do empreendimento, acervo fornecido pelo Junio.",
+      "href": "https://gruponb.com.br/_empreendimentos/reserva-do-parque-senador-canedo/"
+    },
+    {
+      "title": "Jardim Scala",
+      "city": "Trindade · GO",
+      "img": "scala.jpg",
+      "tag": "Lotes · 5ª etapa",
+      "price": "R$ 94.737,50",
+      "detail": "Quadra 1, lote 26 · 250 m²",
+      "note": "Valor de referência da tabela de novembro/2026. Consulte condições e disponibilidade.",
+      "source": "Tabela oficial Jardim Scala · novembro/2026",
+      "photo": "Foto real do próprio Jardim Scala · Grupo NB.",
+      "href": "https://gruponb.com.br/_empreendimentos/reserva-do-parque-jardim-scala/"
+    },
+    {
+      "title": "Recanto das Emas",
+      "city": "Goiânia · GO",
+      "img": "recanto.jpg",
+      "tag": "Condição Black November",
+      "price": "R$ 125.337,30",
+      "detail": "Quadra 16, lote 31 · 200 m²",
+      "note": "Valor promocional da tabela vigente em 01/11/2026. Sujeito à confirmação e ao fim da campanha.",
+      "source": "Tabela oficial Recanto das Emas · Black November",
+      "photo": "Foto real do empreendimento · Grupo NB.",
+      "href": "https://gruponb.com.br/_empreendimentos/recanto-das-emas/"
+    },
+    {
+      "title": "Épic · MRV",
+      "city": "Jardim Europa · Anápolis",
+      "img": "epic.jpg",
+      "tag": "Apartamentos",
+      "price": null,
+      "detail": "3 torres · 256 unidades no projeto",
+      "note": "Perspectiva artística oficial. Acabamentos, disponibilidade e condições devem ser conferidos na MRV.",
+      "source": "Folder público MRV Épic · página 23",
+      "photo": "Perspectiva artística oficial MRV.",
+      "href": "https://drive.google.com/file/d/1s0CUvzJely-74tFJIoNEX2CkR0CPgsRL/view?usp=drivesdk&authuser=papocerio%40gmail.com"
+    }
+  ]
+}
