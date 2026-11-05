@@ -86,7 +86,7 @@ tr.flash{animation:pisca 1.2s ease 3}
 </style>
 <div id="nota">
   <div id="dispdata"></div>
-  <b>Aviso:</b> visão 3D EXPERIMENTAL da prancha oficial (planta plana inclinada; sem volumes/altimetria).
+  <b>Seleção em teste:</b> toque na bolinha identificada, não no texto da planta. Marcador de localização, sem limite territorial confirmado. <br><b>Aviso:</b> visão 3D EXPERIMENTAL da prancha oficial (planta plana inclinada; sem volumes/altimetria).
   PRANCHA OFICIAL GEORREFERENCIADA pelas coordenadas UTM da moldura (SIRGAS 2000); norte verdadeiro aplicado (convergência -0,5°). Fundo de satélite: Esri World Imagery. Lotes clicáveis coloridos no mapa nesta etapa: apenas Jardim dos Jacarandás (demais fases em calibração).
   Disponibilidade e valores: WhatsApp <a style="color:#86efac" href="https://wa.me/5562981428585">62 98142-8585</a>.
 </div>
@@ -462,84 +462,8 @@ Promise.all([fetch('lotes.json?v=8').then(r=>r.json()), fetch('plano.json?v=7').
         }
       }
     }
-    // === Polígonos clicáveis: cada lote vira uma área (pins = canto da grade; linhas/colunas reconstruídas por quadra) ===
-    const polys = [];
-    {
-      const lat0 = -16.67*Math.PI/180, KX = 111320*Math.cos(lat0), KY = 110540;
-      for (const fk of Object.keys(pinsGeo)){
-        if (!data[fk] || !data[fk].quadras) continue;
-        for (const q of Object.keys(pinsGeo[fk])){
-          const pts = [];
-          for (const l of Object.keys(pinsGeo[fk][q])){
-            const c = pinsGeo[fk][q][l]; if (!c) continue;
-            if (!(data[fk].quadras[q]||{})[l]) continue;
-            pts.push({l, x:c[0]*KX, y:c[1]*KY});
-          }
-          if (pts.length < 6) continue;
-          let mx=0,my=0; pts.forEach(p=>{mx+=p.x;my+=p.y}); mx/=pts.length; my/=pts.length;
-          let sxx=0,sxy=0,syy=0; pts.forEach(p=>{const dx=p.x-mx,dy=p.y-my;sxx+=dx*dx;sxy+=dx*dy;syy+=dy*dy});
-          const ang = 0.5*Math.atan2(2*sxy, sxx-syy);
-          const ux=Math.cos(ang), uy=Math.sin(ang);
-          const proj = (vx,vy)=>{ pts.forEach(p=>{ p.su=(p.x-mx)*ux+(p.y-my)*uy; p.sv=(p.x-mx)*vx+(p.y-my)*vy; }); };
-          // testa os 2 sinais de v: o correto deixa os pins das linhas vizinhas NA BORDA, não no interior
-          // sinal de v: o interior do lote segue o "para baixo" da imagem da prancha, que no georreferenciamento aponta ~para o sul -> vy<0
-          let best=null;
-          for (const sgn of [1,-1]){
-            const vx=-uy*sgn, vy=ux*sgn;
-            const cand={vx,vy,score:(vy<0?0:1)};
-            if (!best || cand.score<best.score) best=cand;
-          }
-          const {vx,vy} = best;
-          proj(vx,vy);
-          const orden=[...pts].sort((a,b)=>a.sv-b.sv);
-          const rows=[]; let cur=[orden[0]];
-          for (let i=1;i<orden.length;i++){ if (orden[i].sv-cur[cur.length-1].sv>8){rows.push(cur);cur=[];} cur.push(orden[i]); }
-          rows.push(cur);
-          rows.forEach(r=>r.sort((a,b)=>a.su-b.su));
-          const rowSv = rows.map(r=>r.reduce((t,p)=>t+p.sv,0)/r.length);
-          if (!window.__qFrames) window.__qFrames=[];
-          window.__qFrames.push({fk,q,ux,uy,vx,vy,mx,my,KX,KY,pins:pts.map(pp=>({l:pp.l,su:pp.su,sv:pp.sv}))});
-          const medDu = r=>{ const ds=[]; for(let i=1;i<r.length;i++) ds.push(r[i].su-r[i-1].su); ds.sort((a,b)=>a-b); return ds.length?ds[Math.floor(ds.length/2)]:10; };
-          const gaps=[]; for (let i=1;i<rowSv.length;i++){ const g=rowSv[i]-rowSv[i-1]; if(g<=40) gaps.push(g); } gaps.sort((a,b)=>a-b);
-          const medDepth = gaps.length?gaps[Math.floor(gaps.length/2)]:25;
-          for (let r=0;r<rows.length;r++){
-            const lastRow = (r+1>=rows.length);
-            const du=medDu(rows[r]);
-            if (!lastRow && (rowSv[r+1]-rowSv[r])>40) continue; // gap grande (rua) entre as linhas -> não extrapolar
-            for (let c=0;c<rows[r].length;c++){
-              const pp=rows[r][c];
-              const su0=pp.su, sv0=pp.sv;
-              let su1, sv1;
-              if (c+1<rows[r].length && (rows[r][c+1].su-su0)<1.8*du){ su1=rows[r][c+1].su; sv1=rows[r][c+1].sv; }
-              else { su1=su0+(c>0?(su0-rows[r][c-1].su):du); sv1=sv0; } // lote de ponta: largura do vizinho
-              let cBL, cBR;
-              if (lastRow){ cBL=[su0,sv0+medDepth]; cBR=[su1,sv1+medDepth]; } // última linha: profundidade mediana da quadra (não cruza outra linha)
-              else {
-                let bl=null, br=null;
-                for (const q2 of rows[r+1]){ const d0=Math.abs(q2.su-su0); if(!bl||d0<bl.d) bl={d:d0,p:q2}; const d1=Math.abs(q2.su-su1); if(!br||d1<br.d) br={d:d1,p:q2}; }
-                if (!bl||!br||bl.d>6||br.d>6) continue; // sem âncoras reais embaixo -> sem polígono
-                cBL=[bl.p.su,bl.p.sv]; cBR=[br.p.su,br.p.sv];
-              }
-              const corners=[[su0,sv0],[su1,sv1],cBR,cBL,[su0,sv0]].map(([su,sv])=>{
-                const px=mx+ux*su+vx*sv, py=my+uy*su+vy*sv; return [px/KX, py/KY];
-              });
-              const lot=(data[fk].quadras[q]||{})[pp.l];
-              const av=RDPStatus.avail(lot), tt=RDPStatus.temTabela(lot);
-              const cat=av==='vendido'?'vendido':av==='reservado'?'reservado':av==='consultar'?'consultar':(av==='livre'||tt)?'livre':'embreve';
-              { const cxs=(corners[0][0]+corners[2][0])/2, cys=(corners[0][1]+corners[2][1])/2;
-                const dPin=Math.hypot((cxs-pinsGeo[fk][q][pp.l][0])*KX,(cys-pinsGeo[fk][q][pp.l][1])*KY);
-                if (dPin<4||dPin>40) continue; } // geometria não confirmada -> sem polígono
-              polys.push({type:'Feature',properties:{fase:fk,quadra:q,lote:pp.l,cat:cat,rotulo:q+'·'+pp.l},geometry:{type:'Polygon',coordinates:[corners]}});
-            }
-          }
-        }
-      }
-    }
+    // Sem vértices oficiais por lote: não gerar limites a partir dos marcadores.
     if (!map.loaded()) await new Promise(r=>map.once('load', r));
-    map.addSource('lotespg',{type:'geojson',data:{type:'FeatureCollection',features:polys}});
-    map.addLayer({id:'lotesv-pg',type:'fill',source:'lotespg',paint:{'fill-color':'#1d4ed8','fill-opacity':0.03}});
-    map.addLayer({id:'lotesv-pgsel',type:'fill',source:'lotespg',filter:['==',['get','rotulo'],'§'],paint:{'fill-color':'#1d4ed8','fill-opacity':0.18}});
-    map.addLayer({id:'lotesv-pgln',type:'line',source:'lotespg',filter:['==',['get','rotulo'],'§'],paint:{'line-color':'#1d4ed8','line-width':3}});
     map.addSource('lotesv',{type:'geojson',data:{type:'FeatureCollection',features:feats}});
     map.addLayer({id:'lotesv-pt',type:'circle',source:'lotesv',paint:{
       'circle-color':['match',['get','cat'],'livre','#22c55e','vendido','#dc2626','reservado','#f97316','consultar','#f59e0b','#9ca3af'],
@@ -551,33 +475,27 @@ Promise.all([fetch('lotes.json?v=8').then(r=>r.json()), fetch('plano.json?v=7').
     map.addLayer({id:'lotesv-lb',type:'symbol',source:'lotesv',minzoom:18,layout:{
       'text-field':['get','rotulo'],'text-size':12.5,
       'text-offset':[0,0.95],'text-anchor':'top','text-font':['Open Sans Semibold'],
-      'text-allow-overlap':true,'text-ignore-placement':true,'text-padding':1},
+      'text-allow-overlap':false,'text-ignore-placement':false,'text-padding':1},
       paint:{'text-color':'#111827','text-halo-color':'#ffffff','text-halo-width':1.6}});
     window.selecionaLote = (fk,q,l)=>{
       if (!(data[fk] && data[fk].quadras[q] && data[fk].quadras[q][l])) return;
       faseSel.value=fk; fillQuadras(); quadraSel.value=q; fillLotes();
-      map.setFilter('lotesv-sel',['==',['get','rotulo'],q+'·'+l]);
-      map.setFilter('lotesv-pgsel',['==',['get','rotulo'],q+'·'+l]);
-      map.setFilter('lotesv-pgln',['==',['get','rotulo'],q+'·'+l]);
+      map.setFilter('lotesv-sel',['all',['==',['get','fase'],fk],['==',['get','quadra'],String(q)],['==',['get','lote'],String(l)]]);
       mostraFluxo(fk,q,l);
+      const c=pinsGeo[fk]?.[q]?.[l];
+      if(c) map.easeTo({center:c,offset:[0,matchMedia('(max-width:640px)').matches?-120:0],duration:250});
     };
-    map.on('click','lotesv-pt',e=>{const p=e.features[0].properties; selecionaLote(p.fase,p.quadra,p.lote);});
-    map.on('click','lotesv-pg',e=>{const p=e.features[0].properties; selecionaLote(p.fase,p.quadra,p.lote);});
+    // Um único seletor: só o marcador realmente atingido. Nunca inferir lote pelo chão.
     map.on('click',e=>{
-      const px=e.lngLat.lng, py=e.lngLat.lat;
-      let bestLot=null;
-      for (const Q of (window.__qFrames||[])){
-        const X=px*Q.KX, Y=py*Q.KY;
-        const su=(X-Q.mx)*Q.ux+(Y-Q.my)*Q.uy, sv=(X-Q.mx)*Q.vx+(Y-Q.my)*Q.vy;
-        let cand=null;
-        for (const pp of Q.pins){ if (pp.su<=su+2 && pp.sv<=sv+2){ if(!cand||pp.sv>cand.sv+0.5||((pp.sv>cand.sv-0.5)&&pp.su>cand.su)) cand=pp; } }
-        if (cand){ const d=Math.hypot(su-cand.su, sv-cand.sv); if (d<35 && (!bestLot||d<bestLot.d)) bestLot={d,Q,cand}; }
-      }
-      if (bestLot) selecionaLote(bestLot.Q.fk, bestLot.Q.q, bestLot.cand.l); });
+      const hits=map.queryRenderedFeatures(e.point,{layers:['lotesv-pt']});
+      if (!hits.length) return;
+      const ranked=hits.map(f=>{const p=map.project(f.geometry.coordinates);return {f,d:Math.hypot(p.x-e.point.x,p.y-e.point.y)};}).sort((a,b)=>a.d-b.d);
+      if (ranked.length>1 && Math.abs(ranked[1].d-ranked[0].d)<3) return;
+      const p=ranked[0].f.properties;
+      selecionaLote(p.fase,String(p.quadra),String(p.lote));
+    });
     map.on('mouseenter','lotesv-pt',()=>{map.getCanvas().style.cursor='pointer';});
     map.on('mouseleave','lotesv-pt',()=>{map.getCanvas().style.cursor='';});
-    map.on('mouseenter','lotesv-pg',()=>{map.getCanvas().style.cursor='pointer';});
-    map.on('mouseleave','lotesv-pg',()=>{map.getCanvas().style.cursor='';});
     const lg=document.createElement('div');
     lg.id='lgdiv';
     lg.style.cssText='position:absolute;right:8px;top:56px;z-index:900;background:rgba(255,255,255,.93);border-radius:8px;padding:6px 9px;font:12px system-ui;box-shadow:0 1px 6px rgba(0,0,0,.25);line-height:1.85';
