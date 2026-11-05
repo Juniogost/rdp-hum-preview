@@ -27,6 +27,15 @@
 #hud{padding-top:calc(6px + env(safe-area-inset-top))}body{padding-bottom:env(safe-area-inset-bottom)}
 html,body{overflow-x:hidden}
 #painel{overflow-x:auto}
+#painel[hidden]{display:none!important}
+#listaToggle{position:fixed;bottom:12px;left:10px;z-index:2200;border:2px solid #14532d;background:#fff;color:#14532d;border-radius:10px;padding:11px 12px;font:700 13px system-ui;cursor:pointer}
+body.lista-aberta #listaToggle{bottom:calc(46% + 16px)}
+body.mapa-livre #nota{display:none}
+body.mapa-livre #atdBtn{bottom:12px!important}
+body.mapa-livre .maplibregl-ctrl-bottom-right{bottom:75px!important}
+#det{box-sizing:border-box}
+body:not(.mapa-livre):not(.lista-aberta) #listaToggle{display:none}
+
 @media (max-width:640px){
   .maplibregl-ctrl-bottom-right{bottom:calc(var(--deth,60px) + 58px) !important; right:8px}
   #lgdiv #lghd{cursor:pointer;user-select:none}
@@ -42,7 +51,7 @@ html,body{overflow-x:hidden}
 }
 </style>
 </head>
-<body>
+<body class="mapa-livre">
 <div id="hud">
   <span class="tag">Prévia em teste</span>
   <strong>Reserva do Parque — Senador Canedo/GO</strong>
@@ -62,9 +71,10 @@ html,body{overflow-x:hidden}
   <div class="row" style="color:#666;font-size:10.5px">Seta laranja = direção do sol sobre os lotes. Sem relevo/obstruções: sombras reais dependem de casas e árvores.</div>
   </div>
 </div>
-<div id="painel" style="position:absolute;left:8px;right:8px;bottom:8px;z-index:20;background:#fff;border-radius:10px;box-shadow:0 2px 12px rgba(0,0,0,.3);font:14px system-ui;max-height:46%;display:flex;flex-direction:column">
-  <div id="ptit" style="padding:10px 12px;font-weight:700;cursor:pointer">Lotes: situação e valores — toque para abrir ▴</div>
-  <div id="pbody" style="display:none;overflow:auto;padding:0 12px 10px">
+<button id="listaToggle" type="button" aria-expanded="false" aria-controls="painel">Mostrar lista ▴</button>
+<div id="painel" hidden style="position:absolute;left:8px;right:8px;bottom:8px;z-index:20;background:#fff;border-radius:10px;box-shadow:0 2px 12px rgba(0,0,0,.3);font:14px system-ui;max-height:46%;display:flex;flex-direction:column">
+  <div id="ptit" style="padding:10px 12px;font-weight:700;cursor:pointer">Lotes: situação e valores</div>
+  <div id="pbody" style="display:block;overflow:auto;padding:0 12px 10px">
     <select id="fase" style="width:100%;padding:8px;margin-bottom:6px"></select>
     <select id="quadra" style="width:100%;padding:8px;margin-bottom:6px"></select>
     <div id="leg" style="margin:4px 0"></div>
@@ -190,7 +200,7 @@ document.getElementById('btnPor').addEventListener('click', ()=>{
   const s=solPos(DATA, LAT0, LNG0); if(s.por!=null){document.getElementById('hora').value=s.por; atualizaSol();}});
 </script>
 <div id="det" style="display:none;position:fixed;left:0;right:0;bottom:0;max-height:44%;overflow:auto;background:#fff;border-top:3px solid #0a6b3d;padding:12px 14px calc(12px + env(safe-area-inset-bottom,0px));z-index:1000;font:14px system-ui;box-shadow:0 -4px 18px rgba(0,0,0,.25)">
-<button id="detm" style="float:right;border:0;background:#eee;border-radius:6px;padding:4px 10px;font-weight:700;margin-right:6px">ver mapa ▾</button>
+<button id="detm" style="float:right;border:0;background:#eee;border-radius:6px;padding:4px 10px;font-weight:700;margin-right:6px">Ver mapa completo ▾</button>
 <button id="detc" style="float:right;border:0;background:#eee;border-radius:6px;padding:4px 10px;font-weight:700">fechar ✕</button>
 <div id="detb"></div></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -202,7 +212,16 @@ Promise.all([fetch('lotes.json?v=8').then(r=>r.json()), fetch('plano.json?v=7').
   const faseSel = document.getElementById('fase'), quadraSel = document.getElementById('quadra');
   const leg = document.getElementById('leg');
   const pbody = document.getElementById('pbody');
-  document.getElementById('ptit').onclick = ()=>{ pbody.style.display = pbody.style.display==='none' ? 'block' : 'none'; };
+  const listaToggle=document.getElementById('listaToggle');
+  function listaAberta(aberta){
+    document.getElementById('painel').hidden=!aberta;
+    document.body.classList.toggle('lista-aberta',aberta);
+    document.body.classList.toggle('mapa-livre',!aberta && document.getElementById('det').style.display==='none');
+    listaToggle.textContent=aberta?'Ocultar lista ▾':'Mostrar lista ▴';
+    listaToggle.setAttribute('aria-expanded',String(aberta));
+    document.getElementById('nota').style.display=aberta?'none':'';
+  }
+  listaToggle.onclick=()=>{document.getElementById('det').style.display='none';listaAberta(document.getElementById('painel').hidden);};
   const ptit = document.getElementById('ptit'), lotes = document.getElementById('lotes');
   for (const k of Object.keys(data)) faseSel.add(new Option(data[k].fase, k));
   { const kj = Object.keys(data).find(k => (data[k].fase||'').toLowerCase().includes('jacarand')); if (kj) faseSel.value = kj; }
@@ -294,6 +313,7 @@ Promise.all([fetch('lotes.json?v=8').then(r=>r.json()), fetch('plano.json?v=7').
   function anteriorLivre(){ navegaLivre(-1); }
   function mostraFluxo(fase, quadra, lote){
     const det = document.getElementById('det'), detb = document.getElementById('detb');
+    listaAberta(false); document.body.classList.remove('mapa-livre');
     const pk = pkey(data[fase].fase);
     const row = pk && plano[pk] && plano[pk].rows ? plano[pk].rows[quadra + '-' + lote] : null;
     const meta = pk && plano[pk] ? plano[pk].meta : null;
@@ -309,7 +329,7 @@ Promise.all([fetch('lotes.json?v=8').then(r=>r.json()), fetch('plano.json?v=7').
       + (_lot && _lot.logradouro ? ` <span style="font-size:13px;color:#374151">· ${_lot.logradouro}</span>` : '');
     if (!row){
       detb.innerHTML = `<b>${nome} — Quadra ${quadra}, Lote ${lote}</b> ${cabLote}<p>Fluxo de pagamento detalhado não consta para este lote na tabela de novembro/2026 extraída. Confira pelo WhatsApp.</p><div style="margin-top:6px;padding:6px 8px;background:#fef9c3;border:1px solid #eab308;border-radius:6px;font-size:13px"><b>Sinal + taxa administrativa de R$ 150,00</b> — taxa fixa por lote, cobrada com o sinal e não somada às parcelas.</div>`;
-      det.style.display='block'; det.classList.remove('min'); document.getElementById('detm').textContent='ver mapa ▾'; detDoc=null; return;
+      det.style.display='block'; det.classList.remove('min'); document.getElementById('detm').textContent='Ver mapa completo ▾'; detDoc=null; return;
     }
     const p13 = meta.prazos13, pav = meta.prazosAv;
     const numS = s => { if (s==null || s==='') return null; const v = parseFloat(String(s).replace(/\./g,'').replace(',','.')); return isNaN(v) ? null : v; };
@@ -352,7 +372,7 @@ Promise.all([fetch('lotes.json?v=8').then(r=>r.json()), fetch('plano.json?v=7').
         <button id="detant" style="background:#fff;color:#0a6b3d;border:1px solid #0a6b3d">← Anterior livre</button>
         <button id="detprox" style="background:#fff;color:#0a6b3d;border:1px solid #0a6b3d">Próximo lote livre →</button>
       </div>`;
-    det.style.display='block'; det.classList.remove('min'); document.getElementById('detm').textContent='ver mapa ▾';
+    det.style.display='block'; det.classList.remove('min'); document.getElementById('detm').textContent='Ver mapa completo ▾';
     detDoc = {nome, quadra, lote, row, p13, pav};
     document.getElementById('detpdf').onclick = baixaPDF;
     document.getElementById('detqro').onclick = abreFormProposta;
@@ -440,8 +460,9 @@ Promise.all([fetch('lotes.json?v=8').then(r=>r.json()), fetch('plano.json?v=7').
       <a href="https://wa.me/5562982165619" target="_blank" rel="noopener" style="display:block;margin-top:6px;padding:12px;background:#25d366;color:#fff;text-align:center;border-radius:8px;font-weight:700;text-decoration:none">Abrir WhatsApp da equipe</a>
       <span style="font-size:12px;color:#555">Seus dados vão só nessa conversa. O Junio revisa o rascunho antes de qualquer passo oficial.</span>`;
   }
-  document.getElementById('detc').onclick = ()=>{document.getElementById('det').style.display='none'};
-  document.getElementById('detm').onclick = ()=>{ const d=document.getElementById('det'), m=document.getElementById('detm'); d.classList.toggle('min'); m.textContent = d.classList.contains('min') ? 'reabrir ▴' : 'ver mapa ▾'; };
+  const fechaFicha=()=>{document.getElementById('det').style.display='none';listaAberta(false);};
+  document.getElementById('detc').onclick=fechaFicha;
+  document.getElementById('detm').onclick=fechaFicha;
   const FASE_BBOX={jacarandas:[[-49.147378,-16.674434],[-49.139888,-16.666325]],angicos:[[-49.1424105,-16.6698121],[-49.1331422,-16.6588858]],aroeiras:[[-49.1367777,-16.6706651],[-49.1298749,-16.6575009]]};
   faseSel.onchange = ()=>{ fillQuadras(); const bb=FASE_BBOX[pkey(data[faseSel.value].fase)]; if(bb){ const mob=matchMedia('(max-width:640px)').matches; const cam=map.cameraForBounds(bb,{padding:mob?{top:96,bottom:120,left:10,right:10}:60,bearing:-15,pitch:42}); if(cam) map.easeTo({center:cam.center,zoom:cam.zoom,bearing:-15,pitch:42,duration:900}); } };
   quadraSel.onchange = fillLotes;
@@ -510,7 +531,7 @@ Promise.all([fetch('lotes.json?v=8').then(r=>r.json()), fetch('plano.json?v=7').
       const mob=matchMedia('(max-width:640px)').matches;
       let topEl=null;
       if (detEl && detEl.style.display!=='none' && detEl.offsetHeight>0) topEl=detEl;
-      else if (painelEl && painelEl.offsetHeight>0) topEl=painelEl;
+      else if (painelEl && !painelEl.hidden && painelEl.offsetHeight>0) topEl=painelEl;
       else if (notaEl && notaEl.offsetHeight>0) topEl=notaEl;
       const h = (mob && topEl) ? (window.innerHeight - topEl.getBoundingClientRect().top + 8) : 0;
       b.classList.toggle('sobe', h>0);
