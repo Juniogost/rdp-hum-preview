@@ -19,6 +19,12 @@
   #wm{position:absolute;left:12px;bottom:12px;z-index:10;font-size:10.5px;color:rgba(31,41,55,.72);background:rgba(255,255,255,.66);padding:4px 8px;border-radius:7px}
   #load{position:absolute;inset:0;z-index:30;display:flex;align-items:center;justify-content:center;background:#dfe7ee;color:#41564a;font-size:14px;transition:opacity .5s}
   body.video #hud,body.video #leg,body.video #tip{display:none}
+
+  @media (max-width:640px){
+    #hud h1{font-size:12.5px}#hud small{font-size:10px}
+    #leg{font-size:10.5px;line-height:1.6;padding:6px 8px;bottom:34px}
+    #wm{max-width:62%}
+  }
 </style>
 </head>
 <body>
@@ -30,7 +36,7 @@
 <span class="dot" style="background:#f97316"></span>Reservado<br>
 <span class="dot" style="background:#eab308"></span>Consultar
 </div>
-<div id="wm">Perspectiva ilustrativa sobre a planta oficial — sem valores nesta prévia.</div>
+<div id="wm">Maquete artística meramente ilustrativa · vegetação ilustrativa (fase adulta das espécies) · luzes decorativas · sem valores nesta prévia.</div>
 <div id="tip"></div>
 <canvas id="c"></canvas>
 <script type="importmap">
@@ -61,8 +67,9 @@ const gr=g.createLinearGradient(0,0,0,256);gr.addColorStop(0,'#a8c6e2');gr.addCo
 g.fillStyle=gr;g.fillRect(0,0,4,256);const tx=new THREE.CanvasTexture(cv);tx.colorSpace=THREE.SRGBColorSpace;scene.background=tx;})();
 scene.fog=new THREE.Fog(0xe6ecf2,2200,4200);
 
-const camera=new THREE.PerspectiveCamera(42,innerWidth/innerHeight,1,8000);
-const R0=760, EL0=0.60;
+const PORTRAIT=innerWidth/innerHeight<0.8;
+const camera=new THREE.PerspectiveCamera(PORTRAIT?58:42,innerWidth/innerHeight,1,8000);
+const R0=PORTRAIT?1500:760, EL0=PORTRAIT?0.66:0.60;
 camera.position.set(Math.sin(0)*R0*Math.cos(EL0),R0*Math.sin(EL0),Math.cos(0)*R0*Math.cos(EL0));
 
 const controls=new OrbitControls(camera,canvas);
@@ -72,7 +79,7 @@ controls.autoRotate=SHOT===null; controls.autoRotateSpeed=.55;
 
 // lights
 scene.add(new THREE.HemisphereLight(0xcfe2f5,0xb9a98c,.85));
-const sun=new THREE.DirectionalLight(0xfff0d6,2.1);
+const sun=new THREE.DirectionalLight(0xffdfae,2.15);
 sun.position.set(-900,1150,650);
 sun.castShadow=true;
 sun.shadow.mapSize.set(2048,2048);
@@ -133,6 +140,23 @@ lots.forEach((L,i)=>{
 });
 chips.castShadow=true; scene.add(chips);
 
+// lot numbers (visible when close), like the physical stand maquete
+const numGroup=new THREE.Group(); numGroup.visible=false; scene.add(numGroup);
+lots.forEach(L=>{
+  const cv=document.createElement('canvas'); cv.width=cv.height=64;
+  const g=cv.getContext('2d');
+  g.beginPath(); g.arc(32,32,27,0,7); g.fillStyle='rgba(255,255,255,.95)'; g.fill();
+  g.lineWidth=3; g.strokeStyle='#14532d'; g.stroke();
+  g.fillStyle='#14532d'; g.font='bold 30px system-ui'; g.textAlign='center'; g.textBaseline='middle';
+  g.fillText(L.l,32,34);
+  const tx=new THREE.CanvasTexture(cv); tx.colorSpace=THREE.SRGBColorSpace;
+  const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:tx,transparent:true,depthWrite:false}));
+  sp.scale.set(7.5,7.5,1); sp.position.set(L.x,8,L.z);
+  numGroup.add(sp);
+});
+function updNums(){ numGroup.visible=camera.position.length()<620; }
+window.__setCam=(tx,tz,y,d,el)=>{ controls.target.set(tx,0,tz); camera.position.set(tx+d*Math.cos(el||0.8),y||d*Math.sin(el||0.8),(tz)+d*Math.cos(el||0.8)); controls.update(); updNums(); renderer.render(scene,camera); };
+
 // picking
 const tip=document.getElementById('tip');
 const ray=new THREE.Raycaster(), ptr=new THREE.Vector2();
@@ -165,16 +189,18 @@ window.__renderFrame=(n,total)=>{
   const a=n/total*Math.PI*2, r=980-230*(n/total), el=0.66-0.14*(n/total);
   camera.position.set(Math.sin(a)*r*Math.cos(el),r*Math.sin(el),Math.cos(a)*r*Math.cos(el));
   controls.target.set(0,10,0); controls.update();
+  updNums();
   renderer.render(scene,camera);
 };
 if(SHOT!==null){
   const a=SHOT/TOT*Math.PI*2;
   camera.position.set(Math.sin(a)*R0*Math.cos(EL0),R0*Math.sin(EL0),Math.cos(a)*R0*Math.cos(EL0));
   controls.target.set(0,0,0); controls.update();
+  updNums();
   renderer.render(scene,camera);
   requestAnimationFrame(()=>{renderer.render(scene,camera); window.__shotReady=true;});
 }else{
-  renderer.setAnimationLoop(()=>{controls.update();renderer.render(scene,camera);});
+  renderer.setAnimationLoop(()=>{controls.update();updNums();renderer.render(scene,camera);});
   window.__shotReady=true;
 }
 </script>
