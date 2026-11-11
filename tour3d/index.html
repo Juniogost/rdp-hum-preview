@@ -194,7 +194,7 @@ function setMode(m){
   const hint=document.getElementById('hint');
   if(m==='air'){ document.getElementById('mAir').classList.add('on'); hint.textContent='Arraste para girar · pinça para zoom'; hideCap(); }
   if(m==='walk'){ document.getElementById('mWalk').classList.add('on'); hint.textContent='Toque na rua para caminhar · arraste para olhar';
-    if(!C.onRoad){ C.fx=acc[0]; C.fy=acc[1]; C.onRoad=true; C.pyaw=Math.atan2(oeste[0]-acc[0], oeste[1]-acc[1]); } }
+    if(!C.onRoad){ C.fx=acc[0]; C.fy=acc[1]; C.onRoad=true; const rp=DATA.tour.route[Math.min(12,DATA.tour.route.length-1)]; C.pyaw=Math.atan2(rp[0]-acc[0], rp[1]-acc[1]); } }
   if(m==='tour'){ document.getElementById('mTour').classList.add('on'); hint.textContent='Tour guiado em andamento · toque para sair'; startTour(); }
 }
 document.getElementById('mAir').onclick=()=>setMode('air');
