@@ -168,13 +168,15 @@ function shrink(pts,f){
   ctx.fillText('RESERVA',256,80); ctx.fillText('DO PARQUE',256,132);
   ctx.font='22px Arial'; ctx.fillText('Jardim dos Jacarandás',256,168);
   const t=new THREE.CanvasTexture(cv2);
+  const rdx=DATA.tour.route[1][0]-acc[0], rdy=DATA.tour.route[1][1]-acc[1], rl=Math.hypot(rdx,rdy)||1;
+  const sx=acc[0]-rdx/rl*9, sy=acc[1]-rdy/rl*9;
   const panel=new THREE.Mesh(new THREE.BoxGeometry(14,5.2,0.5), new THREE.MeshLambertMaterial({map:t}));
-  panel.position.set(acc[0],3.4,acc[1]);
+  panel.position.set(sx,3.4,sy);
   panel.rotation.y=Math.atan2(370.7-(-549.3),-289.4-22.6)+Math.PI/2;
   const p1=new THREE.Mesh(new THREE.CylinderGeometry(0.35,0.35,6,8), new THREE.MeshLambertMaterial({color:0xe8e2d4}));
   const p2=p1.clone();
   const off=new THREE.Vector3(7.4,0,0).applyEuler(panel.rotation);
-  p1.position.set(acc[0]+off.x,3,acc[1]+off.z); p2.position.set(acc[0]-off.x,3,acc[1]-off.z);
+  p1.position.set(sx+off.x,3,sy+off.z); p2.position.set(sx-off.x,3,sy-off.z);
   scene.add(panel); scene.add(p1); scene.add(p2);
 }
 
