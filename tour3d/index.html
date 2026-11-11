@@ -75,7 +75,7 @@ const renderer=new THREE.WebGLRenderer({canvas:cv,antialias:true});
 renderer.setPixelRatio(Math.min(2,devicePixelRatio||1));
 const scene=new THREE.Scene();
 scene.background=new THREE.Color(0xcfe0ee);
-scene.fog=new THREE.Fog(0xcfe0ee,900,2600);
+scene.fog=new THREE.Fog(0xcfe0ee,1300,3200);
 const cam=new THREE.PerspectiveCamera(55,1,0.5,6000);
 
 scene.add(new THREE.HemisphereLight(0xffffff,0x8a9a80,0.95));
@@ -86,8 +86,8 @@ const EXT=[-703.3,-753.4,704.9,748.6];
 const W_=EXT[2]-EXT[0], H_=EXT[3]-EXT[1];
 const plinth=new THREE.Mesh(new THREE.BoxGeometry(W_+90,26,H_+90), new THREE.MeshLambertMaterial({color:0x9a7248}));
 plinth.position.set((EXT[0]+EXT[2])/2,-13.6,(EXT[1]+EXT[3])/2); scene.add(plinth);
-const edge=new THREE.Mesh(new THREE.BoxGeometry(W_+90,3,H_+90), new THREE.MeshLambertMaterial({color:0x6e4e2e}));
-edge.position.set(plinth.position.x,-0.4,plinth.position.z); scene.add(edge);
+const edge=new THREE.Mesh(new THREE.BoxGeometry(W_+90,1.0,H_+90), new THREE.MeshLambertMaterial({color:0x6e4e2e}));
+edge.position.set(plinth.position.x,-1.1,plinth.position.z); scene.add(edge);
 
 // ground with official planta
 const tex=new THREE.TextureLoader();
@@ -179,7 +179,7 @@ function shrink(pts,f){
 }
 
 // ---------- camera modes ----------
-const C={mode:'air', yaw:2.35, el:0.92, dist:760, tx:-60, ty:-260, fx:0, fy:0, pyaw:0, ppitch:-0.06};
+const C={mode:'air', yaw:2.6, el:0.8, dist:1450, tx:0, ty:0, fx:0, fy:0, pyaw:0, ppitch:-0.06};
 const oeste=DATA.tour.snapped.oeste, acc=DATA.tour.snapped.acesso_leste;
 let walkPath=null, walkSeg=0, walkT=0, touring=false, tourI=0, tourWait=0, tourCap=-1;
 const STOPS=[
