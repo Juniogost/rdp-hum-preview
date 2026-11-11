@@ -343,7 +343,7 @@ function tick(){
     cam.position.set(C.tx+C.dist*ce*Math.sin(C.yaw), C.dist*se+2, C.ty+C.dist*ce*Math.cos(C.yaw));
     cam.lookAt(C.tx,0,C.ty);
   } else {
-    stepWalk(dt, touring?4.6:5.2);
+    if(!touring || tourWait<=0) stepWalk(dt, touring?4.6:5.2);
     const bob=walkPath?Math.sin(performance.now()/140)*0.06:0;
     cam.position.set(C.fx,1.75+bob,C.fy);
     const lx=C.fx+Math.sin(C.pyaw)*Math.cos(C.ppitch), ly=1.75+Math.sin(C.ppitch)*3, lz=C.fy+Math.cos(C.pyaw)*Math.cos(C.ppitch);
@@ -355,7 +355,7 @@ function tick(){
         const d=Math.hypot(s.p[0]-C.fx,s.p[1]-C.fy);
         if(d<7&&tourCap<i){ tourCap=i; showCap(s.t); tourWait=3.4; }
       }
-      if(tourWait>0){ tourWait-=dt; const wp=walkPath; walkPath=null; if(tourWait<=0&&tourCap<STOPS.length){walkPath=wp;} }
+      if(tourWait>0) tourWait-=dt;
       if(!walkPath&&tourWait<=0){
         touring=false; hideCap();
         showCap('Fim do tour — veja as fotos reais do empreendimento em "Fotos reais".');
