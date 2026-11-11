@@ -93,7 +93,7 @@ edge.position.set(plinth.position.x,-1.1,plinth.position.z); scene.add(edge);
 const tex=new THREE.TextureLoader();
 const gImg=new Image();
 gImg.onload=()=>{
-  const t=new THREE.Texture(gImg); t.needsUpdate=true; t.anisotropy=4;
+  const t=new THREE.Texture(gImg); t.flipY=false; t.anisotropy=4; t.needsUpdate=true;
   const g=new THREE.Mesh(new THREE.PlaneGeometry(W_,H_), new THREE.MeshLambertMaterial({map:t,color:0xc9cdc0}));
   g.rotation.x=-Math.PI/2; g.position.set(plinth.position.x,0.06,plinth.position.z); scene.add(g);
   document.getElementById('load').style.display='none';
